@@ -122,8 +122,10 @@ class AutoScraper:
 
         Args:
             url: The URL to scrape.
-            css: A CSS selector to use to narrow the scope of the scrape. Defaults to None.
-            xpath: A XPath selector to use to narrow the scope of the scrape. Defaults to None.
+            css: A CSS selector to use to narrow the scope of the scrape.
+                 Defaults to None.
+            xpath: A XPath selector to use to narrow the scope of the scrape.
+                 Defaults to None.
             auto_split: If set, split the HTML into chunks of this size. Defaults to 0.
             model: The OpenAI model to use. Defaults to "gpt-4".
             max_tokens: The maximum number of tokens to use. Defaults to 2048.
@@ -172,17 +174,18 @@ class SchemaScraper(AutoScraper):
                 "For the given HTML, convert to a list of JSON objects matching this schema: {schema}".format(
                     schema=json.dumps(schema)
                 ),
-                "Responses should be a list of valid JSON objects, with no other text."
-                "Never truncate the JSON with an ellipsis.",
             ]
         else:
             self.system_messages = [
                 "For the given HTML, convert to a JSON object matching this schema: {schema}".format(
                     schema=json.dumps(schema)
                 ),
-                "Responses should be a valid JSON object, with no other text.",
-                "Never truncate the JSON with an ellipsis.",
             ]
+        self.system_messages.append(
+            "Responses should be valid JSON, with no other text. "
+            "Never truncate the JSON with an ellipsis. "
+            "Always use double quotes for strings. "
+        )
         if self.extra_instructions:
             self.system_messages.append(self.extra_instructions)
 
@@ -197,7 +200,7 @@ class PaginatedSchemaScraper(SchemaScraper):
         self.system_messages.append("If there is no next page, set next_link to null.")
 
     def scrape_all(self, url, **kwargs):
-        results = []
+
         seen_urls = set()
         while url:
             logger.info("scraping page", url=url)
