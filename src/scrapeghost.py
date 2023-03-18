@@ -188,7 +188,7 @@ class SchemaScraper(AutoScraper):
         self.system_messages.append(
             "Responses should be valid JSON, with no other text. "
             "Never truncate the JSON with an ellipsis. "
-            "Always use double quotes for strings. Always omit trailing commas. "
+            "Always use double quotes for strings and escape quotes with \\. Always omit trailing commas. "
         )
         if self.extra_instructions:
             self.system_messages.append(self.extra_instructions)
@@ -204,12 +204,16 @@ class PaginatedSchemaScraper(SchemaScraper):
         self.system_messages.append("If there is no next page, set next_link to null.")
 
     def scrape_all(self, url, **kwargs):
-
+        results = []
         seen_urls = set()
         while url:
-            logger.info("scraping page", url=url)
+            logger.info("page", url=url)
             page = self.scrape(url, **kwargs)
-            print(page)
+            logger.info(
+                "results",
+                next_link=page["next_link"],
+                added_results=len(page["results"]),
+            )
             results.extend(page["results"])
             seen_urls.add(url)
             url = page["next_link"]
