@@ -1,3 +1,14 @@
+"""
+This is an example of a scraper that needs to handle
+an enormous HTML page.  (800 episodes with tons of extra HTML)
+
+We need every trick in the book:
+
+* list_mode helps ensure proper JSON output
+* auto_split helps ensure we don't exceed the token limit
+* css helps shrink the page as small as possible with a well-chosen
+  selector to get the minimal HTML
+"""
 import json
 from scrapeghost import SchemaScraper, InvalidJSON
 
@@ -6,6 +17,7 @@ scrape_episodes = SchemaScraper(
         "title": "string",
         "url": "url",
     },
+    list_mode=True,
 )
 
 # this page has 800 episodes and is currently too long for the 8k limit

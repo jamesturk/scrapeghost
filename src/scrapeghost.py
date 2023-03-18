@@ -59,17 +59,21 @@ class AutoScraper:
         model: str = "gpt-4",
         max_tokens: int = 2048,
         temperature: float = 0,
-    ) -> dict:
+    ) -> dict | list:
         """
-        Scrape a URL and return a JSON object.
+        Scrape a URL and return a list or dict.
 
         Args:
-            url (str): The URL to scrape.
-            css (str, optional): A CSS selector to use to narrow the scope of the scrape. Defaults to None.
-            xpath (str, optional): A XPath selector to use to narrow the scope of the scrape. Defaults to None.
+            url: The URL to scrape.
+            css: A CSS selector to use to narrow the scope of the scrape. Defaults to None.
+            xpath: A XPath selector to use to narrow the scope of the scrape. Defaults to None.
+            auto_split: If set, split the HTML into chunks of this size. Defaults to 0.
+            model: The OpenAI model to use. Defaults to "gpt-4".
+            max_tokens: The maximum number of tokens to use. Defaults to 2048.
+            temperature: The temperature to use. Defaults to 0.
 
         Returns:
-            dict: The scraped data in the specified schema.
+            dict | list: The scraped data in the specified schema.
         """
 
         def _html_to_json(html: str) -> list | dict:
@@ -140,7 +144,13 @@ class AutoScraper:
 
 
 class SchemaScraper(AutoScraper):
-    def __init__(self, schema, extra_instructions=None, list_mode=False):
+    def __init__(
+        self,
+        schema: dict,
+        *,
+        extra_instructions: str | None = None,
+        list_mode: bool = False,
+    ):
         super().__init__()
         if list_mode:
             self.system_messages = [
