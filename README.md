@@ -4,9 +4,11 @@ An experiment in using GPT-4 to scrape websites.
 
 **Caution: Use at your own risk, a single call can cost somewhere around $0.36 on larger pages at current rates.**
 
-## Installation
+See the [examples directory](https://github.com/jamesturk/scrapeghost/tree/main/examples) for current usage.
 
-Available on `pypi` as `scrapeghost` or install from source for latest changes <https://github.com/jamesturk/scrapeghost.git>
+## License
+
+Currently licensed under Hippocratic License 3.0, see [LICENSE.md](LICENSE.md) for details.
 
 ## Usage
 
@@ -51,6 +53,16 @@ You can also provide a selector to the scraper to help it find the right data, t
 >>> scrape_legislators("https://www.ilga.gov/house/rep.asp?MemberID=3071", xpath="//table[1]")
 ```
 
-## More
+## Changelog
 
-See the [examples directory](https://github.com/jamesturk/scrapeghost/tree/main/examples) or blog post for more: <https://jamesturk.net/posts/scraping-with-gpt-4/>
+### 0.2.0 - WIP
+
+* Improve `xpath` and `css` handling.
+* Improve prompt for GPT 3.5.
+* Make it possible to alter parameters when calling scrape.
+* Add support for splitting large pages into multiple calls.
+* New examples for splitting and pagination.
+
+### 0.1.0 - 2021-03-17
+
+* Initial experiment, see blog post for more: <https://jamesturk.net/posts/scraping-with-gpt-4/>
