@@ -1,9 +1,7 @@
 import json
 import time
 import openai
-import lxml.html
-import requests
-import structlog
+from .utils import logger, _tostr, _chunk_tags, _parse_url_or_html, _select_tags
 
 
 class BadStop(Exception):
@@ -14,80 +12,11 @@ class InvalidJSON(Exception):
     pass
 
 
-logger = structlog.get_logger("scrapeghost")
-
-
-def _tostr(obj: lxml.html.HtmlElement) -> str:
-    """
-    Given lxml.html.HtmlElement, return string
-    """
-    return lxml.html.tostring(obj, encoding="unicode")
-
-
-def _chunk_tags(tags: list, auto_split: int) -> list[str]:
-    """
-    Given a list of all matching HTML tags, recombine into HTML chunks
-    that can be passed to API.
-
-    Returns list of strings, will always be len()==1 if auto_split is 0
-    """
-    pieces = []
-    cur_piece = ""
-    cur_piece_len = 0
-    for tag in tags:
-        tag_html = _tostr(tag)
-        tag_len = len(tag_html)
-        if cur_piece_len + tag_len > auto_split:
-            pieces.append(cur_piece)
-            cur_piece = ""
-            cur_piece_len = 0
-        cur_piece += tag_html
-        cur_piece_len += tag_len
-
-    pieces.append(cur_piece)
-    return pieces
-
-
-def _parse_url_or_html(url_or_html: str) -> lxml.html.Element:
-    """
-    Given URL or HTML, return lxml.html.Element
-    """
-    # coerce to HTML
-    orig_url = None
-    if url_or_html.startswith("http"):
-        orig_url = url_or_html
-        url_or_html = requests.get(url_or_html).text
-    logger.info("got HTML", length=len(url_or_html), url=orig_url)
-    doc = lxml.html.fromstring(url_or_html)
-    if orig_url:
-        doc.make_links_absolute(orig_url)
-    return doc
-
-
-def _select_tags(
-    doc: lxml.html.Element, xpath: str, css: str
-) -> list[lxml.html.HtmlElement]:
-    if xpath and css:
-        raise ValueError("cannot specify both css and xpath")
-    if xpath:
-        tags = doc.xpath(xpath)
-        sel = xpath
-    elif css:
-        tags = doc.cssselect(css)
-        sel = css
-    else:
-        # so we can always return a list
-        tags = [doc]
-
-    if not len(tags):
-        raise ValueError(f"empty results from {sel}")
-    return tags
-
-
 class SchemaScraper:
     def __init__(
         self,
         schema: dict,
+        *,
         model: str = "gpt-4",
         model_params: dict | None = None,
         list_mode: bool = False,
