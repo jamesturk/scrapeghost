@@ -28,15 +28,30 @@ class AutoScraper:
         Returns:
             dict: The scraped data in the specified schema.
         """
+        if xpath and css:
+            raise ValueError("Cannot specify both xpath and css")
+
         html = requests.get(url).text
+        print(len(html), "before simplification")
+
+        doc = lxml.html.fromstring(html)
+
         if xpath:
-            html = lxml.html.tostring(
-                lxml.html.fromstring(html).xpath(xpath)[0], encoding="unicode"
+            html = "\n".join(
+                lxml.html.tostring(n, encoding="unicode") for n in doc.xpath(xpath)
             )
         elif css:
-            html = lxml.html.tostring(
-                lxml.html.fromstring(html).cssselect(css)[0], encoding="unicode"
+            html = "\n".join(
+                lxml.html.tostring(n, encoding="unicode") for n in doc.cssselect(css)
             )
+        else:
+            html = lxml.html.tostring(doc, encoding="unicode")
+
+        print(len(html), "after simplification")
+
+        if len(html) > 8192:
+            print(html)
+            raise ValueError("HTML is too long for the 8k limit")
 
         response = self.handle_html(html)
         try:

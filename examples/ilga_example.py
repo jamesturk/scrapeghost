@@ -1,4 +1,5 @@
 import os
+import sys
 import json
 import lxml.html
 import openai
@@ -36,10 +37,14 @@ def main():
     # to avoid high bills
     LIMIT = 10
 
-    urls = get_urls()
+    if len(sys.argv) > 1:
+        urls = sys.argv[1:]
+    else:
+        urls = get_urls()
+
     legislators = []
     for url in urls:
-        legislator = scrape_legislators(url, css="table")
+        legislator = scrape_legislators(url, css="div.card")
         legislator["url"] = url
         legislators.append(legislator)
 
