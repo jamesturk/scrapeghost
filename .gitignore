@@ -2,3 +2,4 @@
 .vscode
 env.sh
 *.json
+dist
