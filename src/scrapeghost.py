@@ -2,6 +2,7 @@ import json
 import openai
 import lxml.html
 import requests
+import structlog
 
 
 class BadStop(Exception):
@@ -12,7 +13,10 @@ class InvalidJSON(Exception):
     pass
 
 
-def _chunk_tags(tags, auto_split) -> list[str]:
+logger = structlog.get_logger("scrapeghost")
+
+
+def _chunk_tags(tags: list, auto_split) -> list[str]:
     """
     Given a list of all matching HTML tags, recombine into HTML chunks
     that can be passed to API.
@@ -68,18 +72,25 @@ class AutoScraper:
             dict: The scraped data in the specified schema.
         """
 
-        def _html_to_json(response: str) -> list | dict:
-            print(f"making request now: len={len(response)}")
+        def _html_to_json(html: str) -> list | dict:
+            logger.info(
+                "making request", model=model, html=html, messages=self.system_messages
+            )
             completion = openai.ChatCompletion.create(
                 model=model,
                 messages=[
                     {"role": "system", "content": msg} for msg in self.system_messages
                 ]
                 + [
-                    {"role": "user", "content": response},
+                    {"role": "user", "content": html},
                 ],
                 max_tokens=max_tokens,
                 temperature=temperature,
+            )
+            logger.info(
+                "completion response",
+                prompt_tokens=completion.usage.prompt_tokens,
+                completion_tokens=completion.usage.completion_tokens,
             )
             self.total_prompt_tokens += completion.usage.prompt_tokens
             self.total_completion_tokens += completion.usage.completion_tokens
@@ -87,7 +98,8 @@ class AutoScraper:
             if choice.finish_reason != "stop":
                 raise BadStop(
                     f"OpenAI did not stop: {choice.finish_reason} "
-                    f"(prompt_tokens={prompt_tokens}, completion_tokens={completion_tokens})"
+                    f"(prompt_tokens={completion.usage.prompt_tokens}, "
+                    f"completion_tokens={completion.usage.completion_tokens})"
                 )
 
             try:
@@ -99,7 +111,7 @@ class AutoScraper:
             raise ValueError("Cannot specify both xpath and css")
 
         html = requests.get(url).text
-        print(len(html), "before simplification")
+        logger.info("got HTML", length=len(html))
 
         if xpath:
             doc = lxml.html.fromstring(html)
@@ -110,11 +122,11 @@ class AutoScraper:
         else:
             # single chunk if no selector is specified
             return _html_to_json(html)
-            chunks = [html]
 
-        print(
-            f"broken into {len(chunks)} chunks: "
-            + ", ".join(str(len(c)) for c in chunks)
+        logger.info(
+            "broken into chunks",
+            num=len(chunks),
+            sizes=", ".join(str(len(c)) for c in chunks),
         )
         # flatten list of lists
         return [item for chunk in chunks for item in _html_to_json(chunk)]
@@ -125,11 +137,12 @@ class AutoScraper:
 
 class SchemaScraper(AutoScraper):
     def __init__(self, schema, extra_instructions=None):
+        super().__init__()
         self.system_messages = [
             "When you receive HTML, convert to a list of JSON objects matching this schema: {schema}".format(
                 schema=json.dumps(schema)
             ),
-            "Responses should be a list of JSON objects, with no other text.",
+            "Responses should be a list of JSON objects, with no other text.  Never truncate the JSON.",
         ]
         if extra_instructions:
             self.system_messages.append(extra_instructions)
@@ -137,6 +150,7 @@ class SchemaScraper(AutoScraper):
 
 class LinkExtractor(AutoScraper):
     def __init__(self, extra_instructions=None):
+        super().__init__()
         self.system_messages = [
             'When you receive HTML, extract a list of links matching this schema: [{{"url": "url", "text": "string"}}]',
         ]
