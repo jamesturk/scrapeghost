@@ -4,9 +4,9 @@ An experiment in using GPT-4 to scrape websites.
 
 ## Usage
 
-Use SchemaScraper to create scrapers for pages:
+Use SchemaScraper to create scrapers for pages by defining the shape of the data you want to extract: 
 
-```bash
+```python
 >>> from scrapeghost import SchemaScraper
 >>> scrape_legislators = SchemaScraper(
     schema={
@@ -25,4 +25,3 @@ Use SchemaScraper to create scrapers for pages:
 That's it.
 
 See the blog post for more: <https://jamesturk.net/posts/scraping-with-gpt4/>
-# scrapeghost
