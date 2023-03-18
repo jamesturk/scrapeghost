@@ -15,27 +15,27 @@ class AutoScraper:
         self.system_messages = []
 
     def scrape(
-        self, url: str, xpath_hint: str | None = None, css_hint: str | None = None
+        self, url: str, xpath: str | None = None, css: str | None = None
     ) -> dict:
         """
         Scrape a URL and return a JSON object.
 
         Args:
             url (str): The URL to scrape.
-            css_hint (str, optional): A CSS selector to use to narrow the scope of the scrape. Defaults to None.
-            xpath_hint (str, optional): A XPath selector to use to narrow the scope of the scrape. Defaults to None.
+            css (str, optional): A CSS selector to use to narrow the scope of the scrape. Defaults to None.
+            xpath (str, optional): A XPath selector to use to narrow the scope of the scrape. Defaults to None.
 
         Returns:
             dict: The scraped data in the specified schema.
         """
         html = requests.get(url).text
-        if xpath_hint:
+        if xpath:
             html = lxml.html.tostring(
-                lxml.html.fromstring(html).xpath(xpath_hint)[0], encoding="unicode"
+                lxml.html.fromstring(html).xpath(xpath)[0], encoding="unicode"
             )
-        elif css_hint:
+        elif css:
             html = lxml.html.tostring(
-                lxml.html.fromstring(html).cssselect(css_hint)[0], encoding="unicode"
+                lxml.html.fromstring(html).cssselect(css)[0], encoding="unicode"
             )
 
         response = self.handle_html(html)

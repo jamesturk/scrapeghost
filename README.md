@@ -39,7 +39,7 @@ Then, use `SchemaScraper` to create scrapers for pages by defining the shape of 
 
 **That's it.**
 
-You can also provide a hint to the scraper to help it find the right data, this is useful for managing the total number of tokens sent since the CSS/XPath selector will be executed before sending the data to the API:
+You can also provide a selector to the scraper to help it find the right data, this is useful for managing the total number of tokens sent since the CSS/XPath selector will be executed before sending the data to the API:
 
 ```python
 >>> scrape_legislators("https://www.ilga.gov/house/rep.asp?MemberID=3071", xpath="//table[1]")
