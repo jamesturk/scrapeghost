@@ -1,2 +1,4 @@
 *.pyc
 .vscode
+env.sh
+*.json
