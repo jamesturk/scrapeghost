@@ -178,7 +178,7 @@ class PaginatedSchemaScraper(SchemaScraper):
             "results": schema,
             "next_link": "url",
         }
-        super().__init__(schema, extra_instructions)
+        super().__init__(schema, extra_instructions=extra_instructions, list_mode=False)
 
     def scrape_all(self, url, **kwargs):
         results = []
