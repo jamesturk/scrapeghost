@@ -14,7 +14,7 @@ class AutoScraper:
         self.temperature = 0
         self.system_messages = []
 
-    def __call__(self, url: str, hint: str | None = None) -> dict:
+    def scrape(self, url: str, hint: str | None = None) -> dict:
         """
         Scrape a URL and return a JSON object.
 
@@ -36,6 +36,9 @@ class AutoScraper:
             return json.loads(response)
         except json.decoder.JSONDecodeError:
             raise InvalidJSONError(response)
+
+    # allow the class to be called like a function
+    __call__ = scrape
 
     def handle_html(self, html: str) -> str:
         """

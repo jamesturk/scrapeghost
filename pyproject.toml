@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "autoscrape"
+name = "scrapeghost"
 version = "0.1.0"
 description = "Experimental library for leveraging GPT for web scraping."
 authors = ["James Turk <dev@jamesturk.net>"]
