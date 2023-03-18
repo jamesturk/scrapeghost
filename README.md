@@ -20,7 +20,11 @@ openai.organization = os.getenv("OPENAI_API_ORG")
 openai.api_key = os.getenv("OPENAI_API_KEY")
 ```
 
-Then, use `SchemaScraper` to create scrapers for pages by defining the shape of the data you want to extract:
+### Basics
+
+The `SchemaScraper` class is the main interface for building automatic scrapers.
+
+To build a scraper, you provide a schema that describes the data you want to collect.
 
 ```python
 >>> from scrapeghost import SchemaScraper
@@ -34,6 +38,13 @@ Then, use `SchemaScraper` to create scrapers for pages by defining the shape of 
         "offices": [{"name": "string", "address": "string", "phone": "string"}],
     }
 )
+```
+
+There's no pre-defined format for the schema, the GPT models do a good job of figuring out what you want and you can use whatever values you want to provide hints.
+
+You can then call the scraper with a URL to scrape:
+
+```python
 >>> scrape_legislators("https://www.ilga.gov/house/rep.asp?MemberID=3071")
 {'name': 'Emanuel "Chris" Welch',
  'url': 'https://www.ilga.gov/house/Rep.asp?MemberID=3071',
@@ -47,22 +58,49 @@ Then, use `SchemaScraper` to create scrapers for pages by defining the shape of 
 
 **That's it.**
 
-You can also provide a selector to the scraper to help it find the right data, this is useful for managing the total number of tokens sent since the CSS/XPath selector will be executed before sending the data to the API:
+Even better, that same scraper can be used to scrape other
+
+### Selectors
+
+The main limitation you'll run into is the token limit. Depending on the model you're using you're limited to 4096 or 8192 tokens per call. Billing is also based on tokens sent and received.
+
+One strategy to deal with this is to provide a CSS or XPath selector to the scraper. This will pre-filter the HTML that is sent to the server, keeping you under the limit and saving you money.
+
+Pass the `css` or `xpath` arguments to the scraper to use a selector:
 
 ```python
 >>> scrape_legislators("https://www.ilga.gov/house/rep.asp?MemberID=3071", xpath="//table[1]")
 ```
 
+### SchemaScraper Options
+
+* `model` - The GPT model to use, defaults to `gpt-4`, can also be `gpt-3.5-turbo`.
+* `list_mode` - If `True` the scraper will return a list of objects instead of a single object. (Alters the prompts and some behavior.)
+* `split_length` - If set, the scraper will split the page into multiple calls, each of this length. (Only works with list_mode, requires passing a `css` or `xpath` selector when scraping.)
+* `model_params` - A dictionary of parameters to pass to the underlying GPT model.
+* `extra_instructions` - Additional instructions to pass to the GPT model.
+
+### Auto-splitting
+
+It's worth mentioning how `split_length` works because it allows for some interesting possibilities but can also become quite expensive.
+
+If you pass `split_length` to the scraper, it assumes the page is made of multiple similar sections and will try to split the page into multiple calls.  
+
+When you call the scrape function of an auto-splitting enabled scraper, you are required to pass a `css` or `xpath` selector to the function.  The resulting nodes will be combined into chunks no bigger than `split_length` tokens, sent to the API, and then stitched back together.
+
+This seems to work well for long lists of similar items, though whether it is worth the many calls is questionable.
+
+Look at `examples/cbb.py` for an example of a 800+ item page that is split into many calls.
+
 ## Changelog
 
 ### 0.2.0 - WIP
 
+* Add list mode, auto-splitting, and pagination support.
 * Improve `xpath` and `css` handling.
 * Improve prompt for GPT 3.5.
 * Make it possible to alter parameters when calling scrape.
-* Add support for splitting large pages into multiple calls.
-* New auto-pagination support.
-* New examples of splitting & pagination.
+* Logging & error handling.
 
 ### 0.1.0 - 2021-03-17
 

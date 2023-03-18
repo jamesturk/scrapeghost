@@ -47,7 +47,7 @@ def main():
 
     legislators = []
     for url in urls:
-        legislator = scrape_legislators(url, css="div.card")
+        legislator = scrape_legislators(url, css="table")
         legislator["url"] = url
         legislators.append(legislator)
 
