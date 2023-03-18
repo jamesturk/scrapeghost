@@ -4,16 +4,20 @@ import lxml.html
 import requests
 
 
-class InvalidJSONError(Exception):
+class BadStop(Exception):
     pass
 
 
-def _recombine(tags, auto_split) -> list[str]:
+class InvalidJSON(Exception):
+    pass
+
+
+def _chunk_tags(tags, auto_split) -> list[str]:
     """
     Given a list of all matching HTML tags, recombine into HTML chunks
     that can be passed to API.
 
-    Returns list of strings, will always be len()==1 if auto_split is False
+    Returns list of strings, will always be len()==1 if auto_split is 0
     """
     if not auto_split:
         return ["\n".join(lxml.html.tostring(n, encoding="unicode") for n in tags)]
@@ -37,6 +41,10 @@ def _recombine(tags, auto_split) -> list[str]:
 
 
 class AutoScraper:
+    def __init__(self):
+        self.total_prompt_tokens = 0
+        self.total_completion_tokens = 0
+
     def scrape(
         self,
         url: str,
@@ -60,7 +68,7 @@ class AutoScraper:
             dict: The scraped data in the specified schema.
         """
 
-        def _response_to_json(response: str) -> list | dict:
+        def _html_to_json(response: str) -> list | dict:
             print(f"making request now: len={len(response)}")
             completion = openai.ChatCompletion.create(
                 model=model,
@@ -73,12 +81,19 @@ class AutoScraper:
                 max_tokens=max_tokens,
                 temperature=temperature,
             )
-            response = completion.choices[0]["message"]["content"]
+            self.total_prompt_tokens += completion.usage.prompt_tokens
+            self.total_completion_tokens += completion.usage.completion_tokens
+            choice = completion.choices[0]
+            if choice.finish_reason != "stop":
+                raise BadStop(
+                    f"OpenAI did not stop: {choice.finish_reason} "
+                    f"(prompt_tokens={prompt_tokens}, completion_tokens={completion_tokens})"
+                )
 
             try:
-                return json.loads(response)
+                return json.loads(choice.message.content)
             except json.decoder.JSONDecodeError:
-                raise InvalidJSONError(response)
+                raise InvalidJSON(choice.message.content)
 
         if xpath and css:
             raise ValueError("Cannot specify both xpath and css")
@@ -86,35 +101,26 @@ class AutoScraper:
         html = requests.get(url).text
         print(len(html), "before simplification")
 
-        doc = lxml.html.fromstring(html)
-
         if xpath:
-            chunks = _recombine(doc.xpath(xpath), auto_split)
+            doc = lxml.html.fromstring(html)
+            chunks = _chunk_tags(doc.xpath(xpath), auto_split)
         elif css:
-            chunks = _recombine(doc.cssselect(css), auto_split)
+            doc = lxml.html.fromstring(html)
+            chunks = _chunk_tags(doc.cssselect(css), auto_split)
         else:
-            # forced to use single chunk if no selector is specified
-            chunks = [lxml.html.tostring(doc, encoding="unicode")]
+            # single chunk if no selector is specified
+            return _html_to_json(html)
+            chunks = [html]
 
         print(
             f"broken into {len(chunks)} chunks: "
             + ", ".join(str(len(c)) for c in chunks)
         )
-
-        if len(chunks) == 1:
-            return _response_to_json(chunks[0])
         # flatten list of lists
-        return [item for chunk in chunks for item in _response_to_json(chunk)]
+        return [item for chunk in chunks for item in _html_to_json(chunk)]
 
     # allow the class to be called like a function
     __call__ = scrape
-
-    def _handle_html(
-        self, html: str, model: str, max_tokens: int, temperature: float
-    ) -> str:
-        """
-        Pass HTML to the OpenAI API and return the response.
-        """
 
 
 class SchemaScraper(AutoScraper):

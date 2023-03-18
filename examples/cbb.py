@@ -13,9 +13,9 @@ scrape_episodes = SchemaScraper(
 output = scrape_episodes(
     "https://comedybangbang.fandom.com/wiki/Category:Episodes",
     css=".mw-parser-output a[class!='image link-internal']",
-    auto_split=3000,
-    model="gpt-3.5-turbo",
-    # model="gpt-4",
+    auto_split=5000,
+    #    model="gpt-3.5-turbo",
+    model="gpt-4",
 )
 with open("cbb.json", "w") as f:
     json.dump(output, f, indent=1)
