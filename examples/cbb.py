@@ -14,8 +14,8 @@ try:
         "https://comedybangbang.fandom.com/wiki/Category:Episodes",
         css=".mw-parser-output a[class!='image link-internal']",
         auto_split=4000,
-        model="gpt-3.5-turbo",
-        # model="gpt-4",
+        #        model="gpt-3.5-turbo",
+        model="gpt-4",
     )
 except InvalidJSON as e:
     print(e)

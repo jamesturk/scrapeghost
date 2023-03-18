@@ -139,10 +139,11 @@ class SchemaScraper(AutoScraper):
     def __init__(self, schema, extra_instructions=None):
         super().__init__()
         self.system_messages = [
-            "When you receive HTML, convert to a list of JSON objects matching this schema: {schema}".format(
+            "For the given HTML, convert to a list of JSON objects matching this schema: {schema}".format(
                 schema=json.dumps(schema)
             ),
-            "Responses should be a list of JSON objects, with no other text.  Never truncate the JSON.",
+            "Responses should be a list of valid JSON objects, with no other text."
+            "Never truncate the JSON with an ellipsis.",
         ]
         if extra_instructions:
             self.system_messages.append(extra_instructions)
