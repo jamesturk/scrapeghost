@@ -22,14 +22,17 @@ scrape_episodes = SchemaScraper(
     model="gpt-3.5-turbo",
 )
 
-# this page has 800 episodes and is currently too long for the 8k limit
+# this page has 800 episodes and is far too long for the 8k limit
+# so we use css to select only the episode links and auto_split
+# to break the HTML into chunks of 6000 characters
 try:
     output = scrape_episodes(
         "https://comedybangbang.fandom.com/wiki/Category:Episodes",
         css=".mw-parser-output a[class!='image link-internal']",
-        auto_split=5000,
+        auto_split=6000,
     )
 except InvalidJSON as e:
+    print("Invalid JSON")
     print(e)
     exit(1)
 
