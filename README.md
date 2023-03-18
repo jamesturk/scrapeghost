@@ -25,3 +25,4 @@ Use SchemaScraper to create scrapers for pages:
 That's it.
 
 See the blog post for more: <https://jamesturk.net/posts/scraping-with-gpt4/>
+# scrapeghost
