@@ -4,6 +4,10 @@ An experiment in using GPT-4 to scrape websites.
 
 **Caution: Use at your own risk, a single call can cost somewhere around $0.36 on larger pages at current rates.**
 
+## Installation
+
+Available on `pypi` as `scrapeghost` or install from source for latest changes <https://github.com/jamesturk/scrapeghost.git>
+
 ## Usage
 
 You will need an OpenAI API key with access to the GPT-4 API.  Configure those as you otherwise would via the `openai` library.
@@ -47,4 +51,6 @@ You can also provide a selector to the scraper to help it find the right data, t
 >>> scrape_legislators("https://www.ilga.gov/house/rep.asp?MemberID=3071", xpath="//table[1]")
 ```
 
-See the blog post for more: <https://jamesturk.net/posts/scraping-with-gpt-4/>
+## More
+
+See the [examples directory](https://github.com/jamesturk/scrapeghost/tree/main/examples) or blog post for more: <https://jamesturk.net/posts/scraping-with-gpt-4/>
