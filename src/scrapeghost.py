@@ -1,4 +1,5 @@
 import json
+import time
 import openai
 import lxml.html
 import requests
@@ -48,15 +49,18 @@ class AutoScraper:
     def __init__(
         self,
         model: str = "gpt-4",
-        max_tokens: int = 2048,
-        temperature: float = 0,
+        model_params: dict | None = None,
         extra_instructions: str = "",
     ):
         self.total_prompt_tokens = 0
         self.total_completion_tokens = 0
         self.model = model
-        self.max_tokens = max_tokens
-        self.temperature = temperature
+        if model_params is None:
+            model_params = {}
+        self.model_params = model_params
+        # default temperature to 0, deterministic
+        if "temperature" not in model_params:
+            model_params["temperature"] = 0
         self.extra_instructions = extra_instructions
 
     def _html_to_json(self, html: str) -> list | dict:
@@ -66,6 +70,7 @@ class AutoScraper:
             length=len(html),
             messages=self.system_messages,
         )
+        start_t = time.time()
         completion = openai.ChatCompletion.create(
             model=self.model,
             messages=[
@@ -74,11 +79,11 @@ class AutoScraper:
             + [
                 {"role": "user", "content": html},
             ],
-            max_tokens=self.max_tokens,
-            temperature=self.temperature,
+            **self.model_params,
         )
         logger.info(
             "API response",
+            duration=time.time() - start_t,
             prompt_tokens=completion.usage.prompt_tokens,
             completion_tokens=completion.usage.completion_tokens,
         )
@@ -129,7 +134,6 @@ class AutoScraper:
             auto_split: If set, split the HTML into chunks of this size. Defaults to 0.
             model: The OpenAI model to use. Defaults to "gpt-4".
             max_tokens: The maximum number of tokens to use. Defaults to 2048.
-            temperature: The temperature to use. Defaults to 0.
 
         Returns:
             dict | list: The scraped data in the specified schema.
@@ -184,7 +188,7 @@ class SchemaScraper(AutoScraper):
         self.system_messages.append(
             "Responses should be valid JSON, with no other text. "
             "Never truncate the JSON with an ellipsis. "
-            "Always use double quotes for strings. "
+            "Always use double quotes for strings. Always omit trailing commas. "
         )
         if self.extra_instructions:
             self.system_messages.append(self.extra_instructions)
