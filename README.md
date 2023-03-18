@@ -4,7 +4,15 @@ An experiment in using GPT-4 to scrape websites.
 
 ## Usage
 
-Use SchemaScraper to create scrapers for pages by defining the shape of the data you want to extract:
+You will need an OpenAI API key with access to the GPT-4 API.  Configure those as you otherwise would via the `openai` library.
+
+```python
+import openai
+openai.organization = os.getenv("OPENAI_API_ORG")
+openai.api_key = os.getenv("OPENAI_API_KEY")
+```
+
+Then, use `SchemaScraper` to create scrapers for pages by defining the shape of the data you want to extract:
 
 ```python
 >>> from scrapeghost import SchemaScraper
@@ -29,6 +37,12 @@ Use SchemaScraper to create scrapers for pages by defining the shape of the data
    ]}
 ```
 
-That's it.
+**That's it.**
 
-See the blog post for more: <https://jamesturk.net/posts/scraping-with-gpt4/>
+You can also provide a hint to the scraper to help it find the right data, this is useful for managing the total number of tokens sent since the CSS/XPath selector will be executed before sending the data to the API:
+
+```python
+>>> scrape_legislators("https://www.ilga.gov/house/rep.asp?MemberID=3071", xpath="//table[1]")
+```
+
+See the blog post for more: <https://jamesturk.net/posts/scraping-with-gpt-4/>

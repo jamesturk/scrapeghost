@@ -14,21 +14,28 @@ class AutoScraper:
         self.temperature = 0
         self.system_messages = []
 
-    def scrape(self, url: str, hint: str | None = None) -> dict:
+    def scrape(
+        self, url: str, xpath_hint: str | None = None, css_hint: str | None = None
+    ) -> dict:
         """
         Scrape a URL and return a JSON object.
 
         Args:
             url (str): The URL to scrape.
-            hint (str, optional): A CSS selector to use to narrow the scope of the scrape. Defaults to None.
+            css_hint (str, optional): A CSS selector to use to narrow the scope of the scrape. Defaults to None.
+            xpath_hint (str, optional): A XPath selector to use to narrow the scope of the scrape. Defaults to None.
 
         Returns:
             dict: The scraped data in the specified schema.
         """
         html = requests.get(url).text
-        if hint:
+        if xpath_hint:
             html = lxml.html.tostring(
-                lxml.html.fromstring(html).cssselect(hint)[0], encoding="unicode"
+                lxml.html.fromstring(html).xpath(xpath_hint)[0], encoding="unicode"
+            )
+        elif css_hint:
+            html = lxml.html.tostring(
+                lxml.html.fromstring(html).cssselect(css_hint)[0], encoding="unicode"
             )
 
         response = self.handle_html(html)
