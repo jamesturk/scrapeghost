@@ -16,7 +16,7 @@ class InvalidJSON(Exception):
 logger = structlog.get_logger("scrapeghost")
 
 
-def _chunk_tags(tags: list, auto_split) -> list[str]:
+def _chunk_tags(tags: list, auto_split: int) -> list[str]:
     """
     Given a list of all matching HTML tags, recombine into HTML chunks
     that can be passed to API.
@@ -74,7 +74,10 @@ class AutoScraper:
 
         def _html_to_json(html: str) -> list | dict:
             logger.info(
-                "making request", model=model, html=html, messages=self.system_messages
+                "API request",
+                model=model,
+                html=html,
+                messages=self.system_messages,
             )
             completion = openai.ChatCompletion.create(
                 model=model,
@@ -88,7 +91,7 @@ class AutoScraper:
                 temperature=temperature,
             )
             logger.info(
-                "completion response",
+                "API response",
                 prompt_tokens=completion.usage.prompt_tokens,
                 completion_tokens=completion.usage.completion_tokens,
             )
@@ -108,7 +111,7 @@ class AutoScraper:
                 raise InvalidJSON(choice.message.content)
 
         if xpath and css:
-            raise ValueError("Cannot specify both xpath and css")
+            raise ValueError("Cannot specify both xpath and css parameters")
 
         html = requests.get(url).text
         logger.info("got HTML", length=len(html))
