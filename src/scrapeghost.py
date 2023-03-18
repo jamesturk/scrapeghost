@@ -68,7 +68,7 @@ class AutoScraper:
                     {"role": "system", "content": msg} for msg in self.system_messages
                 ]
                 + [
-                    {"role": "user", "content": html},
+                    {"role": "user", "content": response},
                 ],
                 max_tokens=max_tokens,
                 temperature=temperature,
@@ -120,9 +120,10 @@ class AutoScraper:
 class SchemaScraper(AutoScraper):
     def __init__(self, schema, extra_instructions=None):
         self.system_messages = [
-            "When you receive HTML, generate an equivalent JSON object matching this schema: {schema}".format(
+            "When you receive HTML, convert to a list of JSON objects matching this schema: {schema}".format(
                 schema=json.dumps(schema)
             ),
+            "Responses should be a list of JSON objects, with no other text.",
         ]
         if extra_instructions:
             self.system_messages.append(extra_instructions)
