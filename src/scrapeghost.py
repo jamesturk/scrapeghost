@@ -76,7 +76,8 @@ class AutoScraper:
             logger.info(
                 "API request",
                 model=model,
-                html=html,
+                # html=html,
+                length=len(html),
                 messages=self.system_messages,
             )
             completion = openai.ChatCompletion.create(
@@ -114,17 +115,17 @@ class AutoScraper:
             raise ValueError("Cannot specify both xpath and css parameters")
 
         html = requests.get(url).text
+        doc = lxml.html.fromstring(html)
+        doc.make_links_absolute(url)
         logger.info("got HTML", length=len(html))
 
         if xpath:
-            doc = lxml.html.fromstring(html)
             chunks = _chunk_tags(doc.xpath(xpath), auto_split)
         elif css:
-            doc = lxml.html.fromstring(html)
             chunks = _chunk_tags(doc.cssselect(css), auto_split)
         else:
             # single chunk if no selector is specified
-            return _html_to_json(html)
+            return _html_to_json(lxml.html.tostring(doc, encoding="unicode"))
 
         logger.info(
             "broken into chunks",
@@ -139,17 +140,45 @@ class AutoScraper:
 
 
 class SchemaScraper(AutoScraper):
-    def __init__(self, schema, extra_instructions=None):
+    def __init__(self, schema, extra_instructions=None, list_mode=False):
         super().__init__()
-        self.system_messages = [
-            "For the given HTML, convert to a list of JSON objects matching this schema: {schema}".format(
-                schema=json.dumps(schema)
-            ),
-            "Responses should be a list of valid JSON objects, with no other text."
-            "Never truncate the JSON with an ellipsis.",
-        ]
+        if list_mode:
+            self.system_messages = [
+                "For the given HTML, convert to a list of JSON objects matching this schema: {schema}".format(
+                    schema=json.dumps(schema)
+                ),
+                "Responses should be a list of valid JSON objects, with no other text."
+                "Never truncate the JSON with an ellipsis.",
+            ]
+        else:
+            self.system_messages = [
+                "For the given HTML, convert to a JSON object matching this schema: {schema}".format(
+                    schema=json.dumps(schema)
+                ),
+                "Responses should be a valid JSON object, with no other text.",
+                "Never truncate the JSON with an ellipsis.",
+            ]
         if extra_instructions:
             self.system_messages.append(extra_instructions)
+
+
+class PaginatedSchemaScraper(SchemaScraper):
+    def __init__(self, schema, extra_instructions=None):
+        schema = {
+            "results": schema,
+            "next_link": "url",
+        }
+        super().__init__(schema, extra_instructions)
+
+    def scrape_all(self, url, **kwargs):
+        results = []
+        while url:
+            logger.info("scraping page", url=url)
+            page = self.scrape(url, **kwargs)
+            print(page)
+            results.extend(page["results"])
+            url = page["next_link"]
+        return results
 
 
 class LinkExtractor(AutoScraper):
