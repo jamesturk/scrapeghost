@@ -2,6 +2,8 @@
 
 An experiment in using GPT-4 to scrape websites.
 
+**Caution: Use at your own risk, a single call can cost somewhere around $0.36 on larger pages at current rates.**
+
 ## Usage
 
 You will need an OpenAI API key with access to the GPT-4 API.  Configure those as you otherwise would via the `openai` library.
