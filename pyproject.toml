@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "autoscrape"
+version = "0.1.0"
+description = "Experimental library for leveraging GPT for web scraping."
+authors = ["James Turk <dev@jamesturk.net>"]
+license = "Hippocratic License HL3-EXTR-FFD-LAW-MIL-SV"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+openai = "^0.27.1"
+cssselect = "^1.2.0"
+lxml = "^4.9.2"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
