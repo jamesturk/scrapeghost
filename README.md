@@ -61,7 +61,8 @@ You can also provide a selector to the scraper to help it find the right data, t
 * Improve prompt for GPT 3.5.
 * Make it possible to alter parameters when calling scrape.
 * Add support for splitting large pages into multiple calls.
-* New examples for splitting and pagination.
+* New auto-pagination support.
+* New examples of splitting & pagination.
 
 ### 0.1.0 - 2021-03-17
 

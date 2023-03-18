@@ -13,6 +13,6 @@ from scrapeghost import PaginatedSchemaScraper
 schema = {"first_name": "str", "last_name": "str", "position": "str", "url": "url"}
 url = "https://scrapple.fly.dev/staff"
 
-scraper = PaginatedSchemaScraper(schema)
-data = scraper.scrape_all(url, model="gpt-3.5-turbo")
+scraper = PaginatedSchemaScraper(schema, model="gpt-3.5-turbo")
+data = scraper.scrape_all(url)
 json.dump(data, open("yoyodyne.json", "w"), indent=2)

@@ -45,20 +45,77 @@ def _chunk_tags(tags: list, auto_split: int) -> list[str]:
 
 
 class AutoScraper:
-    def __init__(self):
+    def __init__(
+        self,
+        model: str = "gpt-4",
+        max_tokens: int = 2048,
+        temperature: float = 0,
+        extra_instructions: str = "",
+    ):
         self.total_prompt_tokens = 0
         self.total_completion_tokens = 0
+        self.model = model
+        self.max_tokens = max_tokens
+        self.temperature = temperature
+        self.extra_instructions = extra_instructions
+
+    def _html_to_json(self, html: str) -> list | dict:
+        logger.info(
+            "API request",
+            model=self.model,
+            length=len(html),
+            messages=self.system_messages,
+        )
+        completion = openai.ChatCompletion.create(
+            model=self.model,
+            messages=[
+                {"role": "system", "content": msg} for msg in self.system_messages
+            ]
+            + [
+                {"role": "user", "content": html},
+            ],
+            max_tokens=self.max_tokens,
+            temperature=self.temperature,
+        )
+        logger.info(
+            "API response",
+            prompt_tokens=completion.usage.prompt_tokens,
+            completion_tokens=completion.usage.completion_tokens,
+        )
+        self.total_prompt_tokens += completion.usage.prompt_tokens
+        self.total_completion_tokens += completion.usage.completion_tokens
+        choice = completion.choices[0]
+        if choice.finish_reason != "stop":
+            raise BadStop(
+                f"OpenAI did not stop: {choice.finish_reason} "
+                f"(prompt_tokens={completion.usage.prompt_tokens}, "
+                f"completion_tokens={completion.usage.completion_tokens})"
+            )
+
+        try:
+            return json.loads(choice.message.content)
+        except json.decoder.JSONDecodeError:
+            raise InvalidJSON(choice.message.content)
+
+    def _parse_url_or_html(self, url_or_html: str) -> str:
+        # coerce to HTML
+        orig_url = None
+        if url_or_html.startswith("http"):
+            orig_url = url_or_html
+            url_or_html = requests.get(url_or_html).text
+        logger.info("got HTML", length=len(url_or_html), url=orig_url)
+        doc = lxml.html.fromstring(url_or_html)
+        if orig_url:
+            doc.make_links_absolute(orig_url)
+        return doc
 
     def scrape(
         self,
-        url: str,
+        url_or_html: str,
         *,
         xpath: str | None = None,
         css: str | None = None,
         auto_split: int = 0,
-        model: str = "gpt-4",
-        max_tokens: int = 2048,
-        temperature: float = 0,
     ) -> dict | list:
         """
         Scrape a URL and return a list or dict.
@@ -76,52 +133,10 @@ class AutoScraper:
             dict | list: The scraped data in the specified schema.
         """
 
-        def _html_to_json(html: str) -> list | dict:
-            logger.info(
-                "API request",
-                model=model,
-                # html=html,
-                length=len(html),
-                messages=self.system_messages,
-            )
-            completion = openai.ChatCompletion.create(
-                model=model,
-                messages=[
-                    {"role": "system", "content": msg} for msg in self.system_messages
-                ]
-                + [
-                    {"role": "user", "content": html},
-                ],
-                max_tokens=max_tokens,
-                temperature=temperature,
-            )
-            logger.info(
-                "API response",
-                prompt_tokens=completion.usage.prompt_tokens,
-                completion_tokens=completion.usage.completion_tokens,
-            )
-            self.total_prompt_tokens += completion.usage.prompt_tokens
-            self.total_completion_tokens += completion.usage.completion_tokens
-            choice = completion.choices[0]
-            if choice.finish_reason != "stop":
-                raise BadStop(
-                    f"OpenAI did not stop: {choice.finish_reason} "
-                    f"(prompt_tokens={completion.usage.prompt_tokens}, "
-                    f"completion_tokens={completion.usage.completion_tokens})"
-                )
-
-            try:
-                return json.loads(choice.message.content)
-            except json.decoder.JSONDecodeError:
-                raise InvalidJSON(choice.message.content)
-
         if xpath and css:
             raise ValueError("Cannot specify both xpath and css parameters")
 
-        html = requests.get(url).text
-        doc = lxml.html.fromstring(html)
-        doc.make_links_absolute(url)
-        logger.info("got HTML", length=len(html))
+        doc = self._parse_url_or_html(url_or_html)
 
         if xpath:
             chunks = _chunk_tags(doc.xpath(xpath), auto_split)
@@ -129,7 +144,7 @@ class AutoScraper:
             chunks = _chunk_tags(doc.cssselect(css), auto_split)
         else:
             # single chunk if no selector is specified
-            return _html_to_json(lxml.html.tostring(doc, encoding="unicode"))
+            return self._html_to_json(lxml.html.tostring(doc, encoding="unicode"))
 
         logger.info(
             "broken into chunks",
@@ -137,7 +152,7 @@ class AutoScraper:
             sizes=", ".join(str(len(c)) for c in chunks),
         )
         # flatten list of lists
-        return [item for chunk in chunks for item in _html_to_json(chunk)]
+        return [item for chunk in chunks for item in self._html_to_json(chunk)]
 
     # allow the class to be called like a function
     __call__ = scrape
@@ -148,10 +163,10 @@ class SchemaScraper(AutoScraper):
         self,
         schema: dict,
         *,
-        extra_instructions: str | None = None,
         list_mode: bool = False,
+        **kwargs,
     ):
-        super().__init__()
+        super().__init__(**kwargs)
         if list_mode:
             self.system_messages = [
                 "For the given HTML, convert to a list of JSON objects matching this schema: {schema}".format(
@@ -168,34 +183,29 @@ class SchemaScraper(AutoScraper):
                 "Responses should be a valid JSON object, with no other text.",
                 "Never truncate the JSON with an ellipsis.",
             ]
-        if extra_instructions:
-            self.system_messages.append(extra_instructions)
+        if self.extra_instructions:
+            self.system_messages.append(self.extra_instructions)
 
 
 class PaginatedSchemaScraper(SchemaScraper):
-    def __init__(self, schema, extra_instructions=None):
+    def __init__(self, schema, **kwargs):
         schema = {
             "results": schema,
             "next_link": "url",
         }
-        super().__init__(schema, extra_instructions=extra_instructions, list_mode=False)
+        super().__init__(schema, list_mode=False, **kwargs)
+        self.system_messages.append("If there is no next page, set next_link to null.")
 
     def scrape_all(self, url, **kwargs):
         results = []
+        seen_urls = set()
         while url:
             logger.info("scraping page", url=url)
             page = self.scrape(url, **kwargs)
             print(page)
             results.extend(page["results"])
+            seen_urls.add(url)
             url = page["next_link"]
+            if url in seen_urls:
+                break
         return results
-
-
-class LinkExtractor(AutoScraper):
-    def __init__(self, extra_instructions=None):
-        super().__init__()
-        self.system_messages = [
-            'When you receive HTML, extract a list of links matching this schema: [{{"url": "url", "text": "string"}}]',
-        ]
-        if extra_instructions:
-            self.system_messages.append(extra_instructions)
