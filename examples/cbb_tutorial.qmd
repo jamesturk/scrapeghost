@@ -176,7 +176,7 @@ Let's imagine that for some reason you don't want to, perhaps this is a one-off 
 episode_list_scraper = SchemaScraper(
     "url",
     list_mode=True,
-    split_length=5000,
+    split_length=2700,
 )
 ```
 
@@ -198,6 +198,69 @@ episode_urls = episode_list_scraper(
 This winds up needing to make 25 requests, but gets the list of episode URLs.
 
 ```{python}
-episode_urls.total_cost
+print(episode_urls[:10])
+print(episode_urls[-10:])
+print("total:", len(episode_urls))
+print("cost:", episode_list_scraper.total_cost)
 ```
 
+It takes a while, but if you can stick to GPT-3.5-Turbo it's only $0.13.
+
+It isn't perfect, it is quite slow and also adding extra fields to the JSON, but it gets the job done.  It is trivial to combine the output of `episode_list_scraper` with `episode_scraper` to get the metadata for all of the episodes.
+
+See the listing at the very end for the full program.
+
+## Next Steps
+
+This is still very much a proof of concept, but it does work.
+
+I'm interested in ease of use and developer experience, as well as improving the accuracy.  If you want to follow along, <https://github.com/jamesturk/scrapeghost/issues> is a good picture of what I'm considering.
+
+## Putting it all Together
+
+```{python}
+from scrapeghost import SchemaScraper
+
+episode_list_scraper = SchemaScraper(
+    '{"url": "url"}',
+    list_mode=True,
+    split_length=2700,
+    # restrict this to GPT-3.5-Turbo to keep the cost down
+    models=["gpt-3.5-turbo"],
+)
+
+episode_scraper = SchemaScraper(
+    {
+        "title": "str",
+        "episode_number": "int",
+        "release_date": "YYYY-MM-DD",
+        "guests": ["str"],
+        "characters": ["str"],
+    },
+)
+
+episode_urls = episode_list_scraper(
+    "https://comedybangbang.fandom.com/wiki/Category:Episodes",
+    css=".mw-parser-output a[class!='image link-internal']",
+)
+
+print(
+    f"Scraped {len(episode_list)} episode URLs, cost {episode_list_scraper.total_cost}"
+)
+
+episode_urls = [episode["url"] for episode in episode_urls]
+
+episode_data = []
+for episode_url in episode_urls:
+    episode_data.append(
+        episode_scraper(
+            episode_url,
+            css="div.page-content",
+        )
+    )
+
+print(f"Scraped {len(episode_data)} episodes, cost {episode_scraper.total_cost}")
+
+with open("episode_data.json", "w") as f:
+    json.dump(episode_data, f, indent=2)
+```
