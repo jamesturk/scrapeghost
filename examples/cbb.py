@@ -18,8 +18,6 @@ scrape_episodes = SchemaScraper(
         "url": "url",
     },
     list_mode=True,
-    # model="gpt-4",
-    model="gpt-3.5-turbo",
     split_length=6000,
 )
 

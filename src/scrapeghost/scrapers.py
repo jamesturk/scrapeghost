@@ -106,10 +106,10 @@ class SchemaScraper:
             last = i == len(self.models) - 1
             try:
                 return self._api_request(html, model)
-            except (BadStop, InvalidJSON) as e:
+            except (openai.InvalidRequestError, BadStop, InvalidJSON) as e:
                 logger.warning(
                     "API request failed",
-                    exception=e,
+                    exception=str(e),
                     model=model,
                 )
                 if last:
