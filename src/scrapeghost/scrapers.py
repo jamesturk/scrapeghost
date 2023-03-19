@@ -17,7 +17,7 @@ class SchemaScraper:
         self,
         schema: dict,
         *,
-        model: str = "gpt-4",
+        models: str = ["gpt-3.5-turbo", "gpt-4"],
         model_params: dict | None = None,
         list_mode: bool = False,
         extra_instructions: str = "",
@@ -25,7 +25,7 @@ class SchemaScraper:
     ):
         self.total_prompt_tokens = 0
         self.total_completion_tokens = 0
-        self.model = model
+        self.models = models
         if model_params is None:
             model_params = {}
         self.model_params = model_params
@@ -57,7 +57,7 @@ class SchemaScraper:
         if extra_instructions:
             self.system_messages.append(extra_instructions)
 
-    def _html_to_json(self, html: str) -> list | dict:
+    def _api_request(self, html: str, model: str) -> list | dict:
         """
         Given HTML, return JSON using OpenAI API
         """
@@ -65,13 +65,13 @@ class SchemaScraper:
             raise ValueError("html parameter cannot be empty")
         logger.info(
             "API request",
-            model=self.model,
+            model=model,
             length=len(html),
             messages=self.system_messages,
         )
         start_t = time.time()
         completion = openai.ChatCompletion.create(
-            model=self.model,
+            model=model,
             messages=[
                 {"role": "system", "content": msg} for msg in self.system_messages
             ]
@@ -100,6 +100,20 @@ class SchemaScraper:
             return json.loads(choice.message.content)
         except json.decoder.JSONDecodeError:
             raise InvalidJSON(choice.message.content)
+
+    def _html_to_json(self, html: str) -> list | dict:
+        for i, model in enumerate(self.models):
+            last = i == len(self.models) - 1
+            try:
+                return self._api_request(html, model)
+            except (BadStop, InvalidJSON) as e:
+                logger.warning(
+                    "API request failed",
+                    exception=e,
+                    model=model,
+                )
+                if last:
+                    raise
 
     def scrape(
         self,
