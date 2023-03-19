@@ -1,7 +1,7 @@
 import json
 import time
 import openai
-from .utils import logger, _tostr, _chunk_tags, _parse_url_or_html, _select_tags
+from .utils import logger, _tostr, _chunk_tags, _parse_url_or_html, _select_tags, _cost
 
 
 class BadStop(Exception):
@@ -80,15 +80,18 @@ class SchemaScraper:
             ],
             **self.model_params,
         )
+        p_tokens = completion.usage.prompt_tokens
+        c_tokens = completion.usage.completion_tokens
         logger.info(
             "API response",
             duration=time.time() - start_t,
-            prompt_tokens=completion.usage.prompt_tokens,
-            completion_tokens=completion.usage.completion_tokens,
+            prompt_tokens=p_tokens,
+            completion_tokens=c_tokens,
             finish_reason=completion.choices[0].finish_reason,
+            cost=_cost(model, c_tokens, p_tokens),
         )
-        self.total_prompt_tokens += completion.usage.prompt_tokens
-        self.total_completion_tokens += completion.usage.completion_tokens
+        self.total_prompt_tokens += p_tokens
+        self.total_completion_tokens += c_tokens
         choice = completion.choices[0]
         if choice.finish_reason != "stop":
             raise BadStop(

@@ -83,3 +83,11 @@ def _select_tags(
             raise ValueError(f"empty results from {sel}")
 
     return tags
+
+
+def _cost(model, prompt_tokens, completion_tokens):
+    pt_cost, ct_cost = {
+        "gpt-4": (0.03, 0.06),
+        "gpt-3.5-turbo": (0.002, 0.002),
+    }[model]
+    return prompt_tokens / 1000 * pt_cost + completion_tokens / 1000 * ct_cost
