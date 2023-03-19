@@ -85,6 +85,7 @@ class SchemaScraper:
             duration=time.time() - start_t,
             prompt_tokens=completion.usage.prompt_tokens,
             completion_tokens=completion.usage.completion_tokens,
+            finish_reason=completion.choices[0].finish_reason,
         )
         self.total_prompt_tokens += completion.usage.prompt_tokens
         self.total_completion_tokens += completion.usage.completion_tokens
@@ -95,7 +96,6 @@ class SchemaScraper:
                 f"(prompt_tokens={completion.usage.prompt_tokens}, "
                 f"completion_tokens={completion.usage.completion_tokens})"
             )
-
         try:
             return json.loads(choice.message.content)
         except json.decoder.JSONDecodeError:
@@ -140,11 +140,6 @@ class SchemaScraper:
         tags = _select_tags(doc, xpath, css)
         if self.split_length:
             chunks = _chunk_tags(tags, self.split_length)
-            logger.info(
-                "broken into chunks",
-                num=len(chunks),
-                sizes=", ".join(str(len(c)) for c in chunks),
-            )
             # flatten list of lists
             return [item for chunk in chunks for item in self._html_to_json(chunk)]
 
@@ -169,9 +164,9 @@ class PaginatedSchemaScraper(SchemaScraper):
         results = []
         seen_urls = set()
         while url:
-            logger.info("page", url=url)
+            logger.debug("page", url=url)
             page = super().scrape(url, **kwargs)
-            logger.info(
+            logger.debug(
                 "results",
                 next_link=page["next_link"],
                 added_results=len(page["results"]),

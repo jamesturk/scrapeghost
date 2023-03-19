@@ -35,6 +35,11 @@ def _chunk_tags(tags: list, auto_split: int) -> list[str]:
         cur_piece_len += tag_len
 
     pieces.append(cur_piece)
+    logger.debug(
+        "chunked tags",
+        num=len(pieces),
+        sizes=", ".join(str(len(c)) for c in pieces),
+    )
     return pieces
 
 
@@ -47,9 +52,9 @@ def _parse_url_or_html(url_or_html: str) -> lxml.html.Element:
     if url_or_html.startswith("http"):
         orig_url = url_or_html
         url_or_html = requests.get(url_or_html).text
-    logger.info("got HTML", length=len(url_or_html), url=orig_url)
+    logger.debug("got HTML", length=len(url_or_html), url=orig_url)
     url_or_html = Cleaner().clean_html(url_or_html)
-    logger.info("cleaned HTML", length=len(url_or_html))
+    logger.debug("cleaned HTML", length=len(url_or_html))
     doc = lxml.html.fromstring(url_or_html)
     if orig_url:
         doc.make_links_absolute(orig_url)
@@ -70,7 +75,11 @@ def _select_tags(
     else:
         # so we can always return a list
         tags = [doc]
+        sel = None
 
-    if not len(tags):
-        raise ValueError(f"empty results from {sel}")
+    if sel:
+        logger.debug("selected tags", sel=sel, num=len(tags))
+        if not len(tags):
+            raise ValueError(f"empty results from {sel}")
+
     return tags
