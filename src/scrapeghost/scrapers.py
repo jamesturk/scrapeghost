@@ -1,7 +1,6 @@
 import json
 import time
 import openai
-import tiktoken
 from .utils import (
     logger,
     _tostr,

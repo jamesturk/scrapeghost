@@ -1,1 +1,7 @@
-from .scrapers import BadStop, InvalidJSON, PaginatedSchemaScraper, SchemaScraper
+# noqa: F401
+from .scrapers import (
+    BadStop,
+    InvalidJSON,
+    PaginatedSchemaScraper,
+    SchemaScraper,
+)

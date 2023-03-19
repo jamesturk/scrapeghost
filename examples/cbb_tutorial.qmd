@@ -243,18 +243,18 @@ episode_urls = episode_list_scraper(
     "https://comedybangbang.fandom.com/wiki/Category:Episodes",
     css=".mw-parser-output a[class!='image link-internal']",
 )
-
+```
+```{python}
 print(
-    f"Scraped {len(episode_list)} episode URLs, cost {episode_list_scraper.total_cost}"
+    f"Scraped {len(episode_urls)} episode URLs, cost {episode_list_scraper.total_cost}"
 )
-
-episode_urls = [episode["url"] for episode in episode_urls]
 
 episode_data = []
 for episode_url in episode_urls:
+    print(episode_url)
     episode_data.append(
         episode_scraper(
-            episode_url,
+            episode_url["url"],
             css="div.page-content",
         )
     )
