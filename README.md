@@ -1,6 +1,6 @@
 # scrapeghost
 
-An experiment in using GPT-4 to scrape websites.
+An experiment in using GPT to scrape websites.
 
 **Use at your own risk. This library makes considerably expensive calls ($0.36 for a GPT-4 call on a moderately sized page.) Cost estimates are based on the [OpenAI pricing page](https://beta.openai.com/pricing) and not guaranteed to be accurate.**
 
@@ -148,7 +148,7 @@ See the [examples directory](https://github.com/jamesturk/scrapeghost/tree/main/
 * Make it possible to alter parameters when calling scrape.
 * Logging & error handling.
 * Command line interface.
-* See blog post for details: <https://jamesturk.net/posts/scraping-with-gpt-4-part-2/>
+* See blog post for details: <https://jamesturk.net/posts/scraping-with-gpt-part-2/>
 
 ### 0.1.0 - 2021-03-17
 
