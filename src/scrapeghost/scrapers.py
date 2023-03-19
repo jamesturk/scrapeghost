@@ -52,7 +52,7 @@ class SchemaScraper:
 
         if list_mode:
             self.system_messages = [
-                "For the given HTML, convert to a list of JSON objects matching this schema: {schema}".format(
+                "For the given HTML, convert to a list of JSON objects matching this schema: [{schema}]".format(
                     schema=json.dumps(schema)
                 ),
             ]

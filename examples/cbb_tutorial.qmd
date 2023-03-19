@@ -176,7 +176,7 @@ Let's imagine that for some reason you don't want to, perhaps this is a one-off 
 episode_list_scraper = SchemaScraper(
     "url",
     list_mode=True,
-    split_length=2700,
+    split_length=2048,
 )
 ```
 
@@ -214,7 +214,7 @@ See the listing at the very end for the full program.
 
 This is still very much a proof of concept, but it does work.
 
-I'm interested in ease of use and developer experience, as well as improving the accuracy.  If you want to follow along, <https://github.com/jamesturk/scrapeghost/issues> is a good picture of what I'm considering.
+I'm interested in ease of use and developer experience, as well as improving the accuracy.  If you want to follow along, <https://github.com/jamesturk/scrapeghost/issues> is a good picture of what I'm considering next.
 
 ## Putting it all Together
 
@@ -224,7 +224,7 @@ from scrapeghost import SchemaScraper
 episode_list_scraper = SchemaScraper(
     '{"url": "url"}',
     list_mode=True,
-    split_length=2700,
+    split_length=2048,
     # restrict this to GPT-3.5-Turbo to keep the cost down
     models=["gpt-3.5-turbo"],
 )
