@@ -7,12 +7,14 @@ from .scrapers import SchemaScraper
 
 def scrape(
     url: str,
-    xpath: str | None = None,
-    css: str | None = None,
-    schema: str | None = None,
-    schema_file: pathlib.Path | None = None,
-    gpt4: bool = False,
-    verbosity: int = typer.Option(0, "-v", "--verbose", count=True),
+    xpath: str = typer.Option(None, help="XPath selector to narrow the scrape"),
+    css: str = typer.Option(None, help="CSS selector to narrow the scrape"),
+    schema: str = typer.Option(None, help="Schema to use for scraping"),
+    schema_file: pathlib.Path = typer.Option(None, help="Path to schema.json file"),
+    gpt4: bool = typer.Option(False, help="Use GPT-4 instead of GPT-3.5-turbo"),
+    verbosity: int = typer.Option(
+        0, "-v", "--verbose", count=True, help="Verbosity level 0-2"
+    ),
 ):
     if schema_file:
         with open(schema_file) as f:
