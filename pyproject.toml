@@ -17,6 +17,7 @@ lxml = "^4.9.2"
 structlog = "^22.3.0"
 typer = "^0.7.0"
 rich = "^13.3.2"
+tiktoken = "^0.3.2"
 
 
 [build-system]

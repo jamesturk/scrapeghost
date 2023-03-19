@@ -1,7 +1,17 @@
 import json
 import time
 import openai
-from .utils import logger, _tostr, _chunk_tags, _parse_url_or_html, _select_tags, _cost
+import tiktoken
+from .utils import (
+    logger,
+    _tostr,
+    _chunk_tags,
+    _parse_url_or_html,
+    _select_tags,
+    _cost,
+    _max_tokens,
+    _tokens,
+)
 
 
 class BadStop(Exception):
@@ -9,6 +19,10 @@ class BadStop(Exception):
 
 
 class InvalidJSON(Exception):
+    pass
+
+
+class TooManyTokens(Exception):
     pass
 
 
@@ -64,10 +78,15 @@ class SchemaScraper:
         """
         if not html:
             raise ValueError("html parameter cannot be empty")
+        tokens = _tokens(model, html)
+        if tokens > _max_tokens(model):
+            raise TooManyTokens(
+                f"HTML is {tokens} tokens, max for {model} is {_max_tokens(model)}"
+            )
         logger.info(
             "API request",
             model=model,
-            length=len(html),
+            html_tokens=tokens,
             messages=self.system_messages,
         )
         start_t = time.time()
@@ -145,7 +164,7 @@ class SchemaScraper:
         doc = _parse_url_or_html(url_or_html)
         tags = _select_tags(doc, xpath, css)
         if self.split_length:
-            chunks = _chunk_tags(tags, self.split_length)
+            chunks = _chunk_tags(tags, self.split_length, model=self.models[0])
             # flatten list of lists
             return [item for chunk in chunks for item in self._html_to_json(chunk)]
 

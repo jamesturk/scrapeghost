@@ -2,6 +2,7 @@ import lxml.html
 from lxml.html.clean import Cleaner
 import structlog
 import requests
+import tiktoken
 
 
 logger = structlog.get_logger("scrapeghost")
@@ -14,33 +15,34 @@ def _tostr(obj: lxml.html.HtmlElement) -> str:
     return lxml.html.tostring(obj, encoding="unicode")
 
 
-def _chunk_tags(tags: list, auto_split: int) -> list[str]:
+def _chunk_tags(tags: list, max_tokens: int, model: str) -> list[str]:
     """
     Given a list of all matching HTML tags, recombine into HTML chunks
     that can be passed to API.
-
-    Returns list of strings, will always be len()==1 if auto_split is 0
     """
-    pieces = []
-    cur_piece = ""
-    cur_piece_len = 0
+    chunks = []
+    chunk_sizes = []
+    chunk = ""
+    chunk_tokens = 0
     for tag in tags:
         tag_html = _tostr(tag)
-        tag_len = len(tag_html)
-        if cur_piece_len + tag_len > auto_split:
-            pieces.append(cur_piece)
-            cur_piece = ""
-            cur_piece_len = 0
-        cur_piece += tag_html
-        cur_piece_len += tag_len
+        tag_tokens = _tokens(model, tag_html)
+        if chunk_tokens + tag_tokens > max_tokens:
+            chunks.append(chunk)
+            chunk_sizes.append(chunk_tokens)
+            chunk = ""
+            chunk_tokens = 0
+        chunk += tag_html
+        chunk_tokens += tag_tokens
 
-    pieces.append(cur_piece)
+    chunks.append(chunk)
+    chunk_sizes.append(chunk_tokens)
     logger.debug(
         "chunked tags",
-        num=len(pieces),
-        sizes=", ".join(str(len(c)) for c in pieces),
+        num=len(chunks),
+        sizes=chunk_sizes,
     )
-    return pieces
+    return chunks
 
 
 def _parse_url_or_html(url_or_html: str) -> lxml.html.Element:
@@ -91,3 +93,15 @@ def _cost(model, prompt_tokens, completion_tokens):
         "gpt-3.5-turbo": (0.002, 0.002),
     }[model]
     return prompt_tokens / 1000 * pt_cost + completion_tokens / 1000 * ct_cost
+
+
+def _tokens(model, html):
+    encoding = tiktoken.encoding_for_model(model)
+    return len(encoding.encode(html))
+
+
+def _max_tokens(model):
+    return {
+        "gpt-4": 8192,
+        "gpt-3.5-turbo": 4096,
+    }[model]
