@@ -2,9 +2,9 @@
 
 An experiment in using GPT-4 to scrape websites.
 
-**Caution: Use at your own risk, a single call can cost somewhere around $0.36 on larger pages at current rates.**
+**Use at your own risk. This library makes considerably expensive calls ($0.36 for a GPT-4 call on a moderately sized page.) Cost estimates are based on the [OpenAI pricing page](https://beta.openai.com/pricing) and not guaranteed to be accurate.**
 
-See the [examples directory](https://github.com/jamesturk/scrapeghost/tree/main/examples) for current usage.
+![](screenshot.png)
 
 ## License
 
@@ -133,6 +133,10 @@ When you call the scrape function of an auto-splitting enabled scraper, you are 
 This seems to work well for long lists of similar items, though whether it is worth the many calls is questionable.
 
 Look at `examples/cbb.py` for an example of a 800+ item page that is split into many calls.
+
+### Examples
+
+See the [examples directory](https://github.com/jamesturk/scrapeghost/tree/main/examples) for current usage.
 
 ## Changelog
 
