@@ -25,6 +25,7 @@ class SchemaScraper:
     ):
         self.total_prompt_tokens = 0
         self.total_completion_tokens = 0
+        self.total_cost = 0
         self.models = models
         if model_params is None:
             model_params = {}
@@ -82,16 +83,18 @@ class SchemaScraper:
         )
         p_tokens = completion.usage.prompt_tokens
         c_tokens = completion.usage.completion_tokens
+        cost = _cost(model, c_tokens, p_tokens)
         logger.info(
             "API response",
             duration=time.time() - start_t,
             prompt_tokens=p_tokens,
             completion_tokens=c_tokens,
             finish_reason=completion.choices[0].finish_reason,
-            cost=_cost(model, c_tokens, p_tokens),
+            cost=cost,
         )
         self.total_prompt_tokens += p_tokens
         self.total_completion_tokens += c_tokens
+        self.total_cost += cost
         choice = completion.choices[0]
         if choice.finish_reason != "stop":
             raise BadStop(
