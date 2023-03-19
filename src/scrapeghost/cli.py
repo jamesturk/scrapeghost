@@ -30,5 +30,9 @@ def scrape(
     typer.echo(result)
 
 
-if __name__ == "__main__":
+def main():
     typer.run(scrape)
+
+
+if __name__ == "__main__":
+    main()

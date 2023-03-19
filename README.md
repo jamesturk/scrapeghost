@@ -58,7 +58,32 @@ You can then call the scraper with a URL to scrape:
 
 **That's it.**
 
-Even better, that same scraper can be used to scrape other
+## Command Line Usage
+
+If you've installed the package (e.g. with `pipx`, you can use the `scrapeghost` command line tool to experiment.
+
+```bash
+scrapeghost <https://www.ncleg.gov/Members/Biography/S/436>  \
+  --schema "{'first_name': 'str', 'last_name': 'str',
+             'photo_url': 'url', 'offices': [] }"  \
+  --gpt4
+
+{'first_name': 'Gale',
+ 'last_name': 'Adcock',
+ 'photo_url': 'https://www.ncleg.gov/Members/MemberImage/S/436/Low',
+ 'offices': [
+    {'address': '16 West Jones Street, Rm. 1104',
+     'city': 'Raleigh', 'state': 'NC', 'zip': '27601',
+     'phone': '(919) 715-3036',
+     'email': 'Gale.Adcock@ncleg.gov',
+     'legislative_assistant': 'Elizabeth Sharpe',
+     'legislative_assistant_email': 'Elizabeth.Sharpe@ncleg.gov'
+    }
+  ]
+}
+```
+
+## Features
 
 ### Selectors
 
@@ -94,13 +119,15 @@ Look at `examples/cbb.py` for an example of a 800+ item page that is split into 
 
 ## Changelog
 
-### 0.2.0 - WIP
+### 0.2.0 - 2021-03-18
 
 * Add list mode, auto-splitting, and pagination support.
 * Improve `xpath` and `css` handling.
 * Improve prompt for GPT 3.5.
 * Make it possible to alter parameters when calling scrape.
 * Logging & error handling.
+* Command line interface.
+* See blog post for details: <https://jamesturk.net/posts/scraping-with-gpt-4-part-2/>
 
 ### 0.1.0 - 2021-03-17
 
