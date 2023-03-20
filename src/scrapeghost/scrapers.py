@@ -66,25 +66,21 @@ class SchemaScraper:
         if "temperature" not in model_params:
             model_params["temperature"] = 0
 
+        json_schema = json.dumps(schema)
         if list_mode:
-            self.system_messages = [
-                "For the given HTML, convert to a list of JSON objects matching this schema: [{schema}]".format(
-                    schema=json.dumps(schema)
-                ),
-            ]
+            json_type = "list of JSON objects"
         else:
+            json_type = "JSON object"
             if split_length:
                 raise ValueError("list_mode must be True if split_length is set")
-            self.system_messages = [
-                "For the given HTML, convert to a JSON object matching this schema: {schema}".format(
-                    schema=json.dumps(schema)
-                ),
-            ]
-        self.system_messages.append(
+
+        self.system_messages = [
+            f"For the given HTML, convert to a {json_type} matching this schema: {json_schema}",
             "Responses should be valid JSON, with no other text. "
             "Never truncate the JSON with an ellipsis. "
-            "Always use double quotes for strings and escape quotes with \\. Always omit trailing commas. "
-        )
+            "Always use double quotes for strings and escape quotes with \\. "
+            "Always omit trailing commas. ",
+        ]
         if extra_instructions:
             self.system_messages.extend(extra_instructions)
 
