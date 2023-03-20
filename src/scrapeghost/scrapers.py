@@ -8,8 +8,6 @@ from .errors import (
     MaxCostExceeded,
     PreprocessorError,
     BadStop,
-    NudgeError,
-    InvalidJSON,
 )
 from .utils import (
     logger,
@@ -215,11 +213,7 @@ class SchemaScraper:
         result = self._api_request(html)
 
         for p in self.postprocessors:
-            try:
-                result = p(result)
-            except NudgeError as e:
-                result = self.nudge(e)
-                result = p(result)
+            result = p(result, self)
 
         return result
 
@@ -257,20 +251,6 @@ class SchemaScraper:
 
     # allow the class to be called like a function
     __call__ = scrape
-
-    def nudge(self, err: NudgeableError) -> dict | list:
-        """
-        Nudge the API to return a better response.
-
-        Args:
-            err: The error returned by the API.
-
-        Returns:
-            dict | list: The scraped data in the specified schema.
-        """
-        return self._raw_api_request(
-            self.models[0], err.nudge_message(self.json_schema)
-        )
 
 
 class PaginatedSchemaScraper(SchemaScraper):

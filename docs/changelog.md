@@ -1,5 +1,10 @@
 # Changelog
 
+## WIP 
+
+* Rudimentary support for retries when OpenAI returns an error.
+* Post-processing pipeline with support for "nudging" errors to a better result.
+
 ## 0.3.0 - 2023-03-20
 
 * Add tests, docs, and complete examples!
