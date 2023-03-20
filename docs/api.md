@@ -2,25 +2,19 @@
 
 ## `SchemaScraper`
 
-### Selectors
+The `SchemaScraper` class is the main interface to the API.
 
-The main limitation you'll run into is the token limit. Depending on the model you're using you're limited to 4096 or 8192 tokens per call. Billing is also based on tokens sent and received.
+An `SchemaScraper` is instantiated with a `schema` argument, which is a dictionary describing the shape of the data you wish to extract.
 
-One strategy to deal with this is to provide a CSS or XPath selector to the scraper. This will pre-filter the HTML that is sent to the server, keeping you under the limit and saving you money.
+* `schema` - A dictionary describing the shape of the data you wish to extract.
 
-Pass the `css` or `xpath` arguments to the scraper to use a selector:
+The following parameters are optional:
 
-```python
->>> scrape_legislators("https://www.ilga.gov/house/rep.asp?MemberID=3071", xpath="//table[1]")
-```
-
-### SchemaScraper Options
-
-* `model` - The GPT model to use, defaults to `gpt-4`, can also be `gpt-3.5-turbo`.
-* `list_mode` - If `True` the scraper will return a list of objects instead of a single object. (Alters the prompts and some behavior.)
-* `split_length` - If set, the scraper will split the page into multiple calls, each of this length. (Only works with list_mode, requires passing a `css` or `xpath` selector when scraping.)
-* `model_params` - A dictionary of parameters to pass to the underlying GPT model.
-* `extra_instructions` - Additional instructions to pass to the GPT model.
+* `models` - A list of models to use, in order of preference.  Defaults to `["gpt-3.5-turbo", "gpt-4"]`.  
+* `model_params` - A dictionary of parameters to pass to the underlying GPT model.  (See [OpenAI docs](https://platform.openai.com/docs/api-reference/create-completion) for details.)
+* `list_mode` - If `True`, the instructions and behavior will be slightly modified to better perform on pages with lists of similar items.
+* `extra_instructions` - Additional instructions to pass to the GPT model as a system prompt.
+* `split_length` - If set, the scraper will split the page into multiple calls, each of this length. (Only works with `list_mode`, requires passing a `css` or `xpath` selector when scraping.)
 
 ### Auto-splitting
 
@@ -32,15 +26,43 @@ When you call the scrape function of an auto-splitting enabled scraper, you are 
 
 This seems to work well for long lists of similar items, though whether it is worth the many calls is questionable.
 
-Look at `examples/cbb.py` for an example of a 800+ item page that is split into many calls.
+## `scrape`
 
-### Examples
+The `scrape` method of a `SchemaScraper` is used to scrape a page.
 
-See the [examples directory](https://github.com/jamesturk/scrapeghost/tree/main/examples) for current usage.
+```python
+scraper = SchemaScraper(schema)
+scraper.scrape("https://example.com")
+```
 
-### Configuration
+* `url_or_html` - The first parameter should be a URL or HTML string to scrape.
 
-### `scrape`
+You can also pass a CSS or XPath selector as a keyword argument:
+
+* `css` - A CSS selector to use to filter the HTML before sending it to the API.
+* `xpath` - An XPath selector to use to filter the HTML before sending it to the API.
+
+
+It is also possible to call the scraper directly, which is equivalent to calling `scrape`:
+
+```python
+scraper = SchemaScraper(schema)
+scraper("https://example.com")
+# same as writing
+scraper.scrape("https://example.com")
+```
+
+### Selectors
+
+Pass the `css` or `xpath` arguments to the scraper to use a selector to narrow down the HTML before sending it to the API.
+
+```python
+>>> scrape_legislators("https://www.ilga.gov/house/rep.asp?MemberID=3071", xpath="//table[1]")
+```
+
+## `PaginatedSchemaScraper`
+
+TODO: document this
 
 ## Exceptions
 
@@ -52,20 +74,20 @@ Raised when the number of tokens being sent exceeds the maximum allowed.
 
 This indicates that the HTML is too large to be processed by the API.
 
-:::{.callout-tip}
-Consider using the `css` or `xpath` selectors to reduce the number of tokens being sent, or use the `split_length` parameter to split the request into multiple requests if necessary.
-:::
+!!! tip
 
-### BadStop
+    Consider using the `css` or `xpath` selectors to reduce the number of tokens being sent, or use the `split_length` parameter to split the request into multiple requests if necessary.
+
+### `BadStop`
 
 Indicates that OpenAI ran out of space before the stop token was reached.
 
-:::{.callout-tip}
-OpenAI considers both the input and the response tokens when determining if the token limit has been exceeded.
+!!! tip
 
-If you are using `split_length`, consider decreasing the value to leave more space for responses.
-:::
+    OpenAI considers both the input and the response tokens when determining if the token limit has been exceeded.
 
-### InvalidJSON
+    If you are using `split_length`, consider decreasing the value to leave more space for responses.
+
+### `InvalidJSON`
 
 Indicates that the JSON returned by the API is invalid.

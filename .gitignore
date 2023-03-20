@@ -4,3 +4,4 @@ env.sh
 *.json
 dist
 openai-key
+site
