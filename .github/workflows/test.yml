@@ -1,0 +1,42 @@
+name: Test & Lint
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      max-parallel: 4
+      matrix:
+        python-version: ["3.10", "3.11"]
+
+    steps:
+    # Python & dependency installation
+    - uses: actions/checkout@v2
+    - name: setup Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: install Poetry
+      uses: snok/install-poetry@v1.3.3
+    # - name: cache Poetry virtualenv
+    #   uses: actions/cache@v2
+    #   id: cache
+    #   with:
+    #     path: ~/.virtualenvs/
+    #     key: poetry-${{ hashFiles('**/poetry.lock') }}
+    #     restore-keys: |
+    #       poetry-${{ hashFiles('**/poetry.lock') }}
+    - name: install dependencies
+      run: poetry install
+
+    # - name: lint with mypy
+    #   run: poetry run mypy src
+    - name: lint with flake8
+      run: poetry run flake8 --show-source --statistics --ignore=E203,E501,W503 src
+    - name: pytest
+      run: poetry run pytest
