@@ -1,8 +1,8 @@
-2023-03-20 04:02:07 [debug    ] got HTML                       length=165605 url=https://comedybangbang.fandom.com/wiki/Operation_Golden_Orb
-2023-03-20 04:02:07 [debug    ] preprocessor                   from_nodes=1 name=CleanHTML nodes=1
-2023-03-20 04:02:07 [debug    ] preprocessor                   from_nodes=1 name=CSS(div.page-content) nodes=1
-2023-03-20 04:02:07 [info     ] API request                    html_tokens=1275 messages=['For the given HTML, convert to a JSON object matching this schema: {"title": "str", "episode_number": "int", "release_date": "YYYY-MM-DD", "guests": [{"name": "str"}]}', 'Responses should be valid JSON, with no other text. Never truncate the JSON with an ellipsis. Always use double quotes for strings and escape quotes with \\. Always omit trailing commas. '] model=gpt-3.5-turbo
-2023-03-20 04:02:12 [info     ] API response                   completion_tokens=84 cost=0.002922 duration=5.070535898208618 finish_reason=stop prompt_tokens=1377
+2023-03-20 05:08:21 [debug    ] got HTML                       length=165605 url=https://comedybangbang.fandom.com/wiki/Operation_Golden_Orb
+2023-03-20 05:08:21 [debug    ] preprocessor                   from_nodes=1 name=CleanHTML nodes=1
+2023-03-20 05:08:21 [debug    ] preprocessor                   from_nodes=1 name=CSS(div.page-content) nodes=1
+2023-03-20 05:08:21 [info     ] API request                    html_tokens=1275 model=gpt-3.5-turbo
+2023-03-20 05:08:27 [info     ] API response                   completion_tokens=84 cost=0.002922 duration=5.86192774772644 finish_reason=stop prompt_tokens=1377
 {'episode_number': 800,
  'guests': [{'name': 'Jason Mantzoukas'},
             {'name': 'Andy Daly'},
