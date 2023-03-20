@@ -41,45 +41,6 @@ def test_parse_url():
     assert doc.tag == "div"
 
 
-def test_parse_url_cleans_scripts():
-    # test that clean is called
-    html = "<html><body><script>alert('hello')</script><noscript>here</noscript></body></html>"
-    doc = utils._parse_url_or_html(html)
-    assert utils._tostr(doc) == "<div><noscript>here</noscript></div>"
-
-
-def test_select_tags_css():
-    doc = lxml.html.fromstring(
-        "<html><body><p>one</p><p>two</p><p>three</p></body></html>"
-    )
-    tags = utils._select_tags(doc, xpath=None, css="p")
-    assert len(tags) == 3
-
-
-def test_select_tags_xpath():
-    doc = lxml.html.fromstring(
-        "<html><body><p>one</p><p>two</p><p>three</p></body></html>"
-    )
-    tags = utils._select_tags(doc, xpath="//p", css=None)
-    assert len(tags) == 3
-
-
-def test_select_tags_no_selector():
-    doc = lxml.html.fromstring(
-        "<html><body><p>one</p><p>two</p><p>three</p></body></html>"
-    )
-    tags = utils._select_tags(doc, xpath=None, css=None)
-    assert len(tags) == 1
-
-
-def test_select_tags_empty():
-    doc = lxml.html.fromstring(
-        "<html><body><p>one</p><p>two</p><p>three</p></body></html>"
-    )
-    with pytest.raises(ValueError):
-        utils._select_tags(doc, xpath=None, css="table")
-
-
 @pytest.mark.parametrize(
     "model,pt,ct,total",
     [

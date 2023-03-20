@@ -2,10 +2,12 @@
 
 ## 0.3.0 - WIP
 
-* use `tiktoken` for tokenization instead of guessing
-* compute cost of each call, add `total_cost` to scrapers
-* add tests and complete examples
-* list mode prompt improvments
+* Added tests, docs, and complete examples!
+* Use `tiktoken` for tokenization instead of guessing.
+* Cost is now tracked on a per-scraper basis (see the `total_cost` attribute on `SchemaScraper` objects).
+* `SchemaScraper` now takes a `max_cost` parameter to limit the total cost of a scraper.
+* New `estimate_cost` utility function.
+* list mode prompt improvements
 
 ## 0.2.0 - 2021-03-18
 

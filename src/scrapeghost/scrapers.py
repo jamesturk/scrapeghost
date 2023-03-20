@@ -11,7 +11,7 @@ from .utils import (
     _max_tokens,
     _tokens,
 )
-from .preprocessors import CleanHTML, XPath, CSS
+from .preprocessors import CleanHTML
 
 
 class MaxCostExceeded(Exception):
@@ -144,8 +144,8 @@ class SchemaScraper:
         if choice.finish_reason != "stop":
             raise BadStop(
                 f"OpenAI did not stop: {choice.finish_reason} "
-                f"(prompt_tokens={completion.usage.prompt_tokens}, "
-                f"completion_tokens={completion.usage.completion_tokens})"
+                f"(prompt_tokens={p_tokens}, "
+                f"completion_tokens={c_tokens})"
             )
         try:
             return json.loads(choice.message.content)
@@ -166,11 +166,13 @@ class SchemaScraper:
                 if last:
                     raise
 
-    def _apply_preprocessors(self, doc: lxml.html.Element):
+    def _apply_preprocessors(
+        self, doc: lxml.html.Element, extra_preprocessors: list
+    ) -> list:
         nodes = [doc]
 
         # apply preprocessors one at a time
-        for p in self.preprocessors:
+        for p in self.preprocessors + extra_preprocessors:
             new_nodes = []
             for node in nodes:
                 new_nodes.extend(p(node))
@@ -188,33 +190,26 @@ class SchemaScraper:
     def scrape(
         self,
         url_or_html: str,
-        *,
-        xpath: str | None = None,
-        css: str | None = None,
+        extra_preprocessors: list | None = None,
     ) -> dict | list:
         """
         Scrape a URL and return a list or dict.
 
         Args:
             url: The URL to scrape.
-            css: A CSS selector to use to narrow the scope of the scrape.
-                 Defaults to None.
-            xpath: A XPath selector to use to narrow the scope of the scrape.
-                 Defaults to None.
-            max_tokens: The maximum number of tokens to use. Defaults to 2048.
+            extra_preprocessors: A list of additional preprocessors to apply.
 
         Returns:
             dict | list: The scraped data in the specified schema.
         """
         doc = _parse_url_or_html(url_or_html)
 
-        tags = self._apply_preprocessors(doc)
+        tags = self._apply_preprocessors(doc, extra_preprocessors or [])
 
         if self.split_length:
             chunks = _chunk_tags(tags, self.split_length, model=self.models[0])
             # flatten list of lists
             return [item for chunk in chunks for item in self._html_to_json(chunk)]
-
         else:
             html = "\n".join(_tostr(t) for t in tags)
             return self._html_to_json(html)

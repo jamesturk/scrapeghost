@@ -23,8 +23,9 @@ class CleanHTML(Preprocessor):
     def __str__(self) -> str:
         return "CleanHTML"
 
-    def __call__(self, html: str) -> str:
-        return lxml.html.clean.Cleaner().clean_html(html)
+    def __call__(self, doc: lxml.html.Element) -> lxml.html.Element:
+        self.cleaner(doc)
+        return doc
 
 
 class XPath(Preprocessor):
