@@ -140,6 +140,13 @@ See the [examples directory](https://github.com/jamesturk/scrapeghost/tree/main/
 
 ## Changelog
 
+### 0.3.0 - WIP
+
+* use `tiktoken` for tokenization instead of guessing
+* compute cost of each call, add `total_cost` to scrapers
+* add tests and complete examples
+* list mode prompt improvmeents
+
 ### 0.2.0 - 2021-03-18
 
 * Add list mode, auto-splitting, and pagination support.

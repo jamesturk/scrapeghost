@@ -77,7 +77,7 @@ def test_select_tags_empty():
         "<html><body><p>one</p><p>two</p><p>three</p></body></html>"
     )
     with pytest.raises(ValueError):
-        tags = utils._select_tags(doc, xpath=None, css="table")
+        utils._select_tags(doc, xpath=None, css="table")
 
 
 @pytest.mark.parametrize(

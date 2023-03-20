@@ -1,0 +1,72 @@
+site_name: scrapeghost
+site_url: https://jamesturk.github.io/scrapeghost/
+site_author: James Turk
+site_description: An experimental library for automated web scraping with GPT.
+copyright: Copyright &copy; 2023 James Turk
+repo_url: https://github.com/jamesturk/scrapeghost/
+repo_name: jamesturk/scrapeghost
+edit_uri: edit/main/docs/
+
+theme:
+  #logo: assets/white-spatula.svg
+  name: material
+  palette:
+    - scheme: default
+      primary: deeppurple
+      accent: purple
+      toggle:
+        icon: material/toggle-switch-off-outline
+        name: Switch to dark mode
+    - scheme: slate
+      primary: deeppurple
+      accent: purple
+      toggle:
+        icon: material/toggle-switch
+        name: Switch to light mode
+
+  features:
+    #- navigation.tabs
+    - navigation.sections
+    - navigation.top
+    - content.tabs.link
+  icon:
+    repo: fontawesome/brands/github
+markdown_extensions:
+  - admonition
+  - def_list
+  - pymdownx.highlight
+  - pymdownx.tabbed:
+      alternate_style: true 
+  - pymdownx.snippets
+  - pymdownx.superfences
+  #- mkdocs-click
+  - toc:
+      permalink: true
+plugins:
+- search
+# - mkdocstrings:
+#     handlers:
+#       python:
+#         options:
+#           docstring_style: sphinx
+#           show_source: false
+#           show_root_full_path: false
+#           show_root_toc_entry: false
+    # watch:
+    #   - src/spatula
+extra_css:
+  - assets/extra.css
+nav:
+  - 'index.md'
+  - 'tutorial.md'
+  - 'openai.md'
+  - 'faq.md'
+  - Reference:
+    - 'cli.md'
+    - 'api.md'
+  - About Scrapeghost:
+    #- 'philosophy.md'
+    #- 'contributing.md'
+    - 'LICENSE.md'
+    - 'code_of_conduct.md'
+    - 'changelog.md'
