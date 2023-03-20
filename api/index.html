@@ -391,6 +391,13 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#preprocessors" class="md-nav__link">
+    Preprocessors
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#auto-splitting" class="md-nav__link">
     Auto-splitting
   </a>
@@ -406,19 +413,6 @@
   <a href="#scrape" class="md-nav__link">
     scrape
   </a>
-  
-    <nav class="md-nav" aria-label="scrape">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#selectors" class="md-nav__link">
-    Selectors
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -436,6 +430,20 @@
   
     <nav class="md-nav" aria-label="Exceptions">
       <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#maxcostexceeded" class="md-nav__link">
+    MaxCostExceeded
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#preprocessorerror" class="md-nav__link">
+    PreprocessorError
+  </a>
+  
+</li>
         
           <li class="md-nav__item">
   <a href="#toomanytokens" class="md-nav__link">
@@ -592,6 +600,13 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#preprocessors" class="md-nav__link">
+    Preprocessors
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#auto-splitting" class="md-nav__link">
     Auto-splitting
   </a>
@@ -607,19 +622,6 @@
   <a href="#scrape" class="md-nav__link">
     scrape
   </a>
-  
-    <nav class="md-nav" aria-label="scrape">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#selectors" class="md-nav__link">
-    Selectors
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -637,6 +639,20 @@
   
     <nav class="md-nav" aria-label="Exceptions">
       <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#maxcostexceeded" class="md-nav__link">
+    MaxCostExceeded
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#preprocessorerror" class="md-nav__link">
+    PreprocessorError
+  </a>
+  
+</li>
         
           <li class="md-nav__item">
   <a href="#toomanytokens" class="md-nav__link">
@@ -685,22 +701,41 @@
 <h1 id="api-reference">API Reference<a class="headerlink" href="#api-reference" title="Permanent link">&para;</a></h1>
 <h2 id="schemascraper"><code>SchemaScraper</code><a class="headerlink" href="#schemascraper" title="Permanent link">&para;</a></h2>
 <p>The <code>SchemaScraper</code> class is the main interface to the API.</p>
-<p>An <code>SchemaScraper</code> is instantiated with a <code>schema</code> argument, which is a dictionary describing the shape of the data you wish to extract.</p>
+<p>It has one required parameter:</p>
 <ul>
 <li><code>schema</code> - A dictionary describing the shape of the data you wish to extract.</li>
 </ul>
-<p>The following parameters are optional:</p>
+<p>And the following optional parameters:</p>
 <ul>
-<li><code>models</code> - A list of models to use, in order of preference.  Defaults to <code>["gpt-3.5-turbo", "gpt-4"]</code>.  </li>
-<li><code>model_params</code> - A dictionary of parameters to pass to the underlying GPT model.  (See <a href="https://platform.openai.com/docs/api-reference/create-completion">OpenAI docs</a> for details.)</li>
-<li><code>list_mode</code> - If <code>True</code>, the instructions and behavior will be slightly modified to better perform on pages with lists of similar items.</li>
-<li><code>extra_instructions</code> - Additional instructions to pass to the GPT model as a system prompt.</li>
-<li><code>split_length</code> - If set, the scraper will split the page into multiple calls, each of this length. (Only works with <code>list_mode</code>, requires passing a <code>css</code> or <code>xpath</code> selector when scraping.)</li>
+<li><code>models</code> - <em>list[str]</em> - A list of models to use, in order of preference.  Defaults to <code>["gpt-3.5-turbo", "gpt-4"]</code>.  </li>
+<li><code>model_params</code> - <em>dict</em> - A dictionary of parameters to pass to the underlying GPT model.  (See <a href="https://platform.openai.com/docs/api-reference/create-completion">OpenAI docs</a> for details.)</li>
+<li><code>max_cost</code> -  <em>float</em> (dollars) - The maximum total cost of calls made using this scraper. This is set to 1 ($1.00) by default to avoid large unexpected charges.</li>
+<li><code>list_mode</code> - <em>bool</em> - If <code>True</code>, the instructions and behavior will be slightly modified to better perform on pages with lists of similar items.</li>
+<li><code>extra_instructions</code> - <em>list[str]</em> - Additional instructions to pass to the GPT model as a system prompt.</li>
+<li><code>preprocessors</code> - <em>list</em> - A list of <strong><a href="#preprocessors">preprocessors</a></strong> to run on the HTML before sending it to the API. </li>
+<li><code>split_length</code> - <em>int</em> - If set, the scraper will split the page into multiple calls, each of this length. See <a href="#auto-splitting">auto-splitting</a> for details.</li>
 </ul>
+<h3 id="preprocessors">Preprocessors<a class="headerlink" href="#preprocessors" title="Permanent link">&para;</a></h3>
+<p>Preprocessors allow you to modify the HTML before it is sent to the API.</p>
+<p>Three preprocessors are included by default:</p>
+<ul>
+<li><code>CleanHTML</code> - Cleans the HTML using <code>lxml.html.clean.Cleaner</code>.</li>
+<li><code>XPath</code> - Applies an XPath selector to the HTML.</li>
+<li><code>CSS</code> - Applies a CSS selector to the HTML.</li>
+</ul>
+<p>Note: <code>CleanHTML</code> is always applied as it is part of <code>SchemaScraper._default_preprocessors</code>.</p>
+<p>You can add your own preprocessors by passing a list of callables to the <code>preprocessors</code> parameter.</p>
+<div class="highlight"><pre><span></span><code><span class="n">scraper</span> <span class="o">=</span> <span class="n">SchemaScraper</span><span class="p">(</span><span class="n">schema</span><span class="p">,</span> <span class="n">preprocessors</span><span class="o">=</span><span class="p">[</span><span class="n">CSS</span><span class="p">(</span><span class="s2">&quot;table&quot;</span><span class="p">)])</span>
+</code></pre></div>
+<p>It is also possible to pass preprocessors at scrape time via the <code>extra_preprocessors</code> parameter:</p>
+<div class="highlight"><pre><span></span><code><span class="n">scraper</span> <span class="o">=</span> <span class="n">SchemaScraper</span><span class="p">(</span><span class="n">schema</span><span class="p">)</span>
+<span class="n">scraper</span><span class="o">.</span><span class="n">scrape</span><span class="p">(</span><span class="s2">&quot;https://example.com&quot;</span><span class="p">,</span> <span class="n">extra_preprocessors</span><span class="o">=</span><span class="p">[</span><span class="n">CSS</span><span class="p">(</span><span class="s2">&quot;table&quot;</span><span class="p">)])</span>
+</code></pre></div>
+<p>Implementing your own preprocessor is simple, just create a callable that takes a <code>lxml.html.HtmlElement</code> and returns a list of <code>lxml.html.HtmlElement</code> objects.  Look at <code>preprocessors.py</code> for examples.</p>
 <h3 id="auto-splitting">Auto-splitting<a class="headerlink" href="#auto-splitting" title="Permanent link">&para;</a></h3>
 <p>It's worth mentioning how <code>split_length</code> works because it allows for some interesting possibilities but can also become quite expensive.</p>
 <p>If you pass <code>split_length</code> to the scraper, it assumes the page is made of multiple similar sections and will try to split the page into multiple calls.  </p>
-<p>When you call the scrape function of an auto-splitting enabled scraper, you are required to pass a <code>css</code> or <code>xpath</code> selector to the function.  The resulting nodes will be combined into chunks no bigger than <code>split_length</code> tokens, sent to the API, and then stitched back together.</p>
+<p>When you call the scrape function of an auto-splitting enabled scraper, it is important to use a splitting preprocessor like <code>XPath</code> or <code>CSS</code>.  The resulting nodes will be combined into chunks no bigger than <code>split_length</code> tokens, sent to the API, and then stitched back together.</p>
 <p>This seems to work well for long lists of similar items, though whether it is worth the many calls is questionable.</p>
 <h2 id="scrape"><code>scrape</code><a class="headerlink" href="#scrape" title="Permanent link">&para;</a></h2>
 <p>The <code>scrape</code> method of a <code>SchemaScraper</code> is used to scrape a page.</p>
@@ -709,11 +744,7 @@
 </code></pre></div>
 <ul>
 <li><code>url_or_html</code> - The first parameter should be a URL or HTML string to scrape.</li>
-</ul>
-<p>You can also pass a CSS or XPath selector as a keyword argument:</p>
-<ul>
-<li><code>css</code> - A CSS selector to use to filter the HTML before sending it to the API.</li>
-<li><code>xpath</code> - An XPath selector to use to filter the HTML before sending it to the API.</li>
+<li><code>extra_preprocessors</code> - A list of <strong><a href="#preprocessors">preprocessors</a></strong> to run on the HTML before sending it to the API.</li>
 </ul>
 <p>It is also possible to call the scraper directly, which is equivalent to calling <code>scrape</code>:</p>
 <div class="highlight"><pre><span></span><code><span class="n">scraper</span> <span class="o">=</span> <span class="n">SchemaScraper</span><span class="p">(</span><span class="n">schema</span><span class="p">)</span>
@@ -721,14 +752,16 @@
 <span class="c1"># same as writing</span>
 <span class="n">scraper</span><span class="o">.</span><span class="n">scrape</span><span class="p">(</span><span class="s2">&quot;https://example.com&quot;</span><span class="p">)</span>
 </code></pre></div>
-<h3 id="selectors">Selectors<a class="headerlink" href="#selectors" title="Permanent link">&para;</a></h3>
-<p>Pass the <code>css</code> or <code>xpath</code> arguments to the scraper to use a selector to narrow down the HTML before sending it to the API.</p>
-<div class="highlight"><pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="n">scrape_legislators</span><span class="p">(</span><span class="s2">&quot;https://www.ilga.gov/house/rep.asp?MemberID=3071&quot;</span><span class="p">,</span> <span class="n">xpath</span><span class="o">=</span><span class="s2">&quot;//table[1]&quot;</span><span class="p">)</span>
-</code></pre></div>
 <h2 id="paginatedschemascraper"><code>PaginatedSchemaScraper</code><a class="headerlink" href="#paginatedschemascraper" title="Permanent link">&para;</a></h2>
 <p>TODO: document this</p>
 <h2 id="exceptions">Exceptions<a class="headerlink" href="#exceptions" title="Permanent link">&para;</a></h2>
-<p>A scrape can raise the following exceptions:</p>
+<p>The following exceptions can be raised by the scraper:</p>
+<p>(all are subclasses of <code>ScrapeghostError</code>)</p>
+<h3 id="maxcostexceeded"><code>MaxCostExceeded</code><a class="headerlink" href="#maxcostexceeded" title="Permanent link">&para;</a></h3>
+<p>The maximum cost of the scraper has been exceeded.</p>
+<p>Raise the <code>max_cost</code> parameter to allow more calls to be made.</p>
+<h3 id="preprocessorerror"><code>PreprocessorError</code><a class="headerlink" href="#preprocessorerror" title="Permanent link">&para;</a></h3>
+<p>A preprocessor encountered an error (such as returning an empty list of nodes).</p>
 <h3 id="toomanytokens"><code>TooManyTokens</code><a class="headerlink" href="#toomanytokens" title="Permanent link">&para;</a></h3>
 <p>Raised when the number of tokens being sent exceeds the maximum allowed.</p>
 <p>This indicates that the HTML is too large to be processed by the API.</p>

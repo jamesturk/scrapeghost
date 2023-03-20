@@ -11,11 +11,6 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://jamesturk.github.io/scrapeghost/_cost/</loc>
-         <lastmod>2023-03-20</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
          <loc>https://jamesturk.github.io/scrapeghost/api/</loc>
          <lastmod>2023-03-20</lastmod>
          <changefreq>daily</changefreq>
@@ -47,6 +42,16 @@
     </url>
     <url>
          <loc>https://jamesturk.github.io/scrapeghost/tutorial/</loc>
+         <lastmod>2023-03-20</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://jamesturk.github.io/scrapeghost/snippets/_apikey/</loc>
+         <lastmod>2023-03-20</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://jamesturk.github.io/scrapeghost/snippets/_cost/</loc>
          <lastmod>2023-03-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
