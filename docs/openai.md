@@ -5,7 +5,7 @@ This section assumes you are mostly unfamiliar with the OpenAI API and aims to p
 
 ## API Keys
 
-To use the OpenAI APIs you will need an API key.  You can get one by [creating an account](https://platform.openai.com/signup) and then [creating an API key](https://platform.openai.com/account/api-keys).
+To use the OpenAI API you will need an API key.  You can get one by [creating an account](https://platform.openai.com/signup) and then [creating an API key](https://platform.openai.com/account/api-keys).
 
 Once an API key is created, you can set it as an environment variable:
 
@@ -26,7 +26,7 @@ openai.api_key = "sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 
 ## Costs
 
-The OpenAI APIs are considerably expensive.
+The OpenAI API is considerably expensive.
 The cost of a call varies based on the model used and the size of the input.
 
 The cost estimates provided by this library are based on the [OpenAI pricing page](https://platform.openai.com/pricing) and not guaranteed to be accurate.
@@ -53,7 +53,7 @@ If your pages exceed them, you'll need to focus on improving your [selectors](#s
 
 ## Prompts
 
-The OpenAI APIs provide a chat-like interface, where there are three roles: *system*, *user*, and *assistant*.  The *system* commands provide guidance to the *assistant* on how it should perform its tasks.  The *user* provides a query to the *assistant*, which is then answered.
+The OpenAI API provides a chat-like interface, where there are three roles: *system*, *user*, and *assistant*.  The *system* commands provide guidance to the *assistant* on how it should perform its tasks.  The *user* provides a query to the *assistant*, which is then answered.
 
 In practice, this results in a prompt that looks like something this:
 

@@ -1,6 +1,6 @@
 # About
 
-`scrapeghost` is an experimental library for scraping websites using OpenAI's GPT APIs.
+`scrapeghost` is an experimental library for scraping websites using OpenAI's GPT API.
 
 The library provides a means to scrape structured data from HTML without writing page-specific code.
 
