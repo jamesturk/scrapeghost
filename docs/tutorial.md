@@ -73,9 +73,7 @@ If you haven't used OpenAI's APIs before, you may not be aware of the token limi
 
 You are also billed per token, so even if you're under the limit, fewer tokens means cheaper API calls.
 
---8<--
-_cost.md
---8<--
+--8<-- "docs/snippets/_cost.md"
 
 So for example, a 4,000 token page that returns 1,000 tokens of JSON will cost $0.01 with GPT-3-Turbo, but $0.18 with GPT-4.
 

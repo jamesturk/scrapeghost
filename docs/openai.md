@@ -35,9 +35,7 @@ Fortunately, <https://platform.openai.com/account/billing/limits> lets you set a
 
 It is **highly recommended** that you set a low usage limit on your API key to avoid accidentally running up a large bill.
 
---8<--
-_cost.md
---8<--
+--8<-- "docs/snippets/_cost.md"
 
 ## Tokens
 
