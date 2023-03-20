@@ -1,4 +1,4 @@
-# noqa: F401
+# ruff: noqa
 from .scrapers import (
     BadStop,
     InvalidJSON,

@@ -3,6 +3,14 @@ import time
 import openai
 import openai.error
 import lxml.html
+from .errors import (
+    TooManyTokens,
+    MaxCostExceeded,
+    PreprocessorError,
+    BadStop,
+    NudgeableError,
+    InvalidJSON,
+)
 from .utils import (
     logger,
     _tostr,
@@ -19,52 +27,6 @@ RETRY_ERRORS = (
     openai.error.Timeout,
     openai.error.APIConnectionError,
 )
-
-
-class ScrapeghostError(Exception):
-    pass
-
-
-class MaxCostExceeded(ScrapeghostError):
-    pass
-
-
-class PreprocessorError(ScrapeghostError):
-    pass
-
-
-class BadStop(ScrapeghostError):
-    pass
-
-
-class NudgeableError(ScrapeghostError):
-    def __init__(self, message: str, data: dict):
-        self.message = message
-        self.data = data
-
-    def __str__(self):
-        return self.message
-
-
-class InvalidJSON(NudgeableError):
-    def nudge_message(self, schema):
-        return [
-            {
-                "role": "system",
-                "content": (
-                    "When you receive invalid JSON, "
-                    "respond only with valid JSON matching the schema: {schema}"
-                ),
-            },
-            {"role": "system", "content": ("Only reply with JSON, nothing else. ")},
-            {"role": "user", "content": "{'bad': 'json', }"},
-            {"role": "assistant", "content": '{"bad": "json"}'},
-            {"role": "user", "content": self.data},
-        ]
-
-
-class TooManyTokens(ScrapeghostError):
-    pass
 
 
 class SchemaScraper:
@@ -108,7 +70,8 @@ class SchemaScraper:
                 raise ValueError("list_mode must be True if split_length is set")
 
         self.system_messages = [
-            f"For the given HTML, convert to a {json_type} matching this schema: {self.json_schema}",
+            f"For the given HTML, convert to a {json_type} matching this schema: "
+            "{self.json_schema}",
             "Responses should be valid JSON, with no other text. "
             "Never truncate the JSON with an ellipsis. "
             "Always use double quotes for strings and escape quotes with \\. "
