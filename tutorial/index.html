@@ -844,18 +844,15 @@
 <span class="n">schema</span> <span class="o">=</span> <span class="p">{</span>
     <span class="s2">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;str&quot;</span><span class="p">,</span>
     <span class="s2">&quot;episode_number&quot;</span><span class="p">:</span> <span class="s2">&quot;int&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;release_date&quot;</span><span class="p">:</span> <span class="s2">&quot;YYYY-MM-DD&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;guests&quot;</span><span class="p">:</span> <span class="p">[{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;str&quot;</span><span class="p">}],</span>
-<span class="p">}</span>
+<span class="hll">    <span class="s2">&quot;release_date&quot;</span><span class="p">:</span> <span class="s2">&quot;YYYY-MM-DD&quot;</span><span class="p">,</span>
+</span><span class="hll">    <span class="s2">&quot;guests&quot;</span><span class="p">:</span> <span class="p">[{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;str&quot;</span><span class="p">}],</span>
+</span><span class="p">}</span>
 
 <span class="n">episode_scraper</span> <span class="o">=</span> <span class="n">SchemaScraper</span><span class="p">(</span>
     <span class="n">schema</span><span class="p">,</span>
     <span class="n">preprocessors</span><span class="o">=</span><span class="p">[</span><span class="n">CSS</span><span class="p">(</span><span class="s2">&quot;div.page-content&quot;</span><span class="p">)],</span>
 <span class="p">)</span>
 
-<span class="c1"># pprint(episode_scraper(url))</span>
-
-<span class="n">url</span> <span class="o">=</span> <span class="s2">&quot;https://comedybangbang.fandom.com/wiki/Welcome_to_Comedy_Bang_Bang&quot;</span>
 <span class="n">pprint</span><span class="p">(</span><span class="n">episode_scraper</span><span class="p">(</span><span class="n">url</span><span class="p">))</span>
 </code></pre></div>
 <p>Just two small changes, but now we get the following output:</p>
@@ -905,7 +902,7 @@
     <span class="s2">&quot;url&quot;</span><span class="p">,</span>
     <span class="n">list_mode</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
     <span class="n">split_length</span><span class="o">=</span><span class="mi">2048</span><span class="p">,</span>
-    <span class="n">preprocessors</span><span class="o">=</span><span class="n">CSS</span><span class="p">(</span><span class="s2">&quot;.mw-parser-output a[class!=&#39;image link-internal&#39;]&quot;</span><span class="p">),</span>
+    <span class="n">preprocessors</span><span class="o">=</span><span class="p">[</span><span class="n">CSS</span><span class="p">(</span><span class="s2">&quot;.mw-parser-output a[class!=&#39;image link-internal&#39;]&quot;</span><span class="p">)],</span>
 <span class="p">)</span>
 <span class="n">episode_urls</span> <span class="o">=</span> <span class="n">episode_list_scraper</span><span class="p">(</span>
     <span class="s2">&quot;https://comedybangbang.fandom.com/wiki/Category:Episodes&quot;</span>
@@ -921,14 +918,39 @@
 <p>Finally, we set the <code>split_length</code> to 2048. This is the maximum number of tokens that will be passed to OpenAI in a single request.</p>
 <p>It's a good idea to set this to about half the token limit, since the response counts against the token limit as well.</p>
 <p>This winds up needing to make over twenty requests, but gets the list of episode URLs after a few minutes.</p>
-<div class="highlight"><pre><span></span><code>
+<div class="highlight"><pre><span></span><code>2023-03-20 04:25:45 [debug    ] got HTML                       length=1425572 url=https://comedybangbang.fandom.com/wiki/Category:Episodes
+2023-03-20 04:25:45 [debug    ] preprocessor                   from_nodes=1 name=CleanHTML nodes=1
+2023-03-20 04:25:45 [debug    ] preprocessor                   from_nodes=1 name=CSS(.mw-parser-output a[class!=&#39;image link-internal&#39;]) nodes=857
+2023-03-20 04:25:45 [debug    ] chunked tags                   num=19 sizes=[2008, 2003, 2016, 2037, 2047, 2038, 2040, 2010, 2026, 2046, 2030, 2023, 1787, 2023, 2013, 2024, 2044, 2036, 2002]
+2023-03-20 04:25:45 [info     ] API request                    html_tokens=2008 messages=[&#39;For the given HTML, convert to a list of JSON objects matching this schema: &quot;url&quot;&#39;, &#39;Responses should be valid JSON, with no other text. Never truncate the JSON with an ellipsis. Always use double quotes for strings and escape quotes with \\. Always omit trailing commas. &#39;] model=gpt-3.5-turbo
+2023-03-20 04:29:45 [info     ] API response                   completion_tokens=1325 cost=0.006814000000000001 duration=239.47248005867004 finish_reason=stop prompt_tokens=2082
+2023-03-20 04:29:45 [info     ] API request                    html_tokens=2003 messages=[&#39;For the given HTML, convert to a list of JSON objects matching this schema: &quot;url&quot;&#39;, &#39;Responses should be valid JSON, with no other text. Never truncate the JSON with an ellipsis. Always use double quotes for strings and escape quotes with \\. Always omit trailing commas. &#39;] model=gpt-3.5-turbo
+2023-03-20 04:30:51 [info     ] API response                   completion_tokens=1278 cost=0.00671 duration=66.18540406227112 finish_reason=stop prompt_tokens=2077
+2023-03-20 04:30:51 [info     ] API request                    html_tokens=2016 messages=[&#39;For the given HTML, convert to a list of JSON objects matching this schema: &quot;url&quot;&#39;, &#39;Responses should be valid JSON, with no other text. Never truncate the JSON with an ellipsis. Always use double quotes for strings and escape quotes with \\. Always omit trailing commas. &#39;] model=gpt-3.5-turbo
+2023-03-20 04:31:47 [info     ] API response                   completion_tokens=971 cost=0.006122 duration=55.91373896598816 finish_reason=stop prompt_tokens=2090
+2023-03-20 04:31:47 [info     ] API request                    html_tokens=2037 messages=[&#39;For the given HTML, convert to a list of JSON objects matching this schema: &quot;url&quot;&#39;, &#39;Responses should be valid JSON, with no other text. Never truncate the JSON with an ellipsis. Always use double quotes for strings and escape quotes with \\. Always omit trailing commas. &#39;] model=gpt-3.5-turbo
+2023-03-20 04:33:49 [info     ] API response                   completion_tokens=1986 cost=0.008194 duration=122.70038199424744 finish_reason=length prompt_tokens=2111
+2023-03-20 04:33:49 [warning  ] API request failed             model=gpt-3.5-turbo
+OpenAI did not stop: length (prompt_tokens=2111, completion_tokens=1986)
+2023-03-20 04:33:49 [info     ] API request                    html_tokens=2037 messages=[&#39;For the given HTML, convert to a list of JSON objects matching this schema: &quot;url&quot;&#39;, &#39;Responses should be valid JSON, with no other text. Never truncate the JSON with an ellipsis. Always use double quotes for strings and escape quotes with \\. Always omit trailing commas. &#39;] model=gpt-4
+2023-03-20 04:37:32 [info     ] API response                   completion_tokens=1123 cost=0.16017 duration=222.54617595672607 finish_reason=stop prompt_tokens=2108
+2023-03-20 04:37:32 [info     ] API request                    html_tokens=2047 messages=[&#39;For the given HTML, convert to a list of JSON objects matching this schema: &quot;url&quot;&#39;, &#39;Responses should be valid JSON, with no other text. Never truncate the JSON with an ellipsis. Always use double quotes for strings and escape quotes with \\. Always omit trailing commas. &#39;] model=gpt-3.5-turbo
+2023-03-20 04:38:25 [info     ] API response                   completion_tokens=979 cost=0.006200000000000001 duration=53.06689095497131 finish_reason=stop prompt_tokens=2121
+2023-03-20 04:38:25 [info     ] API request                    html_tokens=2038 messages=[&#39;For the given HTML, convert to a list of JSON objects matching this schema: &quot;url&quot;&#39;, &#39;Responses should be valid JSON, with no other text. Never truncate the JSON with an ellipsis. Always use double quotes for strings and escape quotes with \\. Always omit trailing commas. &#39;] model=gpt-3.5-turbo
+2023-03-20 04:39:23 [info     ] API response                   completion_tokens=1003 cost=0.00623 duration=57.5164520740509 finish_reason=stop prompt_tokens=2112
+2023-03-20 04:39:23 [info     ] API request                    html_tokens=2040 messages=[&#39;For the given HTML, convert to a list of JSON objects matching this schema: &quot;url&quot;&#39;, &#39;Responses should be valid JSON, with no other text. Never truncate the JSON with an ellipsis. Always use double quotes for strings and escape quotes with \\. Always omit trailing commas. &#39;] model=gpt-3.5-turbo
+2023-03-20 04:40:22 [info     ] API response                   completion_tokens=1012 cost=0.006252000000000001 duration=59.186081647872925 finish_reason=stop prompt_tokens=2114
+2023-03-20 04:40:22 [info     ] API request                    html_tokens=2010 messages=[&#39;For the given HTML, convert to a list of JSON objects matching this schema: &quot;url&quot;&#39;, &#39;Responses should be valid JSON, with no other text. Never truncate the JSON with an ellipsis. Always use double quotes for strings and escape quotes with \\. Always omit trailing commas. &#39;] model=gpt-3.5-turbo
 </code></pre></div>
 <p>It takes a while, but if you can stick to GPT-3.5-Turbo it's only $0.13.</p>
 <p>It isn't perfect, it is quite slow and also adding extra fields to the JSON, but it gets the job done.  It is trivial to combine the output of <code>episode_list_scraper</code> with <code>episode_scraper</code> to get the metadata for all of the episodes.</p>
-<p>See the listing at the very end for the full program.</p>
+<p>If you want to see the full code, jump down to the <a href="#putting-it-all-together">Putting it all Together</a> section.</p>
 <h2 id="next-steps">Next Steps<a class="headerlink" href="#next-steps" title="Permanent link">&para;</a></h2>
-<p>This is still very much a proof of concept, but it does work.</p>
-<p>I'm interested in ease of use and developer experience, as well as improving the accuracy.  If you want to follow along, <a href="https://github.com/jamesturk/scrapeghost/issues">the issues page</a> is a good picture of what I'm considering next.</p>
+<p>If you're planning to use this library, please know it is very much in flux and I can't commit to API stability yet.</p>
+<p>If you are going to try to scrape using GPT, it'd probably be good to read the <a href="../openai/">OpenAI API</a> page to understand a little more about how the underlying API works.</p>
+<p>I'm still exploring ways to improve accuracy and the developer experience.  If you want to follow along, <a href="https://github.com/jamesturk/scrapeghost/issues">the issues page</a> is a good picture of what I'm considering next.</p>
+<p>To see what other features are currently available, check out the <a href="../api/">API Reference</a>.</p>
+<p>You can also explore the <a href="../cli/">command line interface</a> to see how you can use this library without writing any Python.</p>
 <h2 id="putting-it-all-together">Putting it all Together<a class="headerlink" href="#putting-it-all-together" title="Permanent link">&para;</a></h2>
 <div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">from</span> <span class="nn">scrapeghost</span> <span class="kn">import</span> <span class="n">SchemaScraper</span><span class="p">,</span> <span class="n">CSS</span>

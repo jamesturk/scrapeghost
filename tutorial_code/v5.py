@@ -4,7 +4,7 @@ episode_list_scraper = SchemaScraper(
     "url",
     list_mode=True,
     split_length=2048,
-    preprocessors=CSS(".mw-parser-output a[class!='image link-internal']"),
+    preprocessors=[CSS(".mw-parser-output a[class!='image link-internal']")],
 )
 episode_urls = episode_list_scraper(
     "https://comedybangbang.fandom.com/wiki/Category:Episodes"
