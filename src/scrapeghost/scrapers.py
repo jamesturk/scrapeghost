@@ -47,8 +47,9 @@ class SchemaScraper:
         # instructions
         list_mode: bool = False,
         extra_instructions: list[str] | None = None,
-        # preprocessing
-        preprocessors=None,
+        # preprocessing and postprocessing
+        extra_preprocessors=None,
+        postprocessors=None,
         split_length: int = 0,
     ):
         self.total_prompt_tokens = 0
@@ -82,11 +83,16 @@ class SchemaScraper:
         if extra_instructions:
             self.system_messages.extend(extra_instructions)
 
-        if preprocessors is None:
+        if extra_preprocessors is None:
             self.preprocessors = self._default_preprocessors
         else:
-            self.preprocessors = self._default_preprocessors + preprocessors
-        self.postprocessors = self._default_postprocessors
+            self.preprocessors = self._default_preprocessors + extra_preprocessors
+
+        if postprocessors is None:
+            self.postprocessors = self._default_postprocessors
+        else:
+            self.postprocessors = postprocessors
+
         self.split_length = split_length
 
     def _raw_api_request(self, model: str, messages: list[str]):

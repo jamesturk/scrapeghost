@@ -24,7 +24,7 @@ def test_apply_preprocessors_constructor():
         "<span>1</span><span>2</span><span>3</span>"
         "</body></html>"
     )
-    schema = SchemaScraper({}, preprocessors=[CSS("span")])
+    schema = SchemaScraper({}, extra_preprocessors=[CSS("span")])
     nodes = schema._apply_preprocessors(html, [])
     assert len(nodes) == 3
     assert _tostr(nodes[0]) == "<span>1</span>"

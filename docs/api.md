@@ -15,7 +15,8 @@ And the following optional parameters:
 * `max_cost` -  *float* (dollars) - The maximum total cost of calls made using this scraper. This is set to 1 ($1.00) by default to avoid large unexpected charges.
 * `list_mode` - *bool* - If `True`, the instructions and behavior will be slightly modified to better perform on pages with lists of similar items.
 * `extra_instructions` - *list\[str\]* - Additional instructions to pass to the GPT model as a system prompt.
-* `preprocessors` - *list* - A list of **[preprocessors](#preprocessors)** to run on the HTML before sending it to the API. 
+* `extra_preprocessors` - *list* - A list of **[preprocessors](#preprocessors)** to run on the HTML before sending it to the API.  This is in addition to the default preprocessors.
+* `postprocessors` - *list* - A list of **[postprocessors](#postprocessors)** to run on the results before returning them.  If provided, this will override the default postprocessors.
 * `split_length` - *int* - If set, the scraper will split the page into multiple calls, each of this length. See [auto-splitting](#auto-splitting) for details.
 
 ### Preprocessors
@@ -30,13 +31,13 @@ Three preprocessors are included by default:
 
 Note: `CleanHTML` is always applied as it is part of `SchemaScraper._default_preprocessors`.
 
-You can add your own preprocessors by passing a list of callables to the `preprocessors` parameter.
+You can add your own preprocessors by passing a list of callables to the `extra_preprocessors` parameter.
 
 ```python
-scraper = SchemaScraper(schema, preprocessors=[CSS("table")])
+scraper = SchemaScraper(schema, extra_preprocessors=[CSS("table")])
 ```
 
-It is also possible to pass preprocessors at scrape time via the `extra_preprocessors` parameter:
+It is also possible to pass preprocessors at scrape time:
 
 ```python
 scraper = SchemaScraper(schema)
@@ -44,6 +45,13 @@ scraper.scrape("https://example.com", extra_preprocessors=[CSS("table")])
 ```
 
 Implementing your own preprocessor is simple, just create a callable that takes a `lxml.html.HtmlElement` and returns a list of `lxml.html.HtmlElement` objects.  Look at `preprocessors.py` for examples.
+
+### Postprocessors
+
+Postprocessors take the results of the API call and modify them before returning them to the user.
+
+The default postprocessor is `JSONPostprocessor` which converts the results to JSON.
+
 
 ### Auto-splitting
 

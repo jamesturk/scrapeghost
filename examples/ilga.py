@@ -31,7 +31,7 @@ scrape_legislators = SchemaScraper(
         "offices": [{"name": "string", "address": "string", "phone": "string"}],
     },
     models=["gpt-4"],
-    preprocessors=[
+    extra_preprocessors=[
         CSS("table"),
     ],
 )

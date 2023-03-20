@@ -11,7 +11,7 @@ schema = {
 episode_scraper = SchemaScraper(
     schema,
     # can pass preprocessor to constructor or at scrape time
-    preprocessors=[CSS("div.page-content")],
+    extra_preprocessors=[CSS("div.page-content")],
 )
 
 pprint(episode_scraper(url))
