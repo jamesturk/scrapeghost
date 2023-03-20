@@ -161,11 +161,14 @@ This winds up needing to make over twenty requests, but gets the list of episode
 --8<-- "docs/tutorial_code/v5.log"
 ```
 
-It takes a while, but if you can stick to GPT-3.5-Turbo it's only $0.13.
+As you can see, a couple of requests automatically fell back to GPT-4, raising the cost to about $0.46 for the entire scrape.
 
-It isn't perfect, it is quite slow and also adding extra fields to the JSON, but it gets the job done.  It is trivial to combine the output of `episode_list_scraper` with `episode_scraper` to get the metadata for all of the episodes.
+If you lower the `split_token` a bit further takes even longer, but if you can stick to GPT-3.5-Turbo it's only $0.13.
 
-If you want to see the full code, jump down to the [Putting it all Together](#putting-it-all-together) section.
+It isn't perfect, it is quite slow and you might also notice it
+sometimes adds unnecessary "name" fields to the JSON, but it gets the job done.
+
+If you want to see the pieces put together, jump down to the [Putting it all Together](#putting-it-all-together) section.
 
 ## Next Steps
 
