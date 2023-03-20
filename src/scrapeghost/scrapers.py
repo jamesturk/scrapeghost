@@ -37,8 +37,30 @@ class BadStop(ScrapeghostError):
     pass
 
 
-class InvalidJSON(ScrapeghostError):
-    pass
+class NudgeableError(ScrapeghostError):
+    def __init__(self, message: str, data: dict):
+        self.message = message
+        self.data = data
+
+    def __str__(self):
+        return self.message
+
+
+class InvalidJSON(NudgeableError):
+    def nudge_message(self, schema):
+        return [
+            {
+                "role": "system",
+                "content": (
+                    "When you receive invalid JSON, "
+                    "respond only with valid JSON matching the schema: {schema}"
+                ),
+            },
+            {"role": "system", "content": ("Only reply with JSON, nothing else. ")},
+            {"role": "user", "content": "{'bad': 'json', }"},
+            {"role": "assistant", "content": '{"bad": "json"}'},
+            {"role": "user", "content": self.data},
+        ]
 
 
 class TooManyTokens(ScrapeghostError):
@@ -77,7 +99,7 @@ class SchemaScraper:
         if "temperature" not in model_params:
             model_params["temperature"] = 0
 
-        json_schema = json.dumps(schema)
+        self.json_schema = json.dumps(schema)
         if list_mode:
             json_type = "list of JSON objects"
         else:
@@ -86,7 +108,7 @@ class SchemaScraper:
                 raise ValueError("list_mode must be True if split_length is set")
 
         self.system_messages = [
-            f"For the given HTML, convert to a {json_type} matching this schema: {json_schema}",
+            f"For the given HTML, convert to a {json_type} matching this schema: {self.json_schema}",
             "Responses should be valid JSON, with no other text. "
             "Never truncate the JSON with an ellipsis. "
             "Always use double quotes for strings and escape quotes with \\. "
@@ -101,35 +123,15 @@ class SchemaScraper:
             self.preprocessors = self._default_preprocessors + preprocessors
         self.split_length = split_length
 
-    def _api_request(self, html: str, model: str) -> list | dict:
-        """
-        Given HTML, return JSON using OpenAI API
-        """
-        if not html:
-            raise ValueError("html parameter cannot be empty")
+    def _raw_api_request(self, model: str, messages: list[str]):
         if self.total_cost > self.max_cost:
             raise MaxCostExceeded(
                 f"Total cost {self.total_cost} exceeds max cost {self.max_cost}"
             )
-        tokens = _tokens(model, html)
-        if tokens > _max_tokens(model):
-            raise TooManyTokens(
-                f"HTML is {tokens} tokens, max for {model} is {_max_tokens(model)}"
-            )
-        logger.info(
-            "API request",
-            model=model,
-            html_tokens=tokens,
-        )
         start_t = time.time()
         completion = openai.ChatCompletion.create(
             model=model,
-            messages=[
-                {"role": "system", "content": msg} for msg in self.system_messages
-            ]
-            + [
-                {"role": "user", "content": html},
-            ],
+            messages=messages,
             **self.model_params,
         )
         p_tokens = completion.usage.prompt_tokens
@@ -153,6 +155,33 @@ class SchemaScraper:
                 f"(prompt_tokens={p_tokens}, "
                 f"completion_tokens={c_tokens})"
             )
+        return choice
+
+    def _api_request(self, html: str, model: str) -> list | dict:
+        """
+        Given HTML, return JSON using OpenAI API
+        """
+        if not html:
+            raise ValueError("html parameter cannot be empty")
+        tokens = _tokens(model, html)
+        if tokens > _max_tokens(model):
+            raise TooManyTokens(
+                f"HTML is {tokens} tokens, max for {model} is {_max_tokens(model)}"
+            )
+        logger.info(
+            "API request",
+            model=model,
+            html_tokens=tokens,
+        )
+        choice = self._raw_api_request(
+            model=model,
+            messages=[
+                {"role": "system", "content": msg} for msg in self.system_messages
+            ]
+            + [
+                {"role": "user", "content": html},
+            ],
+        )
         try:
             return json.loads(choice.message.content)
         except json.decoder.JSONDecodeError:
@@ -179,6 +208,8 @@ class SchemaScraper:
                     model=model,
                     attempts=attempts,
                 )
+                if isinstance(e, NudgeableError):
+                    return self.nudge(e)
                 if attempts < max_attempts:
                     if isinstance(e, RETRY_ERRORS):
                         # try again with same model
@@ -248,6 +279,20 @@ class SchemaScraper:
 
     # allow the class to be called like a function
     __call__ = scrape
+
+    def nudge(self, err: NudgeableError) -> dict | list:
+        """
+        Nudge the API to return a better response.
+
+        Args:
+            err: The error returned by the API.
+
+        Returns:
+            dict | list: The scraped data in the specified schema.
+        """
+        return self._raw_api_request(
+            self.models[0], err.nudge_message(self.json_schema)
+        )
 
 
 class PaginatedSchemaScraper(SchemaScraper):
