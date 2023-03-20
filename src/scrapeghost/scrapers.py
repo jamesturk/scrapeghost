@@ -13,6 +13,10 @@ from .utils import (
 )
 
 
+class MaxCostExceeded(Exception):
+    pass
+
+
 class BadStop(Exception):
     pass
 
@@ -35,10 +39,12 @@ class SchemaScraper:
         list_mode: bool = False,
         extra_instructions: str = "",
         split_length: int = 0,
+        max_cost: float = 1,
     ):
         self.total_prompt_tokens = 0
         self.total_completion_tokens = 0
         self.total_cost = 0
+        self.max_cost = max_cost
         self.models = models
         if model_params is None:
             model_params = {}
@@ -77,6 +83,10 @@ class SchemaScraper:
         """
         if not html:
             raise ValueError("html parameter cannot be empty")
+        if self.total_cost > self.max_cost:
+            raise MaxCostExceeded(
+                f"Total cost {self.total_cost} exceeds max cost {self.max_cost}"
+            )
         tokens = _tokens(model, html)
         if tokens > _max_tokens(model):
             raise TooManyTokens(
