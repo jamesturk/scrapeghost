@@ -63,30 +63,6 @@ def _parse_url_or_html(url_or_html: str) -> lxml.html.Element:
     return doc
 
 
-def _select_tags(
-    doc: lxml.html.Element, xpath: str, css: str
-) -> list[lxml.html.HtmlElement]:
-    if xpath and css:
-        raise ValueError("cannot specify both css and xpath")
-    if xpath:
-        tags = doc.xpath(xpath)
-        sel = xpath
-    elif css:
-        tags = doc.cssselect(css)
-        sel = css
-    else:
-        # so we can always return a list
-        tags = [doc]
-        sel = None
-
-    if sel:
-        logger.debug("selected tags", sel=sel, num=len(tags))
-        if not len(tags):
-            raise ValueError(f"empty results from {sel}")
-
-    return tags
-
-
 def _cost(model, prompt_tokens, completion_tokens):
     pt_cost, ct_cost = {
         "gpt-4": (0.03, 0.06),

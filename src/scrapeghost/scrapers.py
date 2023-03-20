@@ -1,19 +1,24 @@
 import json
 import time
 import openai
+import lxml.html
 from .utils import (
     logger,
     _tostr,
     _chunk_tags,
     _parse_url_or_html,
-    _select_tags,
     _cost,
     _max_tokens,
     _tokens,
 )
+from .preprocessors import CleanHTML, XPath, CSS
 
 
 class MaxCostExceeded(Exception):
+    pass
+
+
+class PreprocessorError(Exception):
     pass
 
 
@@ -30,16 +35,24 @@ class TooManyTokens(Exception):
 
 
 class SchemaScraper:
+    _default_preprocessors = [
+        CleanHTML(),
+    ]
+
     def __init__(
         self,
         schema: dict,
         *,
+        # OpenAI parameters
         models: str = ["gpt-3.5-turbo", "gpt-4"],
         model_params: dict | None = None,
+        max_cost: float = 1,
+        # instructions
         list_mode: bool = False,
         extra_instructions: str = "",
+        # preprocessing
+        preprocessors=None,
         split_length: int = 0,
-        max_cost: float = 1,
     ):
         self.total_prompt_tokens = 0
         self.total_completion_tokens = 0
@@ -52,8 +65,6 @@ class SchemaScraper:
         # default temperature to 0, deterministic
         if "temperature" not in model_params:
             model_params["temperature"] = 0
-
-        self.split_length = split_length
 
         if list_mode:
             self.system_messages = [
@@ -76,6 +87,12 @@ class SchemaScraper:
         )
         if extra_instructions:
             self.system_messages.append(extra_instructions)
+
+        if preprocessors is None:
+            self.preprocessors = self._default_preprocessors
+        else:
+            self.preprocessors = self._default_preprocessors + preprocessors
+        self.split_length = split_length
 
     def _api_request(self, html: str, model: str) -> list | dict:
         """
@@ -149,6 +166,25 @@ class SchemaScraper:
                 if last:
                     raise
 
+    def _apply_preprocessors(self, doc: lxml.html.Element):
+        nodes = [doc]
+
+        # apply preprocessors one at a time
+        for p in self.preprocessors:
+            new_nodes = []
+            for node in nodes:
+                new_nodes.extend(p(node))
+            logger.debug(
+                "preprocessor", name=str(p), from_nodes=len(nodes), nodes=len(new_nodes)
+            )
+            if not new_nodes:
+                raise PreprocessorError(
+                    f"Preprocessor {p} returned no nodes for {nodes}"
+                )
+            nodes = new_nodes
+
+        return nodes
+
     def scrape(
         self,
         url_or_html: str,
@@ -171,7 +207,9 @@ class SchemaScraper:
             dict | list: The scraped data in the specified schema.
         """
         doc = _parse_url_or_html(url_or_html)
-        tags = _select_tags(doc, xpath, css)
+
+        tags = self._apply_preprocessors(doc)
+
         if self.split_length:
             chunks = _chunk_tags(tags, self.split_length, model=self.models[0])
             # flatten list of lists
