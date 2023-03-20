@@ -8,7 +8,7 @@ from .errors import (
     MaxCostExceeded,
     PreprocessorError,
     BadStop,
-    NudgeableError,
+    NudgeError,
     InvalidJSON,
 )
 from .utils import (
@@ -21,6 +21,7 @@ from .utils import (
     _tokens,
 )
 from .preprocessors import CleanHTML
+from .postprocessors import JSONPostprocessor
 
 RETRY_ERRORS = (
     openai.error.RateLimitError,
@@ -32,6 +33,9 @@ RETRY_ERRORS = (
 class SchemaScraper:
     _default_preprocessors = [
         CleanHTML(),
+    ]
+    _default_postprocessors = [
+        JSONPostprocessor(),
     ]
 
     def __init__(
@@ -71,7 +75,7 @@ class SchemaScraper:
 
         self.system_messages = [
             f"For the given HTML, convert to a {json_type} matching this schema: "
-            "{self.json_schema}",
+            f"{self.json_schema}",
             "Responses should be valid JSON, with no other text. "
             "Never truncate the JSON with an ellipsis. "
             "Always use double quotes for strings and escape quotes with \\. "
@@ -84,9 +88,13 @@ class SchemaScraper:
             self.preprocessors = self._default_preprocessors
         else:
             self.preprocessors = self._default_preprocessors + preprocessors
+        self.postprocessors = self._default_postprocessors
         self.split_length = split_length
 
     def _raw_api_request(self, model: str, messages: list[str]):
+        """
+        Make an OpenAPI request and return the raw response.
+        """
         if self.total_cost > self.max_cost:
             raise MaxCostExceeded(
                 f"Total cost {self.total_cost} exceeds max cost {self.max_cost}"
@@ -118,12 +126,17 @@ class SchemaScraper:
                 f"(prompt_tokens={p_tokens}, "
                 f"completion_tokens={c_tokens})"
             )
-        return choice
+        return choice.message.content
 
-    def _api_request(self, html: str, model: str) -> list | dict:
+    def _api_request(self, html: str) -> str:
         """
-        Given HTML, return JSON using OpenAI API
+        Make an OpenAPI request, with retries and model upgrades.
         """
+        attempts = 0
+        model_index = 0
+        model = self.models[model_index]
+        max_attempts = 2
+
         if not html:
             raise ValueError("html parameter cannot be empty")
         tokens = _tokens(model, html)
@@ -131,39 +144,28 @@ class SchemaScraper:
             raise TooManyTokens(
                 f"HTML is {tokens} tokens, max for {model} is {_max_tokens(model)}"
             )
-        logger.info(
-            "API request",
-            model=model,
-            html_tokens=tokens,
-        )
-        choice = self._raw_api_request(
-            model=model,
-            messages=[
-                {"role": "system", "content": msg} for msg in self.system_messages
-            ]
-            + [
-                {"role": "user", "content": html},
-            ],
-        )
-        try:
-            return json.loads(choice.message.content)
-        except json.decoder.JSONDecodeError:
-            raise InvalidJSON(choice.message.content)
-
-    def _html_to_json(self, html: str) -> list | dict:
-        attempts = 0
-        model_index = 0
-        model = self.models[model_index]
-        max_attempts = 2
 
         while True:
             try:
                 attempts += 1
-                return self._api_request(html, model)
+                logger.info(
+                    "API request",
+                    model=model,
+                    html_tokens=tokens,
+                )
+                return self._raw_api_request(
+                    model=model,
+                    messages=[
+                        {"role": "system", "content": msg}
+                        for msg in self.system_messages
+                    ]
+                    + [
+                        {"role": "user", "content": html},
+                    ],
+                )
             except RETRY_ERRORS + (
                 TooManyTokens,
                 BadStop,
-                InvalidJSON,
             ) as e:
                 logger.warning(
                     "API request failed",
@@ -171,8 +173,6 @@ class SchemaScraper:
                     model=model,
                     attempts=attempts,
                 )
-                if isinstance(e, NudgeableError):
-                    return self.nudge(e)
                 if attempts < max_attempts:
                     if isinstance(e, RETRY_ERRORS):
                         # try again with same model
@@ -207,6 +207,21 @@ class SchemaScraper:
             nodes = new_nodes
 
         return nodes
+
+    def _html_to_json(self, html: str) -> list | dict:
+        """
+        Make request and run postprocessors.
+        """
+        result = self._api_request(html)
+
+        for p in self.postprocessors:
+            try:
+                result = p(result)
+            except NudgeError as e:
+                result = self.nudge(e)
+                result = p(result)
+
+        return result
 
     def scrape(
         self,
