@@ -4,7 +4,11 @@ These tests require hitting the live API.
 This means they require an API key, and cost money to run.
 """
 import pytest
+import os
 from scrapeghost import SchemaScraper
+
+api_key_is_set = os.getenv("OPENAI_API_KEY", "")
+
 
 simple_page = """
 <html><body>
@@ -56,6 +60,7 @@ actor_schema = {
 }
 
 
+@pytest.mark.skipif(not api_key_is_set, reason="requires API key")
 def test_simple_html():
     scraper = SchemaScraper(actor_schema)
     html = simple_page.format(content=dave)
@@ -74,6 +79,7 @@ def test_simple_html():
     assert 0.0001 < scraper.total_cost < 0.001
 
 
+@pytest.mark.skipif(not api_key_is_set, reason="requires API key")
 def test_simple_html_different_content():
     scraper = SchemaScraper(actor_schema)
     html = simple_page.format(content=sam)
@@ -90,6 +96,7 @@ def test_simple_html_different_content():
     }
 
 
+@pytest.mark.skipif(not api_key_is_set, reason="requires API key")
 def test_simple_html_list_mode():
     scraper = SchemaScraper(actor_schema, list_mode=True)
     html = simple_page.format(content=sam + dave)
@@ -104,7 +111,7 @@ def test_simple_html_list_mode():
                 {"name": "The Afterparty", "character": "Aniq"},
                 {"name": "Veep", "character": "Richard Splett"},
                 {"name": "Detroiters", "character": "Sam Duvet"},
-                #                {"name": "ITYSL", "character": "Baby of the Year Host"},
+                # {"name": "ITYSL", "character": "Baby of the Year Host"},
             ],
         },
         {
@@ -115,7 +122,7 @@ def test_simple_html_list_mode():
                 {"name": "Spectre", "character": "Mr. Hinx"},
                 {"name": "Blade Runner 2049", "character": "Sapper Morton"},
                 {"name": "Glass Onion", "character": "Duke Cody"},
-                #                {"name": "Dune", "character": "Glossu Rabban Harkonnen"},
+                # {"name": "Dune", "character": "Glossu Rabban Harkonnen"},
             ],
         },
     ]

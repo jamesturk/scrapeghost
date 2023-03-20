@@ -5,7 +5,8 @@ from scrapeghost.utils import _tostr
 
 def test_clean_html():
     doc = lxml.html.fromstring(
-        "<html><body style='background: blue;'><script>alert('hello')</script><noscript>here</noscript></body></html>"
+        "<html><body style='background: blue;'><script>alert('hello')</script>"
+        "<noscript>here</noscript></body></html>"
     )
     tags = CleanHTML()(doc)
     assert len(tags) == 1
