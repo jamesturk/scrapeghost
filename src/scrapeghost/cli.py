@@ -1,8 +1,10 @@
+import json
 import pathlib
 import logging
 import structlog
 import typer
 from .scrapers import SchemaScraper
+from .preprocessors import CSS, XPath
 
 
 def scrape(
@@ -28,8 +30,12 @@ def scrape(
     )
 
     scraper = SchemaScraper(schema, models=["gpt-4"] if gpt4 else ["gpt-3.5-turbo"])
-    result = scraper(url, xpath=xpath, css=css)
-    typer.echo(result)
+    if xpath:
+        scraper.preprocessors.append(XPath(xpath))
+    if css:
+        scraper.preprocessors.append(CSS(css))
+    result = scraper(url)
+    typer.echo(json.dumps(result))
 
 
 def main():
