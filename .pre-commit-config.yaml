@@ -1,0 +1,16 @@
+default_language_version:
+    python: python3.10
+repos:
+- repo: https://github.com/pre-commit/pre-commit-hooks
+  rev: v4.3.0
+  hooks:
+    - id: check-merge-conflict
+    - id: debug-statements
+- repo: https://github.com/charliermarsh/ruff-pre-commit
+  rev: 'v0.0.257'
+  hooks:
+    - id: ruff
+- repo: https://github.com/ambv/black
+  rev: 22.10.0
+  hooks:
+    - id: black

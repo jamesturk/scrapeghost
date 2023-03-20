@@ -1,11 +1,9 @@
 """
 Scrape Illinois legislators from https://www.ilga.gov/senate/default.asp
 """
-import os
 import sys
 import json
 import lxml.html
-import openai
 import requests
 from scrapeghost import SchemaScraper, CSS
 
