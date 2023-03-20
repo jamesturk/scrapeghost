@@ -1,0 +1,8 @@
+2023-03-20 03:54:16 [debug    ] got HTML                       length=165605 url=https://comedybangbang.fandom.com/wiki/Operation_Golden_Orb
+2023-03-20 03:54:16 [debug    ] preprocessor                   from_nodes=1 name=CleanHTML nodes=1
+2023-03-20 03:54:16 [debug    ] preprocessor                   from_nodes=1 name=CSS(div.page-content) nodes=1
+2023-03-20 03:54:16 [info     ] API request                    html_tokens=1275 messages=['For the given HTML, convert to a JSON object matching this schema: {"title": "str", "episode_number": "int", "release_date": "str"}', 'Responses should be valid JSON, with no other text. Never truncate the JSON with an ellipsis. Always use double quotes for strings and escape quotes with \\. Always omit trailing commas. '] model=gpt-3.5-turbo
+2023-03-20 03:54:19 [info     ] API response                   completion_tokens=34 cost=0.0027960000000000003 duration=2.5170469284057617 finish_reason=stop prompt_tokens=1364
+{'episode_number': 800,
+ 'release_date': 'March 12, 2023',
+ 'title': 'Operation Golden Orb'}

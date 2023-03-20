@@ -2,12 +2,13 @@
 
 ## 0.3.0 - WIP
 
-* Added tests, docs, and complete examples!
-* Use `tiktoken` for tokenization instead of guessing.
+* Add tests, docs, and complete examples!
+* Add preprocessors to `SchemaScraper` to allow for uniform interface for cleaning & selecting HTML.
+* Use `tiktoken` for accurate token counts.
+* New `cost_estimate` utility function.
 * Cost is now tracked on a per-scraper basis (see the `total_cost` attribute on `SchemaScraper` objects).
 * `SchemaScraper` now takes a `max_cost` parameter to limit the total cost of a scraper.
-* New `estimate_cost` utility function.
-* list mode prompt improvements
+* Prompt improvements, list mode simplification.
 
 ## 0.2.0 - 2021-03-18
 

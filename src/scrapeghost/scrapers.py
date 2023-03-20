@@ -14,23 +14,27 @@ from .utils import (
 from .preprocessors import CleanHTML
 
 
-class MaxCostExceeded(Exception):
+class ScrapeghostError(Exception):
     pass
 
 
-class PreprocessorError(Exception):
+class MaxCostExceeded(ScrapeghostError):
     pass
 
 
-class BadStop(Exception):
+class PreprocessorError(ScrapeghostError):
     pass
 
 
-class InvalidJSON(Exception):
+class BadStop(ScrapeghostError):
     pass
 
 
-class TooManyTokens(Exception):
+class InvalidJSON(ScrapeghostError):
+    pass
+
+
+class TooManyTokens(ScrapeghostError):
     pass
 
 

@@ -75,6 +75,8 @@ scrape_legislators = SchemaScraper(
 
 **That's it!**
 
+Read the [tutorial](tutorial.md) for a step-by-step guide to building a scraper.
+
 ### Command Line Usage Example
 
 If you've installed the package (e.g. with `pipx`), you can use the `scrapeghost` command line tool to experiment.

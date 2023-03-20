@@ -4,17 +4,46 @@
 
 The `SchemaScraper` class is the main interface to the API.
 
-An `SchemaScraper` is instantiated with a `schema` argument, which is a dictionary describing the shape of the data you wish to extract.
+It has one required parameter:
 
 * `schema` - A dictionary describing the shape of the data you wish to extract.
 
-The following parameters are optional:
+And the following optional parameters:
 
-* `models` - A list of models to use, in order of preference.  Defaults to `["gpt-3.5-turbo", "gpt-4"]`.  
-* `model_params` - A dictionary of parameters to pass to the underlying GPT model.  (See [OpenAI docs](https://platform.openai.com/docs/api-reference/create-completion) for details.)
-* `list_mode` - If `True`, the instructions and behavior will be slightly modified to better perform on pages with lists of similar items.
-* `extra_instructions` - Additional instructions to pass to the GPT model as a system prompt.
-* `split_length` - If set, the scraper will split the page into multiple calls, each of this length. (Only works with `list_mode`, requires passing a `css` or `xpath` selector when scraping.)
+* `models` - *list\[str\]* - A list of models to use, in order of preference.  Defaults to `["gpt-3.5-turbo", "gpt-4"]`.  
+* `model_params` - *dict* - A dictionary of parameters to pass to the underlying GPT model.  (See [OpenAI docs](https://platform.openai.com/docs/api-reference/create-completion) for details.)
+* `max_cost` -  *float* (dollars) - The maximum total cost of calls made using this scraper. This is set to 1 ($1.00) by default to avoid large unexpected charges.
+* `list_mode` - *bool* - If `True`, the instructions and behavior will be slightly modified to better perform on pages with lists of similar items.
+* `extra_instructions` - *list\[str\]* - Additional instructions to pass to the GPT model as a system prompt.
+* `preprocessors` - *list* - A list of **[preprocessors](#preprocessors)** to run on the HTML before sending it to the API. 
+* `split_length` - *int* - If set, the scraper will split the page into multiple calls, each of this length. See [auto-splitting](#auto-splitting) for details.
+
+### Preprocessors
+
+Preprocessors allow you to modify the HTML before it is sent to the API.
+
+Three preprocessors are included by default:
+
+* `CleanHTML` - Cleans the HTML using `lxml.html.clean.Cleaner`.
+* `XPath` - Applies an XPath selector to the HTML.
+* `CSS` - Applies a CSS selector to the HTML.
+
+Note: `CleanHTML` is always applied as it is part of `SchemaScraper._default_preprocessors`.
+
+You can add your own preprocessors by passing a list of callables to the `preprocessors` parameter.
+
+```python
+scraper = SchemaScraper(schema, preprocessors=[CSS("table")])
+```
+
+It is also possible to pass preprocessors at scrape time via the `extra_preprocessors` parameter:
+
+```python
+scraper = SchemaScraper(schema)
+scraper.scrape("https://example.com", extra_preprocessors=[CSS("table")])
+```
+
+Implementing your own preprocessor is simple, just create a callable that takes a `lxml.html.HtmlElement` and returns a list of `lxml.html.HtmlElement` objects.  Look at `preprocessors.py` for examples.
 
 ### Auto-splitting
 
@@ -22,7 +51,7 @@ It's worth mentioning how `split_length` works because it allows for some intere
 
 If you pass `split_length` to the scraper, it assumes the page is made of multiple similar sections and will try to split the page into multiple calls.  
 
-When you call the scrape function of an auto-splitting enabled scraper, you are required to pass a `css` or `xpath` selector to the function.  The resulting nodes will be combined into chunks no bigger than `split_length` tokens, sent to the API, and then stitched back together.
+When you call the scrape function of an auto-splitting enabled scraper, it is important to use a splitting preprocessor like `XPath` or `CSS`.  The resulting nodes will be combined into chunks no bigger than `split_length` tokens, sent to the API, and then stitched back together.
 
 This seems to work well for long lists of similar items, though whether it is worth the many calls is questionable.
 
@@ -36,11 +65,7 @@ scraper.scrape("https://example.com")
 ```
 
 * `url_or_html` - The first parameter should be a URL or HTML string to scrape.
-
-You can also pass a CSS or XPath selector as a keyword argument:
-
-* `css` - A CSS selector to use to filter the HTML before sending it to the API.
-* `xpath` - An XPath selector to use to filter the HTML before sending it to the API.
+* `extra_preprocessors` - A list of **[preprocessors](#preprocessors)** to run on the HTML before sending it to the API.
 
 
 It is also possible to call the scraper directly, which is equivalent to calling `scrape`:
@@ -52,13 +77,6 @@ scraper("https://example.com")
 scraper.scrape("https://example.com")
 ```
 
-### Selectors
-
-Pass the `css` or `xpath` arguments to the scraper to use a selector to narrow down the HTML before sending it to the API.
-
-```python
->>> scrape_legislators("https://www.ilga.gov/house/rep.asp?MemberID=3071", xpath="//table[1]")
-```
 
 ## `PaginatedSchemaScraper`
 
@@ -66,7 +84,19 @@ TODO: document this
 
 ## Exceptions
 
-A scrape can raise the following exceptions:
+The following exceptions can be raised by the scraper:
+
+(all are subclasses of `ScrapeghostError`)
+
+### `MaxCostExceeded`
+
+The maximum cost of the scraper has been exceeded.
+
+Raise the `max_cost` parameter to allow more calls to be made.
+
+### `PreprocessorError`
+
+A preprocessor encountered an error (such as returning an empty list of nodes).
 
 ### `TooManyTokens`
 
