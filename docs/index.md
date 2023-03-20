@@ -82,24 +82,10 @@ Read the [tutorial](tutorial.md) for a step-by-step guide to building a scraper.
 If you've installed the package (e.g. with `pipx`), you can use the `scrapeghost` command line tool to experiment.
 
 ```bash
-$ scrapeghost https://www.ncleg.gov/Members/Biography/S/436  \
-  --schema "{'first_name': 'str', 'last_name': 'str',
-             'photo_url': 'url', 'offices': [] }"  \
-  --gpt4
-
-{'first_name': 'Gale',
- 'last_name': 'Adcock',
- 'photo_url': 'https://www.ncleg.gov/Members/MemberImage/S/436/Low',
- 'offices': [
-    {'address': '16 West Jones Street, Rm. 1104',
-     'city': 'Raleigh', 'state': 'NC', 'zip': '27601',
-     'phone': '(919) 715-3036',
-     'email': 'Gale.Adcock@ncleg.gov',
-     'legislative_assistant': 'Elizabeth Sharpe',
-     'legislative_assistant_email': 'Elizabeth.Sharpe@ncleg.gov'
-    }
-  ]
-}
+--8<-- "docs/tutorial_code/cli.sh"
+```
+```json
+--8<-- "docs/tutorial_code/cli.log"
 ```
 
 See [the CLI docs](cli.md) for more details.
