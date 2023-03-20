@@ -7,10 +7,7 @@ import json
 import lxml.html
 import openai
 import requests
-from scrapeghost import SchemaScraper
-
-openai.organization = os.getenv("OPENAI_API_ORG")
-openai.api_key = os.getenv("OPENAI_API_KEY")
+from scrapeghost import SchemaScraper, CSS
 
 
 def get_urls():
@@ -32,7 +29,11 @@ scrape_legislators = SchemaScraper(
         "district": "string",
         "party": "string",
         "offices": [{"name": "string", "address": "string", "phone": "string"}],
-    }
+    },
+    models=["gpt-4"],
+    preprocessors=[
+        CSS("table"),
+    ],
 )
 
 
@@ -47,7 +48,7 @@ def main():
 
     legislators = []
     for url in urls:
-        legislator = scrape_legislators(url, css="table")
+        legislator = scrape_legislators(url)
         legislator["url"] = url
         legislators.append(legislator)
 

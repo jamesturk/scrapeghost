@@ -1,6 +1,6 @@
 import sys
 from pprint import pprint
-from scrapeghost import SchemaScraper
+from scrapeghost import SchemaScraper, CSS
 
 scrape_legislators = SchemaScraper(
     model="gpt-3.5-turbo",
@@ -22,7 +22,7 @@ def main():
     else:
         for url, css in examples:
             pprint(url)
-            pprint(scrape_legislators(url, css=css))
+            pprint(scrape_legislators(url, extra_preprocessors=[CSS(css)]))
 
 
 examples = [

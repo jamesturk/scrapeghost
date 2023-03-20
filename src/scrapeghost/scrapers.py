@@ -113,7 +113,6 @@ class SchemaScraper:
             "API request",
             model=model,
             html_tokens=tokens,
-            messages=self.system_messages,
         )
         start_t = time.time()
         completion = openai.ChatCompletion.create(
@@ -157,7 +156,12 @@ class SchemaScraper:
             last = i == len(self.models) - 1
             try:
                 return self._api_request(html, model)
-            except (openai.InvalidRequestError, BadStop, InvalidJSON) as e:
+            except (
+                openai.InvalidRequestError,
+                TooManyTokens,
+                BadStop,
+                InvalidJSON,
+            ) as e:
                 logger.warning(
                     "API request failed",
                     exception=str(e),
