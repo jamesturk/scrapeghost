@@ -5,3 +5,4 @@ from .scrapers import (
     PaginatedSchemaScraper,
     SchemaScraper,
 )
+from .utils import cost_estimate

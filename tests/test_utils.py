@@ -91,3 +91,8 @@ def test_select_tags_empty():
 )
 def test_cost_calc(model, pt, ct, total):
     assert utils._cost(model, pt, ct) == total
+
+
+def test_cost_estimate():
+    assert utils.cost_estimate("hello" * 1000, "gpt-3.5-turbo") == pytest.approx(0.003)
+    assert utils.cost_estimate("hello" * 1000, "gpt-4") == pytest.approx(0.06)

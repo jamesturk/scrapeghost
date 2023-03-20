@@ -105,3 +105,14 @@ def _max_tokens(model):
         "gpt-4": 8192,
         "gpt-3.5-turbo": 4096,
     }[model]
+
+
+def cost_estimate(html, model="gpt-4"):
+    """
+    Given HTML, return cost estimate in dollars.
+
+    This is a very rough estimate and not guaranteed to be accurate.
+    """
+    tokens = _tokens(model, html)
+    # assumes response is half as long as prompt, which is probably wrong
+    return _cost(model, tokens, tokens / 2)
