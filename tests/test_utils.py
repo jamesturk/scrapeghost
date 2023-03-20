@@ -27,18 +27,17 @@ def test_chunk_tags():
 
 
 def test_parse_html():
-    # HTML input is just cleaned
-    html = "<body>ventura</body>"
+    # spaces are collapsed
+    html = "<span>    ventura</span>"
     doc = utils._parse_url_or_html(html)
-    # body is cleaned away
-    assert doc.tag == "span"
+    assert utils._tostr(doc) == "<span> ventura</span>"
 
 
 def test_parse_url():
     # test that requests are made
     url = "https://www.example.com"
     doc = utils._parse_url_or_html(url)
-    assert doc.tag == "div"
+    assert doc.tag == "html"
 
 
 @pytest.mark.parametrize(

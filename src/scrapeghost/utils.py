@@ -1,5 +1,6 @@
+import re
 import lxml.html
-from lxml.html.clean import Cleaner
+import lxml.html.clean
 import structlog
 import requests
 import tiktoken
@@ -54,9 +55,9 @@ def _parse_url_or_html(url_or_html: str) -> lxml.html.Element:
     if url_or_html.startswith("http"):
         orig_url = url_or_html
         url_or_html = requests.get(url_or_html).text
+    # collapse whitespace
+    url_or_html = re.sub("[ \t]+", " ", url_or_html)
     logger.debug("got HTML", length=len(url_or_html), url=orig_url)
-    url_or_html = Cleaner().clean_html(url_or_html)
-    logger.debug("cleaned HTML", length=len(url_or_html))
     doc = lxml.html.fromstring(url_or_html)
     if orig_url:
         doc.make_links_absolute(orig_url)
