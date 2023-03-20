@@ -14,7 +14,4 @@ episode_scraper = SchemaScraper(
     preprocessors=[CSS("div.page-content")],
 )
 
-# pprint(episode_scraper(url))
-
-url = "https://comedybangbang.fandom.com/wiki/Welcome_to_Comedy_Bang_Bang"
 pprint(episode_scraper(url))

@@ -92,7 +92,7 @@ All for less than a penny!
 
 That was easy! Let's enhance our schema to include the list of guests as well as requesting the dates in a particular format.
 
-```python
+```python hl_lines="8-9"
 --8<-- "docs/tutorial_code/v3.py"
 ```
 
@@ -165,13 +165,20 @@ It takes a while, but if you can stick to GPT-3.5-Turbo it's only $0.13.
 
 It isn't perfect, it is quite slow and also adding extra fields to the JSON, but it gets the job done.  It is trivial to combine the output of `episode_list_scraper` with `episode_scraper` to get the metadata for all of the episodes.
 
-See the listing at the very end for the full program.
+If you want to see the full code, jump down to the [Putting it all Together](#putting-it-all-together) section.
 
 ## Next Steps
 
-This is still very much a proof of concept, but it does work.
+If you're planning to use this library, please know it is very much in flux and I can't commit to API stability yet.
 
-I'm interested in ease of use and developer experience, as well as improving the accuracy.  If you want to follow along, [the issues page](https://github.com/jamesturk/scrapeghost/issues) is a good picture of what I'm considering next.
+If you are going to try to scrape using GPT, it'd probably be good to read the [OpenAI API](openai.md) page to understand a little more about how the underlying API works.
+
+I'm still exploring ways to improve accuracy and the developer experience.  If you want to follow along, [the issues page](https://github.com/jamesturk/scrapeghost/issues) is a good picture of what I'm considering next.
+
+To see what other features are currently available, check out the [API Reference](api.md).
+
+You can also explore the [command line interface](cli.md) to see how you can use this library without writing any Python.
+
 
 ## Putting it all Together
 
