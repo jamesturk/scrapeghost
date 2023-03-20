@@ -1,4 +1,3 @@
-import pytest
 import lxml.html
 from scrapeghost.preprocessors import CleanHTML, XPath, CSS
 from scrapeghost.utils import _tostr
@@ -8,7 +7,9 @@ def test_clean_html():
     doc = lxml.html.fromstring(
         "<html><body style='background: blue;'><script>alert('hello')</script><noscript>here</noscript></body></html>"
     )
-    doc = CleanHTML()(doc)
+    tags = CleanHTML()(doc)
+    assert len(tags) == 1
+    doc = tags[0]
     assert _tostr(doc) == "<div><body><noscript>here</noscript></body></div>"
 
 

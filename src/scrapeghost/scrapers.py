@@ -49,7 +49,7 @@ class SchemaScraper:
         max_cost: float = 1,
         # instructions
         list_mode: bool = False,
-        extra_instructions: str = "",
+        extra_instructions: list[str] | None = None,
         # preprocessing
         preprocessors=None,
         split_length: int = 0,
@@ -86,7 +86,7 @@ class SchemaScraper:
             "Always use double quotes for strings and escape quotes with \\. Always omit trailing commas. "
         )
         if extra_instructions:
-            self.system_messages.append(extra_instructions)
+            self.system_messages.extend(extra_instructions)
 
         if preprocessors is None:
             self.preprocessors = self._default_preprocessors
@@ -202,15 +202,20 @@ class SchemaScraper:
         Returns:
             dict | list: The scraped data in the specified schema.
         """
+
+        # obtain an HTML document from the URL or HTML string
         doc = _parse_url_or_html(url_or_html)
 
+        # apply preprocessors, returning a list of tags
         tags = self._apply_preprocessors(doc, extra_preprocessors or [])
 
         if self.split_length:
+            # if split_length is set, split the tags into chunks and scrape each chunk
             chunks = _chunk_tags(tags, self.split_length, model=self.models[0])
             # flatten list of lists
             return [item for chunk in chunks for item in self._html_to_json(chunk)]
         else:
+            # otherwise, scrape the whole document as one chunk
             html = "\n".join(_tostr(t) for t in tags)
             return self._html_to_json(html)
 

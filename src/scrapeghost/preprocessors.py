@@ -25,7 +25,7 @@ class CleanHTML(Preprocessor):
 
     def __call__(self, doc: lxml.html.Element) -> lxml.html.Element:
         self.cleaner(doc)
-        return doc
+        return [doc]
 
 
 class XPath(Preprocessor):
