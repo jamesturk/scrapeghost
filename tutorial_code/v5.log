@@ -1,9 +1,8 @@
-2023-03-20 05:08:28 [debug    ] got HTML                       length=1425572 url=https://comedybangbang.fandom.com/wiki/Category:Episodes
-2023-03-20 05:08:28 [debug    ] preprocessor                   from_nodes=1 name=CleanHTML nodes=1
-2023-03-20 05:08:28 [debug    ] preprocessor                   from_nodes=1 name=CSS(.mw-parser-output a[class!='image link-internal']) nodes=857
-2023-03-20 05:08:28 [debug    ] chunked tags                   num=19 sizes=[2008, 2003, 2016, 2037, 2047, 2038, 2040, 2010, 2026, 2046, 2030, 2023, 1787, 2023, 2013, 2024, 2044, 2036, 2002]
-2023-03-20 05:08:28 [info     ] API request                    html_tokens=2008 model=gpt-3.5-turbo
-2023-03-20 05:10:41 [info     ] API response                   completion_tokens=2015 cost=0.008194 duration=132.27439975738525 finish_reason=length prompt_tokens=2082
-2023-03-20 05:10:41 [warning  ] API request failed             model=gpt-3.5-turbo
+2023-03-20 06:57:02 [warning  ] API request failed             model=gpt-3.5-turbo
 OpenAI did not stop: length (prompt_tokens=2082, completion_tokens=2015)
-2023-03-20 05:10:41 [info     ] API request                    html_tokens=2008 model=gpt-4
+2023-03-20 07:19:36 [warning  ] API request failed             model=gpt-3.5-turbo
+OpenAI did not stop: length (prompt_tokens=2110, completion_tokens=1987)
+[{'url': 'https://comedybangbang.fandom.com/wiki/Operation_Golden_Orb'}, {'url': 'https://comedybangbang.fandom.com/wiki/Bruba_Go_Do'}, {'url': 'https://comedybangbang.fandom.com/wiki/Hostage_Forecast'}]
+[{'url': 'https://comedybangbang.fandom.com/wiki/Never_Date_a_%22Brown%22', 'title': 'Never Date a "Brown"'}, {'url': 'https://comedybangbang.fandom.com/wiki/Reggaeton_Soundboard', 'title': 'Reggaeton Soundboard'}, {'url': 'https://comedybangbang.fandom.com/wiki/Welcome_to_Comedy_Bang_Bang', 'title': 'Welcome to Comedy Bang Bang'}]
+total: 851
+cost: 0.457462

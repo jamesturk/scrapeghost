@@ -11,7 +11,7 @@ schema = {
 
 episode_scraper = SchemaScraper(
     schema,
-    preprocessors=[CSS("div.page-content")],
+    extra_preprocessors=[CSS("div.page-content")],
 )
 
 pprint(episode_scraper(url))

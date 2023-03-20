@@ -814,7 +814,7 @@
 <span class="n">episode_scraper</span> <span class="o">=</span> <span class="n">SchemaScraper</span><span class="p">(</span>
     <span class="n">schema</span><span class="p">,</span>
 <span class="hll">    <span class="c1"># can pass preprocessor to constructor or at scrape time</span>
-</span><span class="hll">    <span class="n">preprocessors</span><span class="o">=</span><span class="p">[</span><span class="n">CSS</span><span class="p">(</span><span class="s2">&quot;div.page-content&quot;</span><span class="p">)],</span>
+</span><span class="hll">    <span class="n">extra_preprocessors</span><span class="o">=</span><span class="p">[</span><span class="n">CSS</span><span class="p">(</span><span class="s2">&quot;div.page-content&quot;</span><span class="p">)],</span>
 </span><span class="p">)</span>
 
 <span class="n">pprint</span><span class="p">(</span><span class="n">episode_scraper</span><span class="p">(</span><span class="n">url</span><span class="p">))</span>
@@ -850,7 +850,7 @@
 
 <span class="n">episode_scraper</span> <span class="o">=</span> <span class="n">SchemaScraper</span><span class="p">(</span>
     <span class="n">schema</span><span class="p">,</span>
-    <span class="n">preprocessors</span><span class="o">=</span><span class="p">[</span><span class="n">CSS</span><span class="p">(</span><span class="s2">&quot;div.page-content&quot;</span><span class="p">)],</span>
+    <span class="n">extra_preprocessors</span><span class="o">=</span><span class="p">[</span><span class="n">CSS</span><span class="p">(</span><span class="s2">&quot;div.page-content&quot;</span><span class="p">)],</span>
 <span class="p">)</span>
 
 <span class="n">pprint</span><span class="p">(</span><span class="n">episode_scraper</span><span class="p">(</span><span class="n">url</span><span class="p">))</span>
@@ -884,7 +884,7 @@
 <h3 id="getting-a-list-of-episodes">Getting a List of Episodes<a class="headerlink" href="#getting-a-list-of-episodes" title="Permanent link">&para;</a></h3>
 <p>Now that we have a scraper that can get the details of each episode, we need a scraper that can get a list of all of the episode URLs.</p>
 <p><a href="https://comedybangbang.fandom.com/wiki/Category:Episodes">https://comedybangbang.fandom.com/wiki/Category:Episodes</a> has a link to each of the episodes, perhaps we can just scrape that page?</p>
-<p><div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">scrapeghost</span> <span class="kn">import</span> <span class="n">SchemaScraper</span><span class="p">,</span> <span class="n">CSS</span>
+<p><div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">scrapeghost</span> <span class="kn">import</span> <span class="n">SchemaScraper</span>
 
 <span class="n">episode_list_scraper</span> <span class="o">=</span> <span class="n">SchemaScraper</span><span class="p">({</span><span class="s2">&quot;episode_urls&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;str&quot;</span><span class="p">]})</span>
 <span class="n">episode_list_scraper</span><span class="p">(</span><span class="s2">&quot;https://comedybangbang.fandom.com/wiki/Category:Episodes&quot;</span><span class="p">)</span>
@@ -902,7 +902,7 @@
     <span class="s2">&quot;url&quot;</span><span class="p">,</span>
     <span class="n">list_mode</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
     <span class="n">split_length</span><span class="o">=</span><span class="mi">2048</span><span class="p">,</span>
-    <span class="n">preprocessors</span><span class="o">=</span><span class="p">[</span><span class="n">CSS</span><span class="p">(</span><span class="s2">&quot;.mw-parser-output a[class!=&#39;image link-internal&#39;]&quot;</span><span class="p">)],</span>
+    <span class="n">extra_preprocessors</span><span class="o">=</span><span class="p">[</span><span class="n">CSS</span><span class="p">(</span><span class="s2">&quot;.mw-parser-output a[class!=&#39;image link-internal&#39;]&quot;</span><span class="p">)],</span>
 <span class="p">)</span>
 <span class="n">episode_urls</span> <span class="o">=</span> <span class="n">episode_list_scraper</span><span class="p">(</span>
     <span class="s2">&quot;https://comedybangbang.fandom.com/wiki/Category:Episodes&quot;</span>
@@ -918,19 +918,20 @@
 <p>Finally, we set the <code>split_length</code> to 2048. This is the maximum number of tokens that will be passed to OpenAI in a single request.</p>
 <p>It's a good idea to set this to about half the token limit, since the response counts against the token limit as well.</p>
 <p>This winds up needing to make over twenty requests, but gets the list of episode URLs after a few minutes.</p>
-<div class="highlight"><pre><span></span><code>2023-03-20 05:08:28 [debug    ] got HTML                       length=1425572 url=https://comedybangbang.fandom.com/wiki/Category:Episodes
-2023-03-20 05:08:28 [debug    ] preprocessor                   from_nodes=1 name=CleanHTML nodes=1
-2023-03-20 05:08:28 [debug    ] preprocessor                   from_nodes=1 name=CSS(.mw-parser-output a[class!=&#39;image link-internal&#39;]) nodes=857
-2023-03-20 05:08:28 [debug    ] chunked tags                   num=19 sizes=[2008, 2003, 2016, 2037, 2047, 2038, 2040, 2010, 2026, 2046, 2030, 2023, 1787, 2023, 2013, 2024, 2044, 2036, 2002]
-2023-03-20 05:08:28 [info     ] API request                    html_tokens=2008 model=gpt-3.5-turbo
-2023-03-20 05:10:41 [info     ] API response                   completion_tokens=2015 cost=0.008194 duration=132.27439975738525 finish_reason=length prompt_tokens=2082
-2023-03-20 05:10:41 [warning  ] API request failed             model=gpt-3.5-turbo
+<div class="highlight"><pre><span></span><code>2023-03-20 06:57:02 [warning  ] API request failed             model=gpt-3.5-turbo
 OpenAI did not stop: length (prompt_tokens=2082, completion_tokens=2015)
-2023-03-20 05:10:41 [info     ] API request                    html_tokens=2008 model=gpt-4
+2023-03-20 07:19:36 [warning  ] API request failed             model=gpt-3.5-turbo
+OpenAI did not stop: length (prompt_tokens=2110, completion_tokens=1987)
+[{&#39;url&#39;: &#39;https://comedybangbang.fandom.com/wiki/Operation_Golden_Orb&#39;}, {&#39;url&#39;: &#39;https://comedybangbang.fandom.com/wiki/Bruba_Go_Do&#39;}, {&#39;url&#39;: &#39;https://comedybangbang.fandom.com/wiki/Hostage_Forecast&#39;}]
+[{&#39;url&#39;: &#39;https://comedybangbang.fandom.com/wiki/Never_Date_a_%22Brown%22&#39;, &#39;title&#39;: &#39;Never Date a &quot;Brown&quot;&#39;}, {&#39;url&#39;: &#39;https://comedybangbang.fandom.com/wiki/Reggaeton_Soundboard&#39;, &#39;title&#39;: &#39;Reggaeton Soundboard&#39;}, {&#39;url&#39;: &#39;https://comedybangbang.fandom.com/wiki/Welcome_to_Comedy_Bang_Bang&#39;, &#39;title&#39;: &#39;Welcome to Comedy Bang Bang&#39;}]
+total: 851
+cost: 0.457462
 </code></pre></div>
-<p>It takes a while, but if you can stick to GPT-3.5-Turbo it's only $0.13.</p>
-<p>It isn't perfect, it is quite slow and also adding extra fields to the JSON, but it gets the job done.  It is trivial to combine the output of <code>episode_list_scraper</code> with <code>episode_scraper</code> to get the metadata for all of the episodes.</p>
-<p>If you want to see the full code, jump down to the <a href="#putting-it-all-together">Putting it all Together</a> section.</p>
+<p>As you can see, a couple of requests automatically fell back to GPT-4, raising the cost to about $0.46 for the entire scrape.</p>
+<p>If you lower the <code>split_token</code> a bit further takes even longer, but if you can stick to GPT-3.5-Turbo it's only $0.13.</p>
+<p>It isn't perfect, it is quite slow and you might also notice it
+sometimes adds unnecessary "name" fields to the JSON, but it gets the job done.</p>
+<p>If you want to see the pieces put together, jump down to the <a href="#putting-it-all-together">Putting it all Together</a> section.</p>
 <h2 id="next-steps">Next Steps<a class="headerlink" href="#next-steps" title="Permanent link">&para;</a></h2>
 <p>If you're planning to use this library, please know it is very much in flux and I can't commit to API stability yet.</p>
 <p>If you are going to try to scrape using GPT, it'd probably be good to read the <a href="../openai/">OpenAI API</a> page to understand a little more about how the underlying API works.</p>
@@ -947,7 +948,7 @@ OpenAI did not stop: length (prompt_tokens=2082, completion_tokens=2015)
     <span class="n">split_length</span><span class="o">=</span><span class="mi">2048</span><span class="p">,</span>
     <span class="c1"># restrict this to GPT-3.5-Turbo to keep the cost down</span>
     <span class="n">models</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;gpt-3.5-turbo&quot;</span><span class="p">],</span>
-    <span class="n">preprocessors</span><span class="o">=</span><span class="n">CSS</span><span class="p">(</span><span class="s2">&quot;.mw-parser-output a[class!=&#39;image link-internal&#39;]&quot;</span><span class="p">),</span>
+    <span class="n">extra_preprocessors</span><span class="o">=</span><span class="n">CSS</span><span class="p">(</span><span class="s2">&quot;.mw-parser-output a[class!=&#39;image link-internal&#39;]&quot;</span><span class="p">),</span>
 <span class="p">)</span>
 
 <span class="n">episode_scraper</span> <span class="o">=</span> <span class="n">SchemaScraper</span><span class="p">(</span>
@@ -958,7 +959,7 @@ OpenAI did not stop: length (prompt_tokens=2082, completion_tokens=2015)
         <span class="s2">&quot;guests&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;str&quot;</span><span class="p">],</span>
         <span class="s2">&quot;characters&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;str&quot;</span><span class="p">],</span>
     <span class="p">},</span>
-    <span class="n">preprocessors</span><span class="o">=</span><span class="n">CSS</span><span class="p">(</span><span class="s2">&quot;div.page-content&quot;</span><span class="p">),</span>
+    <span class="n">extra_preprocessors</span><span class="o">=</span><span class="n">CSS</span><span class="p">(</span><span class="s2">&quot;div.page-content&quot;</span><span class="p">),</span>
 <span class="p">)</span>
 
 <span class="n">episode_urls</span> <span class="o">=</span> <span class="n">episode_list_scraper</span><span class="p">(</span>

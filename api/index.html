@@ -398,6 +398,13 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#postprocessors" class="md-nav__link">
+    Postprocessors
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#auto-splitting" class="md-nav__link">
     Auto-splitting
   </a>
@@ -607,6 +614,13 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#postprocessors" class="md-nav__link">
+    Postprocessors
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#auto-splitting" class="md-nav__link">
     Auto-splitting
   </a>
@@ -712,7 +726,8 @@
 <li><code>max_cost</code> -  <em>float</em> (dollars) - The maximum total cost of calls made using this scraper. This is set to 1 ($1.00) by default to avoid large unexpected charges.</li>
 <li><code>list_mode</code> - <em>bool</em> - If <code>True</code>, the instructions and behavior will be slightly modified to better perform on pages with lists of similar items.</li>
 <li><code>extra_instructions</code> - <em>list[str]</em> - Additional instructions to pass to the GPT model as a system prompt.</li>
-<li><code>preprocessors</code> - <em>list</em> - A list of <strong><a href="#preprocessors">preprocessors</a></strong> to run on the HTML before sending it to the API. </li>
+<li><code>extra_preprocessors</code> - <em>list</em> - A list of <strong><a href="#preprocessors">preprocessors</a></strong> to run on the HTML before sending it to the API.  This is in addition to the default preprocessors.</li>
+<li><code>postprocessors</code> - <em>list</em> - A list of <strong><a href="#postprocessors">postprocessors</a></strong> to run on the results before returning them.  If provided, this will override the default postprocessors.</li>
 <li><code>split_length</code> - <em>int</em> - If set, the scraper will split the page into multiple calls, each of this length. See <a href="#auto-splitting">auto-splitting</a> for details.</li>
 </ul>
 <h3 id="preprocessors">Preprocessors<a class="headerlink" href="#preprocessors" title="Permanent link">&para;</a></h3>
@@ -724,14 +739,17 @@
 <li><code>CSS</code> - Applies a CSS selector to the HTML.</li>
 </ul>
 <p>Note: <code>CleanHTML</code> is always applied as it is part of <code>SchemaScraper._default_preprocessors</code>.</p>
-<p>You can add your own preprocessors by passing a list of callables to the <code>preprocessors</code> parameter.</p>
-<div class="highlight"><pre><span></span><code><span class="n">scraper</span> <span class="o">=</span> <span class="n">SchemaScraper</span><span class="p">(</span><span class="n">schema</span><span class="p">,</span> <span class="n">preprocessors</span><span class="o">=</span><span class="p">[</span><span class="n">CSS</span><span class="p">(</span><span class="s2">&quot;table&quot;</span><span class="p">)])</span>
+<p>You can add your own preprocessors by passing a list of callables to the <code>extra_preprocessors</code> parameter.</p>
+<div class="highlight"><pre><span></span><code><span class="n">scraper</span> <span class="o">=</span> <span class="n">SchemaScraper</span><span class="p">(</span><span class="n">schema</span><span class="p">,</span> <span class="n">extra_preprocessors</span><span class="o">=</span><span class="p">[</span><span class="n">CSS</span><span class="p">(</span><span class="s2">&quot;table&quot;</span><span class="p">)])</span>
 </code></pre></div>
-<p>It is also possible to pass preprocessors at scrape time via the <code>extra_preprocessors</code> parameter:</p>
+<p>It is also possible to pass preprocessors at scrape time:</p>
 <div class="highlight"><pre><span></span><code><span class="n">scraper</span> <span class="o">=</span> <span class="n">SchemaScraper</span><span class="p">(</span><span class="n">schema</span><span class="p">)</span>
 <span class="n">scraper</span><span class="o">.</span><span class="n">scrape</span><span class="p">(</span><span class="s2">&quot;https://example.com&quot;</span><span class="p">,</span> <span class="n">extra_preprocessors</span><span class="o">=</span><span class="p">[</span><span class="n">CSS</span><span class="p">(</span><span class="s2">&quot;table&quot;</span><span class="p">)])</span>
 </code></pre></div>
 <p>Implementing your own preprocessor is simple, just create a callable that takes a <code>lxml.html.HtmlElement</code> and returns a list of <code>lxml.html.HtmlElement</code> objects.  Look at <code>preprocessors.py</code> for examples.</p>
+<h3 id="postprocessors">Postprocessors<a class="headerlink" href="#postprocessors" title="Permanent link">&para;</a></h3>
+<p>Postprocessors take the results of the API call and modify them before returning them to the user.</p>
+<p>The default postprocessor is <code>JSONPostprocessor</code> which converts the results to JSON.</p>
 <h3 id="auto-splitting">Auto-splitting<a class="headerlink" href="#auto-splitting" title="Permanent link">&para;</a></h3>
 <p>It's worth mentioning how <code>split_length</code> works because it allows for some interesting possibilities but can also become quite expensive.</p>
 <p>If you pass <code>split_length</code> to the scraper, it assumes the page is made of multiple similar sections and will try to split the page into multiple calls.  </p>
