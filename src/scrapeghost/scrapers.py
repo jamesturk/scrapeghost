@@ -1,6 +1,7 @@
 import json
 import time
 import openai
+import openai.error
 import lxml.html
 from .utils import (
     logger,
@@ -12,6 +13,12 @@ from .utils import (
     _tokens,
 )
 from .preprocessors import CleanHTML
+
+RETRY_ERRORS = (
+    openai.error.RateLimitError,
+    openai.error.Timeout,
+    openai.error.APIConnectionError,
+)
 
 
 class ScrapeghostError(Exception):
@@ -152,12 +159,16 @@ class SchemaScraper:
             raise InvalidJSON(choice.message.content)
 
     def _html_to_json(self, html: str) -> list | dict:
-        for i, model in enumerate(self.models):
-            last = i == len(self.models) - 1
+        attempts = 0
+        model_index = 0
+        model = self.models[model_index]
+        max_attempts = 2
+
+        while True:
             try:
+                attempts += 1
                 return self._api_request(html, model)
-            except (
-                openai.InvalidRequestError,
+            except RETRY_ERRORS + (
                 TooManyTokens,
                 BadStop,
                 InvalidJSON,
@@ -166,9 +177,21 @@ class SchemaScraper:
                     "API request failed",
                     exception=str(e),
                     model=model,
+                    attempts=attempts,
                 )
-                if last:
-                    raise
+                if attempts < max_attempts:
+                    if isinstance(e, RETRY_ERRORS):
+                        # try again with same model
+                        # TODO: adjust sleep
+                        time.sleep(60)
+                        continue
+                    elif model_index < len(self.models) - 1:
+                        # try next model
+                        model_index += 1
+                        time.sleep(5)
+                        continue
+                # could not retry for whatever reason
+                raise
 
     def _apply_preprocessors(
         self, doc: lxml.html.Element, extra_preprocessors: list
