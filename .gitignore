@@ -5,3 +5,5 @@ env.sh
 dist
 openai-key
 site
+htmlcov
+.coverage

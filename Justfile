@@ -1,5 +1,5 @@
 test:
-	poetry run pytest
+	poetry run pytest --cov=src/ --cov-report html
 
 lint:
 	poetry run ruff
