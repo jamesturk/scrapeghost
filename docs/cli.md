@@ -13,7 +13,6 @@ In order to use the CLI, the `OPENAI_API_KEY` environment variable must be set.
 ```{bash}
 scrapeghost --help
  Usage: scrapeghost [OPTIONS] URL                                                                                                                                            
-                                                                                                                                                                             
 ╭─ Arguments ─────────────────────────────────────────────────────────────────────────────────────────╮
 │ *    url      TEXT  [default: None] [required]                                                      │
 ╰─────────────────────────────────────────────────────────────────────────────────────────────────────╯
