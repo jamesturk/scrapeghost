@@ -100,9 +100,9 @@ While the bulk of the work is done by the GPT model, `scrapeghost` provides a nu
 
 **Preprocessing**
 
-* **HTML cleaning** - Remove unnecessary HTML tags and attributes to reduce the size of the HTML sent to the model.
-* **CSS and XPath selectors** - Pre-filter the HTML to send to the model by writing a single CSS or XPath selector.
-* **Auto-splitting** - Optionally split the HTML into multiple calls to the model, each of a specified length.
+* **HTML cleaning** - Remove unnecessary HTML to reduce the size and cost of API requests.
+* **CSS and XPath selectors** - Pre-filter HTML by writing a single CSS or XPath selector.
+* **Auto-splitting** - Optionally split the HTML into multiple calls to the model, allowing for larger pages to be scraped.
 
 **Postprocessing**
 
