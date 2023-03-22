@@ -9,7 +9,7 @@ edit_uri: edit/main/docs/
 
 theme:
   logo: assets/scrapeghost.png
-  #logo: assets/white-spatula.svg
+  favicon: assets/scrapeghost.png
   name: material
   palette:
     - scheme: slate

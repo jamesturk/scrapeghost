@@ -28,12 +28,12 @@
      inkscape:document-units="mm"
      showgrid="false"
      inkscape:zoom="14.4375"
-     inkscape:cx="16.242424"
-     inkscape:cy="33.177489"
+     inkscape:cx="20.744589"
+     inkscape:cy="23.619048"
      inkscape:window-width="1212"
      inkscape:window-height="916"
      inkscape:window-x="45"
-     inkscape:window-y="38"
+     inkscape:window-y="39"
      inkscape:window-maximized="0"
      inkscape:current-layer="layer1" />
   <defs
@@ -74,20 +74,30 @@
          id="path2242-0"
          sodipodi:nodetypes="cccc" />
     </clipPath>
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath9159">
+      <path
+         style="fill:#eb1b00;fill-opacity:1;stroke:none;stroke-width:0.227038;stroke-linejoin:round;stroke-opacity:1"
+         d="M 1.2405665,3.1204018 H 11.459433 L 6.4591094,12.257991 Z"
+         id="path9161"
+         sodipodi:nodetypes="cccc" />
+    </clipPath>
   </defs>
   <g
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1">
     <path
-       style="fill:#eb1b00;fill-opacity:1;stroke:#000000;stroke-width:0.255728;stroke-opacity:1"
-       d="M 0.2768956,1.4193526 H 12.428364 L 6.4823747,11.168436 Z"
+       style="fill:#eb1b00;fill-opacity:1;stroke:#000000;stroke-width:0.290269;stroke-linejoin:round;stroke-opacity:1"
+       d="M 0.18157812,0.19044819 H 12.518421 L 6.4817237,12.562279 Z"
        id="path178"
        sodipodi:nodetypes="cccc" />
     <g
        id="g2368"
        style="stroke:#000000;stroke-opacity:1"
-       transform="matrix(0.95956607,0,0,0.97355226,0.25938547,-1.2097981)">
+       transform="matrix(1.2072614,0,0,1.3118321,-1.3161099,-3.8468822)"
+       clip-path="url(#clipPath9159)">
       <g
          id="g2545">
         <ellipse
@@ -143,7 +153,7 @@
     <ellipse
        id="path2208"
        style="fill:#aa0000;stroke:#000000;stroke-width:0.255728"
-       cx="6.3526301"
+       cx="6.3499999"
        cy="8.3830481"
        rx="0.002332225"
        ry="0.0023662183" />
