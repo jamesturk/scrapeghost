@@ -3,8 +3,7 @@ from scrapeghost import SchemaScraper, CSS
 
 episode_list_scraper = SchemaScraper(
     '{"url": "url"}',
-    list_mode=True,
-    split_length=2048,
+    auto_split_length=2048,
     # restrict this to GPT-3.5-Turbo to keep the cost down
     models=["gpt-3.5-turbo"],
     extra_preprocessors=CSS(".mw-parser-output a[class!='image link-internal']"),
