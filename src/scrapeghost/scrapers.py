@@ -24,7 +24,7 @@ from .utils import (
     _tokens,
 )
 from .preprocessors import CleanHTML
-from .postprocessors import JSONPostprocessor
+from .postprocessors import JSONPostprocessor, PydanticPostprocessor
 
 RETRY_ERRORS = (
     openai.error.RateLimitError,
@@ -68,7 +68,17 @@ class SchemaScraper:
         if "temperature" not in model_params:
             model_params["temperature"] = 0
 
-        self.json_schema = json.dumps(schema)
+        use_pydantic = False
+        if isinstance(schema, (list, dict)):
+            self.json_schema = json.dumps(schema)
+        elif isinstance(schema, str):
+            self.json_schema = schema
+        elif hasattr(schema, "schema"):
+            self.json_schema = schema.schema()
+            use_pydantic = True
+        else:
+            raise ValueError(f"Invalid schema: {schema}")
+
         if auto_split_length:
             json_type = "list of JSON objects"
         else:
@@ -92,6 +102,8 @@ class SchemaScraper:
 
         if postprocessors is None:
             self.postprocessors = self._default_postprocessors
+            if use_pydantic:
+                self.postprocessors.append(PydanticPostprocessor(schema))
         else:
             self.postprocessors = postprocessors
 

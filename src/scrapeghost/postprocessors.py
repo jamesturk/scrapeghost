@@ -1,7 +1,7 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING
 import json
-from .errors import InvalidJSON
+from .errors import InvalidJSON, PostprocessingError
 from .response import Response
 
 if TYPE_CHECKING:
@@ -14,7 +14,7 @@ class JSONPostprocessor:
 
     def __call__(self, response: Response, scraper: SchemaScraper) -> Response:
         if not isinstance(response.data, str):
-            raise InvalidJSON(f"Response data is not a string: {response.data}")
+            raise PostprocessingError(f"Response data is not a string: {response.data}")
 
         try:
             response.data = json.loads(response.data)
@@ -22,7 +22,9 @@ class JSONPostprocessor:
             # call nudge and try again
             response = self.nudge_json(scraper, response)
             if not isinstance(response.data, str):
-                raise InvalidJSON(f"Response data is not a string: {response.data}")
+                raise PostprocessingError(
+                    f"Response data is not a string: {response.data}"
+                )
             try:
                 response.data = json.loads(response.data)
             except json.JSONDecodeError:
@@ -52,9 +54,16 @@ class JSONPostprocessor:
         )
 
 
-# class PydanticPostprocessor:
-#     def __init__(self, model):
-#         self.pydantic_model = model
+class PydanticPostprocessor:
+    def __init__(self, model):
+        self.pydantic_model = model
 
-#     def __call__(self, data: dict) -> dict:
-#         return self.pydantic_model(**data).dict()
+    def __call__(self, response: Response, scraper: SchemaScraper) -> Response:
+        if not isinstance(response.data, dict):
+            raise PostprocessingError(
+                "PydanticPostprocessor expecting a dict, "
+                "ensure JSONPostprocessor or equivalent is used first."
+            )
+        # will raise pydantic ValidationError if invalid
+        response.data = self.pydantic_model(**response.data)
+        return response

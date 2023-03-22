@@ -116,4 +116,4 @@ While the bulk of the work is done by the GPT model, `scrapeghost` provides a nu
 
 * Scrapers keep running totals of how many tokens have been sent and received, so costs can be tracked.
 * Support for automatic fallbacks (e.g. use cost-saving GPT-3.5-Turbo by default, fall back to GPT-4 if needed.)
-* Future versions will allow setting a budget and stopping the scraper if the budget is exceeded.
+* Allows setting a budget and stops the scraper if the budget is exceeded.

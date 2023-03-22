@@ -20,3 +20,7 @@ class BadStop(ScrapeghostError):
 
 class InvalidJSON(ScrapeghostError):
     pass
+
+
+class PostprocessingError(ScrapeghostError):
+    pass
