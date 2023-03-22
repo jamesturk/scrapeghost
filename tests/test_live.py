@@ -65,7 +65,11 @@ def test_simple_html():
     scraper = SchemaScraper(actor_schema)
     html = simple_page.format(content=dave)
     result = scraper.scrape(html)
-    assert result == {
+    assert 0.0001 < result.cost < 0.001
+    assert 200 < result.prompt_tokens < 300
+    assert 100 < result.completion_tokens < 200
+    assert result.api_time > 0
+    assert result.data == {
         "actor": "Dave Bautista",
         "image": "https://example.com/dave.jpg",
         "roles": [
@@ -84,7 +88,7 @@ def test_simple_html_different_content():
     scraper = SchemaScraper(actor_schema)
     html = simple_page.format(content=sam)
     result = scraper.scrape(html)
-    assert result == {
+    assert result.data == {
         "actor": "Sam Richardson",
         "image": "https://example.com/sam.jpg",
         "roles": [
@@ -106,7 +110,7 @@ def test_simple_html_split_length():
     result = scraper.scrape(html)
     # Interestingly, the non-structured data is excluded from
     # the list mode result.
-    assert result == [
+    assert result.data == [
         {
             "actor": "Sam Richardson",
             "image": "https://example.com/sam.jpg",

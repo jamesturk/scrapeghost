@@ -28,7 +28,8 @@ def _chunk_tags(tags: list, max_tokens: int, model: str) -> list[str]:
     for tag in tags:
         tag_html = _tostr(tag)
         tag_tokens = _tokens(model, tag_html)
-        if chunk_tokens + tag_tokens > max_tokens:
+        # if adding tag would exceed max_tokens, start new chunk (unless chunk is empty)
+        if chunk_tokens + tag_tokens > max_tokens and chunk_tokens > 0:
             chunks.append(chunk)
             chunk_sizes.append(chunk_tokens)
             chunk = ""

@@ -3,12 +3,14 @@ import time
 import openai
 import openai.error
 import lxml.html
+
 from .errors import (
     TooManyTokens,
     MaxCostExceeded,
     PreprocessorError,
     BadStop,
 )
+from .response import Response
 from .utils import (
     logger,
     _tostr,
@@ -92,7 +94,7 @@ class SchemaScraper:
 
         self.auto_split_length = auto_split_length
 
-    def _raw_api_request(self, model: str, messages: list[str]):
+    def _raw_api_request(self, model: str, messages: list[str], response: Response):
         """
         Make an OpenAPI request and return the raw response.
         """
@@ -106,17 +108,23 @@ class SchemaScraper:
             messages=messages,
             **self.model_params,
         )
+        elapsed = time.time() - start_t
         p_tokens = completion.usage.prompt_tokens
         c_tokens = completion.usage.completion_tokens
         cost = _cost(model, c_tokens, p_tokens)
         logger.info(
             "API response",
-            duration=time.time() - start_t,
+            duration=elapsed,
             prompt_tokens=p_tokens,
             completion_tokens=c_tokens,
             finish_reason=completion.choices[0].finish_reason,
             cost=cost,
         )
+        response.api_responses.append(completion)
+        response.prompt_tokens += p_tokens
+        response.completion_tokens += c_tokens
+        response.cost += cost
+        response.api_time += elapsed
         self.total_prompt_tokens += p_tokens
         self.total_completion_tokens += c_tokens
         self.total_cost += cost
@@ -129,7 +137,7 @@ class SchemaScraper:
             )
         return choice.message.content
 
-    def _api_request(self, html: str) -> str:
+    def _api_request(self, html: str, response: Response) -> str:
         """
         Make an OpenAPI request, with retries and model upgrades.
         """
@@ -163,6 +171,7 @@ class SchemaScraper:
                     + [
                         {"role": "user", "content": html},
                     ],
+                    response=response,
                 )
             except RETRY_ERRORS + (
                 TooManyTokens,
@@ -209,11 +218,11 @@ class SchemaScraper:
 
         return nodes
 
-    def _html_to_json(self, html: str) -> list | dict:
+    def _html_to_json(self, html: str, r: Response) -> list | dict:
         """
         Make request and run postprocessors.
         """
-        result = self._api_request(html)
+        result = self._api_request(html, r)
 
         for p in self.postprocessors:
             result = p(result, self)
@@ -235,22 +244,31 @@ class SchemaScraper:
         Returns:
             dict | list: The scraped data in the specified schema.
         """
+        response = Response()
 
+        response.url = url_or_html if url_or_html.startswith("http") else None
         # obtain an HTML document from the URL or HTML string
         doc = _parse_url_or_html(url_or_html)
+        response.parsed_html = doc
 
         # apply preprocessors, returning a list of tags
         tags = self._apply_preprocessors(doc, extra_preprocessors or [])
 
+        response.auto_split_length = self.auto_split_length
         if self.auto_split_length:
             # if auto_split_length is set, split the tags into chunks
             chunks = _chunk_tags(tags, self.auto_split_length, model=self.models[0])
             # flatten list of lists
-            return [item for chunk in chunks for item in self._html_to_json(chunk)]
+            result = [
+                item for chunk in chunks for item in self._html_to_json(chunk, response)
+            ]
         else:
             # otherwise, scrape the whole document as one chunk
             html = "\n".join(_tostr(t) for t in tags)
-            return self._html_to_json(html)
+            result = self._html_to_json(html, response)
+
+        response.data = result
+        return response
 
     # allow the class to be called like a function
     __call__ = scrape
