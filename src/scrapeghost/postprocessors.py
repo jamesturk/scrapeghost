@@ -3,7 +3,7 @@ from .errors import InvalidJSON
 
 
 class JSONPostprocessor:
-    def __init__(self, nudge=True):
+    def __init__(self, nudge: bool = True):
         self.nudge = nudge
 
     def __call__(self, data: str, scraper) -> dict:
@@ -16,7 +16,7 @@ class JSONPostprocessor:
             except json.JSONDecodeError:
                 raise InvalidJSON("Invalid JSON: {data}")
 
-    def nudge_json(self, scraper, data):
+    def nudge_json(self, scraper, data: str) -> str:
         return scraper._raw_api_request(
             scraper.models[0],
             [

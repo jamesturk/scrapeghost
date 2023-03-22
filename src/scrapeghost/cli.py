@@ -17,7 +17,7 @@ def scrape(
     verbosity: int = typer.Option(
         0, "-v", "--verbose", count=True, help="Verbosity level 0-2"
     ),
-):
+) -> None:
     if schema_file:
         with open(schema_file) as f:
             schema = f.read()
@@ -38,7 +38,7 @@ def scrape(
     typer.echo(json.dumps(result))
 
 
-def main():
+def main() -> None:
     typer.run(scrape)
 
 

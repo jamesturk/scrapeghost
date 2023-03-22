@@ -65,7 +65,7 @@ def _parse_url_or_html(url_or_html: str) -> lxml.html.Element:
     return doc
 
 
-def _cost(model, prompt_tokens, completion_tokens):
+def _cost(model: str, prompt_tokens: int, completion_tokens: int) -> float:
     pt_cost, ct_cost = {
         "gpt-4": (0.03, 0.06),
         "gpt-3.5-turbo": (0.002, 0.002),
@@ -73,19 +73,19 @@ def _cost(model, prompt_tokens, completion_tokens):
     return prompt_tokens / 1000 * pt_cost + completion_tokens / 1000 * ct_cost
 
 
-def _tokens(model, html):
+def _tokens(model: str, html: str) -> int:
     encoding = tiktoken.encoding_for_model(model)
     return len(encoding.encode(html))
 
 
-def _max_tokens(model):
+def _max_tokens(model: str) -> int:
     return {
         "gpt-4": 8192,
         "gpt-3.5-turbo": 4096,
     }[model]
 
 
-def cost_estimate(html, model="gpt-4"):
+def cost_estimate(html: str, model: str = "gpt-4") -> float:
     """
     Given HTML, return cost estimate in dollars.
 
@@ -93,4 +93,4 @@ def cost_estimate(html, model="gpt-4"):
     """
     tokens = _tokens(model, html)
     # assumes response is half as long as prompt, which is probably wrong
-    return _cost(model, tokens, tokens / 2)
+    return _cost(model, tokens, tokens // 2)

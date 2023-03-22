@@ -3,6 +3,7 @@ import time
 import openai
 import openai.error
 import lxml.html
+from typing import Callable
 
 from .errors import (
     TooManyTokens,
@@ -31,31 +32,31 @@ RETRY_ERRORS = (
 
 
 class SchemaScraper:
-    _default_preprocessors = [
+    _default_preprocessors: list[Callable] = [
         CleanHTML(),
     ]
-    _default_postprocessors = [
+    _default_postprocessors: list[Callable] = [
         JSONPostprocessor(),
     ]
 
     def __init__(
         self,
-        schema: dict,
+        schema: dict | str | list,
         *,
         # OpenAI parameters
-        models: str = ["gpt-3.5-turbo", "gpt-4"],
+        models: list[str] = ["gpt-3.5-turbo", "gpt-4"],
         model_params: dict | None = None,
         max_cost: float = 1,
         # instructions
         extra_instructions: list[str] | None = None,
         # preprocessing and postprocessing
-        extra_preprocessors=None,
-        postprocessors=None,
+        extra_preprocessors: list | None = None,
+        postprocessors: list | None = None,
         auto_split_length: int = 0,
     ):
         self.total_prompt_tokens = 0
         self.total_completion_tokens = 0
-        self.total_cost = 0
+        self.total_cost: float = 0
         self.max_cost = max_cost
         self.models = models
         if model_params is None:
@@ -94,7 +95,9 @@ class SchemaScraper:
 
         self.auto_split_length = auto_split_length
 
-    def _raw_api_request(self, model: str, messages: list[str], response: Response):
+    def _raw_api_request(
+        self, model: str, messages: list[dict[str, str]], response: Response
+    ) -> str:
         """
         Make an OpenAPI request and return the raw response.
         """
@@ -233,7 +236,7 @@ class SchemaScraper:
         self,
         url_or_html: str,
         extra_preprocessors: list | None = None,
-    ) -> dict | list:
+    ) -> Response:
         """
         Scrape a URL and return a list or dict.
 
@@ -285,7 +288,7 @@ class SchemaScraper:
 
 
 class PaginatedSchemaScraper(SchemaScraper):
-    def __init__(self, schema, **kwargs):
+    def __init__(self, schema: list | str | dict, **kwargs):
         schema = {
             "results": schema,
             "next_link": "url",

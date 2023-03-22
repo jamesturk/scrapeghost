@@ -17,7 +17,7 @@ class CleanHTML(Preprocessor):
     Uses lxml.html.clean.Cleaner.
     """
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs: dict) -> None:
         self.cleaner = lxml.html.clean.Cleaner(**kwargs)
 
     def __str__(self) -> str:
