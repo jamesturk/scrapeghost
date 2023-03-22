@@ -14,3 +14,8 @@ repos:
   rev: 22.10.0
   hooks:
     - id: black
+# - repo: https://github.com/pre-commit/mirrors-mypy
+#   rev: 'v1.1.1'
+#   args: [src]
+#   hooks:
+#     -   id: mypy

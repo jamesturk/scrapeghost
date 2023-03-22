@@ -34,9 +34,9 @@ jobs:
     - name: install dependencies
       run: poetry install
 
-    # - name: lint with mypy
-    #   run: poetry run mypy src
     - name: lint with ruff
       run: poetry run ruff src tests
+    - name: lint with mypy
+      run: poetry run mypy src
     - name: pytest
       run: poetry run pytest
