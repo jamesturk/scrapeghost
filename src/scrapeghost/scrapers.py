@@ -273,6 +273,16 @@ class SchemaScraper:
     # allow the class to be called like a function
     __call__ = scrape
 
+    def stats(self) -> dict:
+        """
+        Return stats about the scraper.
+        """
+        return {
+            "total_prompt_tokens": self.total_prompt_tokens,
+            "total_completion_tokens": self.total_completion_tokens,
+            "total_cost": self.total_cost,
+        }
+
 
 class PaginatedSchemaScraper(SchemaScraper):
     def __init__(self, schema, **kwargs):
