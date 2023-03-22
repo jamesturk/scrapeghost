@@ -1,20 +1,42 @@
 # FAQ 
 
-## Is this practical?
+*Mostly questions I've been frequently asking myself.*
 
-When I started this project, I really didn't think it would be. I was aiming at a fun proof of concept, but I've been surprised by the results.
+## Is this practical? Or just a toy?
 
-Time will tell if this is a practical tool, but I'm somewhat hopeful now.
+When I started the project, I think I assumed it was a toy. But I've been surprised by the results.
+
+After my initial GPT-4 experiments, [Simon Willison asked](https://mastodon.social/@simon@simonwillison.net/110042216119791967) how well it'd work on GPT-3.5-turbo. I hadn't realized the enormous price difference, and without switching to 3.5-turbo, I'd probably have decided it was too expensive to be practical.
+
+Once I realized 3.5-turbo was an option, I was able to spend a lot more time tinkering with the prompt and token reduction.  It also got me thinking more about what kind of tooling you'd want around something like this if you were going to actually use it.
+
+It's certainly started to feel more practical now, I'm not sure I'd call it a toy anymore.
+
+## Why would I use this instead of a traditional scraper?
+
+It is definitely great for quick prototypes. With the CLI tool, you can try a scrape in a *single command*.
+This means you don't need to sink a bunch of time into deciding if it's worth it or not.
+
+Or, imagine a scraper that needs to run infrequently on a page that is likely to break in subtle ways between scrapes.
+A CSS/XPath-based scraper will often be broken in small ways between the first run and another run months later, there's a decent chance that those changes won't break a GPT-based scraper.
+
+It is also quite good at dealing with unstructured text. A list of items in a sentence can be hard to handle with a traditional scraper, but GPT handles many of these cases without much fuss.
+
+## What are the disadvantages?
+
+* It is terrible at pages that are large lists (like a directory), they need to be broken into multiple chunks and the API calls can be quite expensive in terms of time and money.
+* It is quite opaque.  When it fails, it can be hard to tell why.
+* If the page is dynamic, this approach won't work at all.  It requires all of the content to be available in the HTML.
+* It is *slow*.  A single request can take up to a minute.
+* Right now, it only works with OpenAI, that means you'll be dependent on their pricing and availability. It also means
+you need to be comfortable sending your data to a third party.
+
 
 ## Why not use a different model?
 
-This was a toy project, not an attempt to build a production system.  I'm open to trying other models if you have suggestions.
+I'm open to trying other models if you have suggestions.  (See <https://github.com/jamesturk/scrapeghost/issues/18>)
 
-## What about pages where the data is loaded dynamically?
-
-This won't work for those out of the box.  It should be possible to use something like [selenium](https://selenium-python.readthedocs.io/) to load the page and then pass the rendered HTML to `scrapeghost`.
-
-## What if a page is too big?
+## What can I do if a page is too big?
 
 Try the following:
 
@@ -38,7 +60,7 @@ I do think there is room for hybrid approaches, and I plan to continue to explor
 
 It is possible, but in practice hasn't been observed as a major problem yet.
 
-Because the *temperature* is zero, the output is fully deterministic and seems less likely to hallucinate data.
+Because the [*temperature*](https://platform.openai.com/docs/api-reference/completions) is zero, the output is fully deterministic and seems less likely to hallucinate data.
 
 It is definitely possible however, and future versions of this tool will allow for automated error checking (and possibly correction).
 

@@ -5,6 +5,9 @@ lint:
 	poetry run ruff
 	poetry run black --check
 
+docs:
+	poetry run mkdocs serve
+
 tutorial_output:
 	poetry run python docs/tutorial_code/v2.py > docs/tutorial_code/v2.log
 	poetry run python docs/tutorial_code/v3.py > docs/tutorial_code/v3.log

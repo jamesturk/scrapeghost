@@ -19,49 +19,6 @@ And the following optional parameters:
 * `postprocessors` - *list* - A list of **[postprocessors](#postprocessors)** to run on the results before returning them.  If provided, this will override the default postprocessors.
 * `split_length` - *int* - If set, the scraper will split the page into multiple calls, each of this length. See [auto-splitting](#auto-splitting) for details.
 
-### Preprocessors
-
-Preprocessors allow you to modify the HTML before it is sent to the API.
-
-Three preprocessors are included by default:
-
-* `CleanHTML` - Cleans the HTML using `lxml.html.clean.Cleaner`.
-* `XPath` - Applies an XPath selector to the HTML.
-* `CSS` - Applies a CSS selector to the HTML.
-
-Note: `CleanHTML` is always applied as it is part of `SchemaScraper._default_preprocessors`.
-
-You can add your own preprocessors by passing a list of callables to the `extra_preprocessors` parameter.
-
-```python
-scraper = SchemaScraper(schema, extra_preprocessors=[CSS("table")])
-```
-
-It is also possible to pass preprocessors at scrape time:
-
-```python
-scraper = SchemaScraper(schema)
-scraper.scrape("https://example.com", extra_preprocessors=[CSS("table")])
-```
-
-Implementing your own preprocessor is simple, just create a callable that takes a `lxml.html.HtmlElement` and returns a list of `lxml.html.HtmlElement` objects.  Look at `preprocessors.py` for examples.
-
-### Postprocessors
-
-Postprocessors take the results of the API call and modify them before returning them to the user.
-
-The default postprocessor is `JSONPostprocessor` which converts the results to JSON.
-
-
-### Auto-splitting
-
-It's worth mentioning how `split_length` works because it allows for some interesting possibilities but can also become quite expensive.
-
-If you pass `split_length` to the scraper, it assumes the page is made of multiple similar sections and will try to split the page into multiple calls.  
-
-When you call the scrape function of an auto-splitting enabled scraper, it is important to use a splitting preprocessor like `XPath` or `CSS`.  The resulting nodes will be combined into chunks no bigger than `split_length` tokens, sent to the API, and then stitched back together.
-
-This seems to work well for long lists of similar items, though whether it is worth the many calls is questionable.
 
 ## `scrape`
 
