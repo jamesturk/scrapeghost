@@ -1,22 +1,29 @@
+from __future__ import annotations
+from typing import TYPE_CHECKING
 import json
 from .errors import InvalidJSON
+from .response import Response
+
+if TYPE_CHECKING:
+    from .scrapers import SchemaScraper
 
 
 class JSONPostprocessor:
     def __init__(self, nudge: bool = True):
         self.nudge = nudge
 
-    def __call__(self, data: str, scraper) -> dict:
+    def __call__(self, response: Response, scraper: SchemaScraper) -> Response:
         try:
-            return json.loads(data)
+            response.data = json.loads(response.data)
         except json.JSONDecodeError:
-            data = self.nudge_json(scraper, data)
+            response = self.nudge_json(scraper, response)
             try:
-                return json.loads(data)
+                response.data = json.loads(response.data)
             except json.JSONDecodeError:
                 raise InvalidJSON("Invalid JSON: {data}")
+        return response
 
-    def nudge_json(self, scraper, data: str) -> str:
+    def nudge_json(self, scraper: SchemaScraper, response: Response) -> str:
         return scraper._raw_api_request(
             scraper.models[0],
             [
@@ -31,14 +38,15 @@ class JSONPostprocessor:
                 {"role": "system", "content": ("Only reply with JSON, nothing else. ")},
                 {"role": "user", "content": "{'bad': 'json', }"},
                 {"role": "assistant", "content": '{"bad": "json"}'},
-                {"role": "user", "content": data},
+                {"role": "user", "content": response.data},
             ],
+            response,
         )
 
 
-class PydanticPostprocessor:
-    def __init__(self, model):
-        self.pydantic_model = model
+# class PydanticPostprocessor:
+#     def __init__(self, model):
+#         self.pydantic_model = model
 
-    def __call__(self, data: dict) -> dict:
-        return self.pydantic_model(**data).dict()
+#     def __call__(self, data: dict) -> dict:
+#         return self.pydantic_model(**data).dict()

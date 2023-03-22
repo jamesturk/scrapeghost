@@ -1,5 +1,5 @@
-import json
 import time
+import json
 import openai
 import openai.error
 import lxml.html
@@ -15,7 +15,7 @@ from .response import Response
 from .utils import (
     logger,
     _tostr,
-    _chunk_tags,
+    # _chunk_tags,
     _parse_url_or_html,
     _cost,
     _max_tokens,
@@ -97,7 +97,7 @@ class SchemaScraper:
 
     def _raw_api_request(
         self, model: str, messages: list[dict[str, str]], response: Response
-    ) -> str:
+    ) -> Response:
         """
         Make an OpenAPI request and return the raw response.
         """
@@ -138,9 +138,10 @@ class SchemaScraper:
                 f"(prompt_tokens={p_tokens}, "
                 f"completion_tokens={c_tokens})"
             )
-        return choice.message.content
+        response.data = choice.message.content
+        return response
 
-    def _api_request(self, html: str, response: Response) -> str:
+    def _api_request(self, html: str, response: Response) -> Response:
         """
         Make an OpenAPI request, with retries and model upgrades.
         """
@@ -165,7 +166,7 @@ class SchemaScraper:
                     model=model,
                     html_tokens=tokens,
                 )
-                return self._raw_api_request(
+                self._raw_api_request(
                     model=model,
                     messages=[
                         {"role": "system", "content": msg}
@@ -176,6 +177,7 @@ class SchemaScraper:
                     ],
                     response=response,
                 )
+                return response
             except RETRY_ERRORS + (
                 TooManyTokens,
                 BadStop,
@@ -221,16 +223,10 @@ class SchemaScraper:
 
         return nodes
 
-    def _html_to_json(self, html: str, r: Response) -> list | dict:
+    def _html_to_json(self, html: str, r: Response) -> Response:
         """
         Make request and run postprocessors.
         """
-        result = self._api_request(html, r)
-
-        for p in self.postprocessors:
-            result = p(result, self)
-
-        return result
 
     def scrape(
         self,
@@ -258,19 +254,26 @@ class SchemaScraper:
         tags = self._apply_preprocessors(doc, extra_preprocessors or [])
 
         response.auto_split_length = self.auto_split_length
-        if self.auto_split_length:
-            # if auto_split_length is set, split the tags into chunks
-            chunks = _chunk_tags(tags, self.auto_split_length, model=self.models[0])
-            # flatten list of lists
-            result = [
-                item for chunk in chunks for item in self._html_to_json(chunk, response)
-            ]
-        else:
-            # otherwise, scrape the whole document as one chunk
-            html = "\n".join(_tostr(t) for t in tags)
-            result = self._html_to_json(html, response)
+        # if self.auto_split_length:
+        #     # if auto_split_length is set, split the tags into chunks
+        #     chunks = _chunk_tags(tags, self.auto_split_length, model=self.models[0])
+        #     # flatten list of lists
+        #     result = [
+        #         item
+        #         for chunk in chunks
+        #         for item in self._html_to_json(chunk, response).data
+        #     ]
+        # else:
+        # # otherwise, scrape the whole document as one chunk
+        html = "\n".join(_tostr(t) for t in tags)
+        # result = self._html_to_json(html, response)
 
-        response.data = result
+        response = self._api_request(html, response)
+
+        # apply postprocessors
+        for pp in self.postprocessors:
+            response = pp(response, self)
+
         return response
 
     # allow the class to be called like a function
@@ -287,29 +290,29 @@ class SchemaScraper:
         }
 
 
-class PaginatedSchemaScraper(SchemaScraper):
-    def __init__(self, schema: list | str | dict, **kwargs):
-        schema = {
-            "results": schema,
-            "next_link": "url",
-        }
-        super().__init__(schema, **kwargs)
-        self.system_messages.append("If there is no next page, set next_link to null.")
+# class PaginatedSchemaScraper(SchemaScraper):
+#     def __init__(self, schema: list | str | dict, **kwargs: Any):
+#         schema = {
+#             "results": schema,
+#             "next_link": "url",
+#         }
+#         super().__init__(schema, **kwargs)
+#       self.system_messages.append("If there is no next page, set next_link to null.")
 
-    def scrape(self, url, **kwargs):
-        results = []
-        seen_urls = set()
-        while url:
-            logger.debug("page", url=url)
-            page = super().scrape(url, **kwargs)
-            logger.debug(
-                "results",
-                next_link=page["next_link"],
-                added_results=len(page["results"]),
-            )
-            results.extend(page["results"])
-            seen_urls.add(url)
-            url = page["next_link"]
-            if url in seen_urls:
-                break
-        return results
+#     def scrape(self, url: str, **kwargs: Any):
+#         results = []
+#         seen_urls = set()
+#         while url:
+#             logger.debug("page", url=url)
+#             page = super().scrape(url, **kwargs)
+#             logger.debug(
+#                 "results",
+#                 next_link=page["next_link"],
+#                 added_results=len(page["results"]),
+#             )
+#             results.extend(page["results"])
+#             seen_urls.add(url)
+#             url = page["next_link"]
+#             if url in seen_urls:
+#                 break
+#         return results
