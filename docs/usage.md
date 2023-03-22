@@ -89,11 +89,18 @@ schema = {"name": "str", "committees": [], "bio": "str"}
 scraper = SchemaScraper(
     schema,
     models=["gpt-4"],
-    extra_instructions=["Put the legislator's bio in the 'bio' field."],
+    extra_instructions=["Put the legislator's bio in the 'bio' field. Summarize it so that it is no longer than 3 sentences."],
 )
 scraper.scrape("https://norton.house.gov/about/full-biography")
 ```
-```log
+```json
+{'name': 'Representative Eleanor Holmes Norton',
+ 'committees': [
+    'House Subcommittee on Highways and Transit',
+    'Committee on Oversight and Reform',
+    'Committee on Transportation and Infrastructure'
+    ],
+  'bio': 'Congresswoman Eleanor Holmes Norton has been serving as the congresswoman for the District of Columbia since 1991. She is the Chair of the House Subcommittee on Highways and Transit and serves on two committees: the Committee on Oversight and Reform and the Committee on Transportation and Infrastructure. Before her congressional service, President Jimmy Carter appointed her to serve as the first woman to chair the U.S. Equal Employment Opportunity Commission.'}
 ```
 
 These instructions can be useful for refining the results, but they are not required.

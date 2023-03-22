@@ -15,9 +15,9 @@ And the following optional parameters:
 * `max_cost` -  *float* (dollars) - The maximum total cost of calls made using this scraper. This is set to 1 ($1.00) by default to avoid large unexpected charges.
 * `list_mode` - *bool* - If `True`, the instructions and behavior will be slightly modified to better perform on pages with lists of similar items.
 * `extra_instructions` - *list\[str\]* - Additional instructions to pass to the GPT model as a system prompt.
-* `extra_preprocessors` - *list* - A list of **[preprocessors](#preprocessors)** to run on the HTML before sending it to the API.  This is in addition to the default preprocessors.
-* `postprocessors` - *list* - A list of **[postprocessors](#postprocessors)** to run on the results before returning them.  If provided, this will override the default postprocessors.
-* `split_length` - *int* - If set, the scraper will split the page into multiple calls, each of this length. See [auto-splitting](#auto-splitting) for details.
+* `extra_preprocessors` - *list* - A list of **[preprocessors](usage.md#preprocessors)** to run on the HTML before sending it to the API.  This is in addition to the default preprocessors.
+* `postprocessors` - *list* - A list of **[postprocessors](usage.md#postprocessors)** to run on the results before returning them.  If provided, this will override the default postprocessors.
+* `split_length` - *int* - If set, the scraper will split the page into multiple calls, each of this length. See [auto-splitting](usage.md#list-mode--auto-splitting) for details.
 
 
 ## `scrape`
@@ -30,7 +30,7 @@ scraper.scrape("https://example.com")
 ```
 
 * `url_or_html` - The first parameter should be a URL or HTML string to scrape.
-* `extra_preprocessors` - A list of **[preprocessors](#preprocessors)** to run on the HTML before sending it to the API.
+* `extra_preprocessors` - A list of **[preprocessors](usage.md#preprocessors)** to run on the HTML before sending it to the API.
 
 
 It is also possible to call the scraper directly, which is equivalent to calling `scrape`:
