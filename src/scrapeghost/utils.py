@@ -4,6 +4,7 @@ import lxml.html.clean
 import structlog
 import requests
 import tiktoken
+from .response import Response
 
 
 logger = structlog.get_logger("scrapeghost")
@@ -94,3 +95,25 @@ def cost_estimate(html: str, model: str = "gpt-4") -> float:
     tokens = _tokens(model, html)
     # assumes response is half as long as prompt, which is probably wrong
     return _cost(model, tokens, tokens // 2)
+
+
+def _combine_responses(responses: list[Response]) -> Response:
+    """
+    Given a list of Response objects, return a single Response object
+    that combines all the data.
+    """
+    return Response(
+        url=responses[0].url,
+        parsed_html=responses[0].parsed_html,
+        auto_split_length=responses[0].auto_split_length,
+        api_responses=[
+            api_resp for resp in responses for api_resp in resp.api_responses
+        ],
+        total_cost=sum([resp.total_cost for resp in responses]),
+        total_prompt_tokens=sum([resp.total_prompt_tokens for resp in responses]),
+        total_completion_tokens=sum(
+            [resp.total_completion_tokens for resp in responses]
+        ),
+        api_time=sum([resp.api_time for resp in responses]),
+        data=[item for resp in responses for item in resp.data],
+    )

@@ -1,5 +1,6 @@
 import time
 import json
+import dataclasses
 import openai
 import openai.error
 import lxml.html
@@ -15,8 +16,9 @@ from .response import Response
 from .utils import (
     logger,
     _tostr,
-    # _chunk_tags,
+    _chunk_tags,
     _parse_url_or_html,
+    _combine_responses,
     _cost,
     _max_tokens,
     _tokens,
@@ -100,6 +102,13 @@ class SchemaScraper:
     ) -> Response:
         """
         Make an OpenAPI request and return the raw response.
+
+        * model - the OpenAI model to use
+        * messages - the messages to send to the API
+        * response - the Response object to augment
+
+        Augments the response object with the API response, prompt tokens,
+        completion tokens, and cost.
         """
         if self.total_cost > self.max_cost:
             raise MaxCostExceeded(
@@ -123,10 +132,13 @@ class SchemaScraper:
             finish_reason=completion.choices[0].finish_reason,
             cost=cost,
         )
+
+        # Note: All modifications to response should be additive, so that
+        #       this method can be called multiple times.
         response.api_responses.append(completion)
-        response.prompt_tokens += p_tokens
-        response.completion_tokens += c_tokens
-        response.cost += cost
+        response.total_prompt_tokens += p_tokens
+        response.total_completion_tokens += c_tokens
+        response.total_cost += cost
         response.api_time += elapsed
         self.total_prompt_tokens += p_tokens
         self.total_completion_tokens += c_tokens
@@ -144,11 +156,17 @@ class SchemaScraper:
     def _api_request(self, html: str, response: Response) -> Response:
         """
         Make an OpenAPI request, with retries and model upgrades.
+
+        * html - the HTML to send to the API
+        * response - the Response object to augment
         """
         attempts = 0
         model_index = 0
         model = self.models[model_index]
         max_attempts = 2
+
+        # make a copy so each request has its own response object
+        response = dataclasses.replace(response)
 
         if not html:
             raise ValueError("html parameter cannot be empty")
@@ -223,10 +241,11 @@ class SchemaScraper:
 
         return nodes
 
-    def _html_to_json(self, html: str, r: Response) -> Response:
-        """
-        Make request and run postprocessors.
-        """
+    def _apply_postprocessors(self, response: Response) -> Response:
+        # apply postprocessors
+        for pp in self.postprocessors:
+            response = pp(response, self)
+        return response
 
     def scrape(
         self,
@@ -247,34 +266,31 @@ class SchemaScraper:
 
         response.url = url_or_html if url_or_html.startswith("http") else None
         # obtain an HTML document from the URL or HTML string
-        doc = _parse_url_or_html(url_or_html)
-        response.parsed_html = doc
+        response.parsed_html = _parse_url_or_html(url_or_html)
 
         # apply preprocessors, returning a list of tags
-        tags = self._apply_preprocessors(doc, extra_preprocessors or [])
+        tags = self._apply_preprocessors(
+            response.parsed_html, extra_preprocessors or []
+        )
 
         response.auto_split_length = self.auto_split_length
-        # if self.auto_split_length:
-        #     # if auto_split_length is set, split the tags into chunks
-        #     chunks = _chunk_tags(tags, self.auto_split_length, model=self.models[0])
-        #     # flatten list of lists
-        #     result = [
-        #         item
-        #         for chunk in chunks
-        #         for item in self._html_to_json(chunk, response).data
-        #     ]
-        # else:
-        # # otherwise, scrape the whole document as one chunk
-        html = "\n".join(_tostr(t) for t in tags)
-        # result = self._html_to_json(html, response)
+        if self.auto_split_length:
+            # if auto_split_length is set, split the tags into chunks
+            chunks = _chunk_tags(tags, self.auto_split_length, model=self.models[0])
 
-        response = self._api_request(html, response)
-
-        # apply postprocessors
-        for pp in self.postprocessors:
-            response = pp(response, self)
-
-        return response
+            # collect responses from each chunk
+            all_responses = []
+            for chunk in chunks:
+                # make a copy so each chunk has its own response object
+                response = dataclasses.replace(response)
+                response = self._api_request(chunk, response)
+                all_responses.append(self._apply_postprocessors(response))
+            return _combine_responses(all_responses)
+        else:
+            # otherwise, scrape the whole document as one chunk
+            html = "\n".join(_tostr(t) for t in tags)
+            response = self._api_request(html, response)
+            return self._apply_postprocessors(response)
 
     # allow the class to be called like a function
     __call__ = scrape

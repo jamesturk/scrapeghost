@@ -20,7 +20,7 @@ class JSONPostprocessor:
             try:
                 response.data = json.loads(response.data)
             except json.JSONDecodeError:
-                raise InvalidJSON("Invalid JSON: {data}")
+                raise InvalidJSON(response.data)
         return response
 
     def nudge_json(self, scraper: SchemaScraper, response: Response) -> str:

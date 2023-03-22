@@ -1,10 +1,10 @@
 # Usage
 
-## Request Lifecycle
+## Request Data Flow
 
 Since most of the work is done by the API, the primary purpose of `scrapeghost` is to make it easier to pass HTML and get valid output.
 
-The request lifecycle is as follows:
+To this end, it is useful to understand the data flow:
 
 1. The page HTML is passed through any [preprocessors](#preprocessors).
 
@@ -22,11 +22,11 @@ The request lifecycle is as follows:
 
     b. Custom postprocessors can also execute here.
 
-You can modify nearly any part of the request lifecycle to suit your needs.  (See [Customization](#customization) for more details.)
+You can modify nearly any part of the process to suit your needs.  (See [Customization](#customization) for more details.)
 
 ### Auto-splitting
 
-While the request lifecycle above covers most cases, there is one special case that is worth mentioning.
+While the flow above covers most cases, there is one special case that is worth mentioning.
 
 If you set the `auto_split_length` parameter to a positive integer, the HTML will be split into multiple requests where each
 request aims to be no larger than `auto_split_length` tokens.

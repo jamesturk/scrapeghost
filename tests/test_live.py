@@ -65,9 +65,9 @@ def test_simple_html():
     scraper = SchemaScraper(actor_schema)
     html = simple_page.format(content=dave)
     result = scraper.scrape(html)
-    assert 0.0001 < result.cost < 0.001
-    assert 200 < result.prompt_tokens < 300
-    assert 100 < result.completion_tokens < 200
+    assert 0.0001 < result.total_cost < 0.001
+    assert 200 < result.total_prompt_tokens < 300
+    assert 100 < result.total_completion_tokens < 200
     assert result.api_time > 0
     assert result.data == {
         "actor": "Dave Bautista",
@@ -118,7 +118,7 @@ def test_simple_html_split_length():
                 {"name": "The Afterparty", "character": "Aniq"},
                 {"name": "Veep", "character": "Richard Splett"},
                 {"name": "Detroiters", "character": "Sam Duvet"},
-                # {"name": "ITYSL", "character": "Baby of the Year Host"},
+                {"name": "ITYSL", "character": "Baby of the Year Host"},
             ],
         },
         {
@@ -129,7 +129,7 @@ def test_simple_html_split_length():
                 {"name": "Spectre", "character": "Mr. Hinx"},
                 {"name": "Blade Runner 2049", "character": "Sapper Morton"},
                 {"name": "Glass Onion", "character": "Duke Cody"},
-                # {"name": "Dune", "character": "Glossu Rabban Harkonnen"},
+                {"name": "Dune", "character": "Glossu Rabban Harkonnen"},
             ],
         },
     ]
