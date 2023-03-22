@@ -8,6 +8,7 @@ repo_name: jamesturk/scrapeghost
 edit_uri: edit/main/docs/
 
 theme:
+  logo: assets/scrapeghost.png
   #logo: assets/white-spatula.svg
   name: material
   palette:
