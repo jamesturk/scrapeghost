@@ -141,17 +141,17 @@ If you have go this far, you may want to just extract links using `lxml.html` or
 
 But let's imagine that for some reason you don't want to, perhaps this is a one-off project and even a relatively expensive request is worth it.
 
-`SchemaScraper` has a few options that will help, we'll change our scraper to use `list_mode` and `split_length`.
+`SchemaScraper` has a few options that will help, we'll change our scraper to use `auto_split_length`.
 
 ```python
 --8<-- "docs/tutorial_code/v5.py"
 ```
 
-`list_mode=True` alters the prompt and response format so that instead of returning a single JSON object, it returns a list of objects where each should match your provided `schema`.
+`auto_split_length=True` alters the prompt and response format so that instead of returning a single JSON object, it returns a list of objects where each should match your provided `schema`.
 
 We alter the `schema` to just be a single string because we're only interested in the URL.
 
-Finally, we set the `split_length` to 2048. This is the maximum number of tokens that will be passed to OpenAI in a single request.
+Finally, we set the `auto_split_length` to 2048. This is the maximum number of tokens that will be passed to OpenAI in a single request.
 
 It's a good idea to set this to about half the token limit, since the response counts against the token limit as well.
 

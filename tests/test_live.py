@@ -5,7 +5,7 @@ This means they require an API key, and cost money to run.
 """
 import pytest
 import os
-from scrapeghost import SchemaScraper
+from scrapeghost import SchemaScraper, CSS
 
 api_key_is_set = os.getenv("OPENAI_API_KEY", "")
 
@@ -25,7 +25,7 @@ simple_page = """
 """
 
 dave = """
-<div>
+<div class="person">
 <h1>Dave Bautista</h1>
 <img src="https://example.com/dave.jpg" />
 <ul>
@@ -39,7 +39,7 @@ dave = """
 """
 
 sam = """
-<div>
+<div class="person">
 <h1>Sam Richardson</h1>
 <img src="https://example.com/sam.jpg" />
 <ul>
@@ -97,8 +97,11 @@ def test_simple_html_different_content():
 
 
 @pytest.mark.skipif(not api_key_is_set, reason="requires API key")
-def test_simple_html_list_mode():
-    scraper = SchemaScraper(actor_schema, list_mode=True)
+def test_simple_html_split_length():
+    # use the shortest split length possible to ensure each piece gets own split
+    scraper = SchemaScraper(
+        actor_schema, auto_split_length=1, extra_preprocessors=[CSS(".person")]
+    )
     html = simple_page.format(content=sam + dave)
     result = scraper.scrape(html)
     # Interestingly, the non-structured data is excluded from

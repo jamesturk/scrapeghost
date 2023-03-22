@@ -24,9 +24,12 @@ The request lifecycle is as follows:
 
 You can modify nearly any part of the request lifecycle to suit your needs.  (See [Customization](#customization) for more details.)
 
-### List Mode & Auto-splitting
+### Auto-splitting
 
-While the request lifecycle above covers most cases, there is one special case that is worth mentioning: **list mode**.
+While the request lifecycle above covers most cases, there is one special case that is worth mentioning.
+
+If you set the `auto_split_length` parameter to a positive integer, the HTML will be split into multiple requests where each
+request aims to be no larger than `auto_split_length` tokens.
 
 !!! warning
 
@@ -34,12 +37,9 @@ While the request lifecycle above covers most cases, there is one special case t
 
     While this seems to work well for long lists of similar items, the question of it is worth the time and money is up to you, writing a bit of code is probably the better option in most cases.
 
-Instead of recombining the results of the `XPath` or `CSS` preprocessor, the results are instead chunked into smaller pieces (<= `split_length`) and sent to the API separately.
+Instead of recombining the results of the `XPath` or `CSS` preprocessor, the results are instead chunked into smaller pieces (<= `auto_split_length`) and sent to the API separately.
 
-The instructions are modified slightly, indicating that your schema is for a list of similar items.
-
-
-TODO: Unify the parameters for list mode and auto-splitting.
+The instructions are also modified slightly, indicating that your schema is for a list of similar items.
 
 ## Customization
 

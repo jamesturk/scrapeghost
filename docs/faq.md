@@ -44,7 +44,7 @@ Try the following:
 
 2. Pre-process the HTML. Trim tags or entire sections you don't need.
 
-3. Finally, you can use the `split_length` parameter to split the page into smaller chunks.  This only works for list-type pages, and requires a good choice of selector to split the page up.
+3. Finally, you can use the `auto_split_length` parameter to split the page into smaller chunks.  This only works for list-type pages, and requires a good choice of selector to split the page up.
 
 ## Why not ask the scraper to write CSS / XPath selectors?
 

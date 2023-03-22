@@ -13,11 +13,10 @@ And the following optional parameters:
 * `models` - *list\[str\]* - A list of models to use, in order of preference.  Defaults to `["gpt-3.5-turbo", "gpt-4"]`.  
 * `model_params` - *dict* - A dictionary of parameters to pass to the underlying GPT model.  (See [OpenAI docs](https://platform.openai.com/docs/api-reference/create-completion) for details.)
 * `max_cost` -  *float* (dollars) - The maximum total cost of calls made using this scraper. This is set to 1 ($1.00) by default to avoid large unexpected charges.
-* `list_mode` - *bool* - If `True`, the instructions and behavior will be slightly modified to better perform on pages with lists of similar items.
 * `extra_instructions` - *list\[str\]* - Additional instructions to pass to the GPT model as a system prompt.
 * `extra_preprocessors` - *list* - A list of **[preprocessors](usage.md#preprocessors)** to run on the HTML before sending it to the API.  This is in addition to the default preprocessors.
 * `postprocessors` - *list* - A list of **[postprocessors](usage.md#postprocessors)** to run on the results before returning them.  If provided, this will override the default postprocessors.
-* `split_length` - *int* - If set, the scraper will split the page into multiple calls, each of this length. See [auto-splitting](usage.md#list-mode--auto-splitting) for details.
+* `auto_split_length` - *int* - If set, the scraper will split the page into multiple calls, each of this length. See [auto-splitting](usage.md#auto-splitting) for details.
 
 
 ## `scrape`
@@ -71,7 +70,7 @@ This indicates that the HTML is too large to be processed by the API.
 
 !!! tip
 
-    Consider using the `css` or `xpath` selectors to reduce the number of tokens being sent, or use the `split_length` parameter to split the request into multiple requests if necessary.
+    Consider using the `css` or `xpath` selectors to reduce the number of tokens being sent, or use the `auto_split_length` parameter to split the request into multiple requests if necessary.
 
 ### `BadStop`
 
@@ -81,7 +80,7 @@ Indicates that OpenAI ran out of space before the stop token was reached.
 
     OpenAI considers both the input and the response tokens when determining if the token limit has been exceeded.
 
-    If you are using `split_length`, consider decreasing the value to leave more space for responses.
+    If you are using `auto_split_length`, consider decreasing the value to leave more space for responses.
 
 ### `InvalidJSON`
 

@@ -45,12 +45,11 @@ class SchemaScraper:
         model_params: dict | None = None,
         max_cost: float = 1,
         # instructions
-        list_mode: bool = False,
         extra_instructions: list[str] | None = None,
         # preprocessing and postprocessing
         extra_preprocessors=None,
         postprocessors=None,
-        split_length: int = 0,
+        auto_split_length: int = 0,
     ):
         self.total_prompt_tokens = 0
         self.total_completion_tokens = 0
@@ -65,12 +64,10 @@ class SchemaScraper:
             model_params["temperature"] = 0
 
         self.json_schema = json.dumps(schema)
-        if list_mode:
+        if auto_split_length:
             json_type = "list of JSON objects"
         else:
             json_type = "JSON object"
-            if split_length:
-                raise ValueError("list_mode must be True if split_length is set")
 
         self.system_messages = [
             f"For the given HTML, convert to a {json_type} matching this schema: "
@@ -93,7 +90,7 @@ class SchemaScraper:
         else:
             self.postprocessors = postprocessors
 
-        self.split_length = split_length
+        self.auto_split_length = auto_split_length
 
     def _raw_api_request(self, model: str, messages: list[str]):
         """
@@ -245,9 +242,9 @@ class SchemaScraper:
         # apply preprocessors, returning a list of tags
         tags = self._apply_preprocessors(doc, extra_preprocessors or [])
 
-        if self.split_length:
-            # if split_length is set, split the tags into chunks and scrape each chunk
-            chunks = _chunk_tags(tags, self.split_length, model=self.models[0])
+        if self.auto_split_length:
+            # if auto_split_length is set, split the tags into chunks
+            chunks = _chunk_tags(tags, self.auto_split_length, model=self.models[0])
             # flatten list of lists
             return [item for chunk in chunks for item in self._html_to_json(chunk)]
         else:
@@ -265,7 +262,7 @@ class PaginatedSchemaScraper(SchemaScraper):
             "results": schema,
             "next_link": "url",
         }
-        super().__init__(schema, list_mode=False, **kwargs)
+        super().__init__(schema, **kwargs)
         self.system_messages.append("If there is no next page, set next_link to null.")
 
     def scrape(self, url, **kwargs):
