@@ -12,4 +12,4 @@ class Response:
     total_prompt_tokens: int = 0
     total_completion_tokens: int = 0
     api_time: float = 0
-    data: dict | list | None = None
+    data: dict | list | str = ""

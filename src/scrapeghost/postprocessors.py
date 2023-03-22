@@ -13,17 +13,24 @@ class JSONPostprocessor:
         self.nudge = nudge
 
     def __call__(self, response: Response, scraper: SchemaScraper) -> Response:
+        if not isinstance(response.data, str):
+            raise InvalidJSON(f"Response data is not a string: {response.data}")
+
         try:
             response.data = json.loads(response.data)
         except json.JSONDecodeError:
+            # call nudge and try again
             response = self.nudge_json(scraper, response)
+            if not isinstance(response.data, str):
+                raise InvalidJSON(f"Response data is not a string: {response.data}")
             try:
                 response.data = json.loads(response.data)
             except json.JSONDecodeError:
+                # if still invalid, raise error
                 raise InvalidJSON(response.data)
         return response
 
-    def nudge_json(self, scraper: SchemaScraper, response: Response) -> str:
+    def nudge_json(self, scraper: SchemaScraper, response: Response) -> Response:
         return scraper._raw_api_request(
             scraper.models[0],
             [
@@ -38,7 +45,8 @@ class JSONPostprocessor:
                 {"role": "system", "content": ("Only reply with JSON, nothing else. ")},
                 {"role": "user", "content": "{'bad': 'json', }"},
                 {"role": "assistant", "content": '{"bad": "json"}'},
-                {"role": "user", "content": response.data},
+                # response.data is always a string here
+                {"role": "user", "content": response.data},  # type: ignore
             ],
             response,
         )
