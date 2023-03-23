@@ -20,7 +20,7 @@ class SchemaScraper(OpenAiCall):
         JSONPostprocessor(),
     ]
 
-    def __init__(
+    def __init__(  # type: ignore
         self,
         schema: dict | str | list,
         extra_preprocessors: list | None = None,
@@ -63,7 +63,7 @@ class SchemaScraper(OpenAiCall):
             self.preprocessors = self._default_preprocessors + extra_preprocessors
 
         if use_pydantic:
-            self.postprocessors.append(PydanticPostprocessor(schema))
+            self.postprocessors.append(PydanticPostprocessor(schema))  # type: ignore
 
         self.auto_split_length = auto_split_length
 
@@ -116,12 +116,18 @@ class SchemaScraper(OpenAiCall):
         if self.auto_split_length:
             # if auto_split_length is set, split the tags into chunks and then recombine
             chunks = _chunk_tags(tags, self.auto_split_length, model=self.models[0])
+            # Note: this will not work when the postprocessor is expecting
+            # ScrapedResponse (like HallucinationChecker)
             all_responses = [self.request(chunk) for chunk in chunks]
             return _combine_responses(sr, all_responses)
         else:
             # otherwise, scrape the whole document as one chunk
             html = "\n".join(_tostr(t) for t in tags)
-            return _combine_responses(sr, [self.request(html)])
+            # apply postprocessors to the ScrapeResponse
+            # so that they can access the parsed HTML if needed
+            return self._apply_postprocessors(  # type: ignore
+                _combine_responses(sr, [self._api_request(html)])
+            )
 
     # allow the class to be called like a function
     __call__ = scrape
