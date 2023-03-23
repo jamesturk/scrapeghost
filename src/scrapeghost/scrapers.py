@@ -22,6 +22,7 @@ from .utils import (
     _cost,
     _max_tokens,
     _tokens,
+    _pydantic_to_simple_schema,
 )
 from .preprocessors import CleanHTML
 from .postprocessors import JSONPostprocessor, PydanticPostprocessor
@@ -74,7 +75,7 @@ class SchemaScraper:
         elif isinstance(schema, str):
             self.json_schema = schema
         elif hasattr(schema, "schema"):
-            self.json_schema = schema.schema()
+            self.json_schema = _pydantic_to_simple_schema(schema)
             use_pydantic = True
         else:
             raise ValueError(f"Invalid schema: {schema}")

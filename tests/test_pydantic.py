@@ -4,28 +4,56 @@ from scrapeghost.scrapers import SchemaScraper
 from scrapeghost.errors import PostprocessingError
 from scrapeghost.response import Response
 from scrapeghost.postprocessors import PydanticPostprocessor
+from scrapeghost.utils import _pydantic_to_simple_schema
 
 
 class CrewMember(BaseModel):
     name: str
     role: str
     home_planet: str
+    age: int = 0
 
 
-def test_pydantic_schema():
+class CrewMemberExtended(CrewMember):
+    friends: list[str]
+    captain: CrewMember
+
+
+def test_pydantic_to_simple_schema_basics():
+    assert _pydantic_to_simple_schema(CrewMember) == {
+        "name": "str",
+        "role": "str",
+        "home_planet": "str",
+        "age": "int",
+    }
+
+
+def test_pydantic_to_simple_schema_complex():
+    assert _pydantic_to_simple_schema(CrewMemberExtended) == {
+        "name": "str",
+        "role": "str",
+        "home_planet": "str",
+        "age": "int",
+        "friends": "list[str]",
+        "captain": {
+            "name": "str",
+            "role": "str",
+            "home_planet": "str",
+            "age": "int",
+        },
+    }
+
+
+def test_pydantic_schema_scrape():
     # if a pydantic model is passed to the SchemaScraper,
     # it should be able to generate a schema from it
     # and add the PydanticPostprocessor to the postprocessors
     scraper = SchemaScraper(CrewMember)
     assert scraper.json_schema == {
-        "title": "CrewMember",
-        "type": "object",
-        "properties": {
-            "name": {"title": "Name", "type": "string"},
-            "role": {"title": "Role", "type": "string"},
-            "home_planet": {"title": "Home Planet", "type": "string"},
-        },
-        "required": ["name", "role", "home_planet"],
+        "name": "str",
+        "role": "str",
+        "home_planet": "str",
+        "age": "int",
     }
     assert isinstance(scraper.postprocessors[1], PydanticPostprocessor)
     assert scraper.postprocessors[1].pydantic_model == CrewMember
@@ -43,7 +71,9 @@ def test_pydantic_postprocessor_good():
     resp = pdp(resp, None)
 
     assert resp.data == CrewMember(
-        name="Zorak", role="Band Leader", home_planet="Dokar"
+        name="Zorak",
+        role="Band Leader",
+        home_planet="Dokar",
     )
 
 

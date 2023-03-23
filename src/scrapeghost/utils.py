@@ -117,3 +117,24 @@ def _combine_responses(responses: list[Response]) -> Response:
         api_time=sum([resp.api_time for resp in responses]),
         data=[item for resp in responses for item in resp.data],
     )
+
+
+def _pydantic_to_simple_schema(pydantic_model: type) -> dict:
+    """
+    Given a Pydantic model, return a simple schema that can be used
+    by SchemaScraper.
+
+    We don't use Pydantic's schema() method because the
+    additional complexity of JSON Schema adds a lot of extra tokens
+    and in testing did not work as well as the simplified versions.
+    """
+    schema = {}
+    for field in pydantic_model.__fields__.values():
+        if hasattr(field.outer_type_, "__fields__"):
+            schema[field.name] = _pydantic_to_simple_schema(field.outer_type_)
+        else:
+            type_name = field.outer_type_.__name__
+            if type_name == "list":
+                type_name += f"[{field.type_.__name__}]"
+            schema[field.name] = type_name
+    return schema
