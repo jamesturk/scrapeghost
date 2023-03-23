@@ -116,3 +116,18 @@ Postprocessors take the results of the API call and modify them before returning
 The default is to just use `JSONPostprocessor` which converts the results to JSON.
 
 Postprocessors can be overridden by passing a list of callables to the `postprocessors` parameter of `SchemaScraper`.
+
+### Using `pydantic` Models
+
+If you want to validate that the returned data isn't just JSON, but data in the format you expect, you can use `pydantic` models.
+
+```python
+--8<-- "docs/examples/pydantic_example.py"
+```
+```log
+--8<-- "docs/examples/pydantic_example.log"
+```
+
+This works by converting the `pydantic` model to a schema and registering a `PydanticPostprocessor` to validate the results automatically.
+
+If you prefer to pass your own schema, you can do so, just be sure to pass your own `postprocessors` list to `SchemaScraper`.
