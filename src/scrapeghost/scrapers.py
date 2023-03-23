@@ -1,6 +1,5 @@
 import re
 import json
-import dataclasses
 import requests
 import lxml.html
 from typing import Callable
@@ -104,35 +103,25 @@ class SchemaScraper(OpenAiCall):
         Returns:
             dict | list: The scraped data in the specified schema.
         """
-        response = ScrapeResponse()
+        sr = ScrapeResponse()
 
-        response.url = url_or_html if url_or_html.startswith("http") else None
+        sr.url = url_or_html if url_or_html.startswith("http") else None
         # obtain an HTML document from the URL or HTML string
-        response.parsed_html = _parse_url_or_html(url_or_html)
+        sr.parsed_html = _parse_url_or_html(url_or_html)
 
         # apply preprocessors, returning a list of tags
-        tags = self._apply_preprocessors(
-            response.parsed_html, extra_preprocessors or []
-        )
+        tags = self._apply_preprocessors(sr.parsed_html, extra_preprocessors or [])
 
-        response.auto_split_length = self.auto_split_length
+        sr.auto_split_length = self.auto_split_length
         if self.auto_split_length:
-            # if auto_split_length is set, split the tags into chunks
+            # if auto_split_length is set, split the tags into chunks and then recombine
             chunks = _chunk_tags(tags, self.auto_split_length, model=self.models[0])
-
-            # collect responses from each chunk
-            all_responses = []
-            for chunk in chunks:
-                # make a copy so each chunk has its own response object
-                response = dataclasses.replace(response)
-                response = self._api_request(chunk, response)
-                all_responses.append(self._apply_postprocessors(response))
-            return _combine_responses(all_responses)
+            all_responses = [self.request(chunk) for chunk in chunks]
+            return _combine_responses(sr, all_responses)
         else:
             # otherwise, scrape the whole document as one chunk
             html = "\n".join(_tostr(t) for t in tags)
-            response = self._api_request(html, response)
-            return self._apply_postprocessors(response)
+            return _combine_responses(sr, [self.request(html)])
 
     # allow the class to be called like a function
     __call__ = scrape
@@ -150,8 +139,12 @@ def _combine_responses(sr: ScrapeResponse, responses: list[Response]) -> ScrapeR
     sr.total_completion_tokens = sum(
         [resp.total_completion_tokens for resp in responses]
     )
-    sr.pi_time = sum([resp.api_time for resp in responses])
-    sr.data = [item for resp in responses for item in resp.data]
+    sr.api_time = sum([resp.api_time for resp in responses])
+    if len(responses) > 1:
+        sr.data = [item for resp in responses for item in resp.data]
+    else:
+        sr.data = responses[0].data
+    return sr
 
 
 def _parse_url_or_html(url_or_html: str) -> lxml.html.Element:
