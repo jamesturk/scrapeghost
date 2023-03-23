@@ -11,13 +11,16 @@ from .errors import (
     MaxCostExceeded,
     BadStop,
 )
-from .response import Response
+from .responses import Response
 from .utils import (
     logger,
     _cost,
     _max_tokens,
     _tokens,
 )
+
+Postprocessor = Callable[[Response, "OpenAiCall"], Response]
+
 
 RETRY_ERRORS = (
     openai.error.RateLimitError,
@@ -27,7 +30,7 @@ RETRY_ERRORS = (
 
 
 class OpenAiCall:
-    _default_postprocessors: list[Callable] = []
+    _default_postprocessors: list[Postprocessor] = []
 
     def __init__(
         self,

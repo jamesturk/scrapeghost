@@ -1,6 +1,6 @@
 import pytest
 import lxml.html
-from scrapeghost.response import ScrapeResponse
+from scrapeghost.responses import ScrapeResponse
 from scrapeghost.postprocessors import HallucinationChecker, PostprocessingError
 
 

@@ -6,9 +6,10 @@ from pydantic import ValidationError
 
 from .utils import logger, _tostr
 from .errors import InvalidJSON, PostprocessingError
-from .response import Response
+from .responses import Response
 
 if TYPE_CHECKING:
+    from .apicall import OpenAiCall
     from .scrapers import SchemaScraper
 
 
@@ -16,23 +17,26 @@ class JSONPostprocessor:
     def __init__(self, nudge: bool = True):
         self.nudge = nudge
 
-    def __call__(self, response: Response, scraper: SchemaScraper) -> Response:
+    def __call__(self, response: Response, scraper: OpenAiCall) -> Response:
         if not isinstance(response.data, str):
             raise PostprocessingError(f"Response data is not a string: {response.data}")
 
         try:
             response.data = json.loads(response.data)
         except json.JSONDecodeError:
-            # call nudge and try again
-            response = self.nudge_json(scraper, response)
-            if not isinstance(response.data, str):
-                raise PostprocessingError(
-                    f"Response data is not a string: {response.data}"
-                )
-            try:
-                response.data = json.loads(response.data)
-            except json.JSONDecodeError:
-                # if still invalid, raise error
+            if isinstance(scraper, SchemaScraper) and self.nudge:
+                # call nudge and try again
+                response = self.nudge_json(scraper, response)
+                if not isinstance(response.data, str):
+                    raise PostprocessingError(
+                        f"Response data is not a string: {response.data}"
+                    )
+                try:
+                    response.data = json.loads(response.data)
+                except json.JSONDecodeError:
+                    # if still invalid, raise error
+                    raise InvalidJSON(response.data)
+            else:
                 raise InvalidJSON(response.data)
         return response
 
@@ -62,7 +66,7 @@ class PydanticPostprocessor:
     def __init__(self, model: type):
         self.pydantic_model = model
 
-    def __call__(self, response: Response, scraper: SchemaScraper) -> Response:
+    def __call__(self, response: Response, scraper: OpenAiCall) -> Response:
         if not isinstance(response.data, dict):
             raise PostprocessingError(
                 "PydanticPostprocessor expecting a dict, "
@@ -88,7 +92,7 @@ class HallucinationChecker:
     register it as a postprocessor.
     """
 
-    def __call__(self, response: Response, scraper: SchemaScraper) -> Response:
+    def __call__(self, response: Response, scraper: OpenAiCall) -> Response:
         if not isinstance(response.data, dict):
             raise PostprocessingError(
                 "HallucinationChecker expecting a dict, "

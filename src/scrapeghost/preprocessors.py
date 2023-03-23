@@ -1,17 +1,12 @@
 import lxml.html
 import lxml.html.clean
+from typing import Callable
 
 
-class Preprocessor:
-    """
-    Preprocessor interface: given a node, returns a list of nodes.
-    """
-
-    def __call__(self, node: lxml.html.HtmlElement) -> list[lxml.html.HtmlElement]:
-        raise NotImplementedError
+Preprocessor = Callable[[lxml.html.HtmlElement], list[lxml.html.HtmlElement]]
 
 
-class CleanHTML(Preprocessor):
+class CleanHTML:
     """
     Given HTML, return a cleaned HTML string.
 
@@ -29,7 +24,7 @@ class CleanHTML(Preprocessor):
         return [doc]
 
 
-class XPath(Preprocessor):
+class XPath:
     """
     Given an XPath selector, return a list of nodes.
     """
@@ -44,7 +39,7 @@ class XPath(Preprocessor):
         return node.xpath(self.xpath)
 
 
-class CSS(Preprocessor):
+class CSS:
     """
     Given a CSS selector, return a list of nodes.
     """

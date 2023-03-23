@@ -2,7 +2,7 @@ import os
 import pytest
 from scrapeghost import SchemaScraper
 from scrapeghost.postprocessors import JSONPostprocessor
-from scrapeghost.response import Response
+from scrapeghost.responses import Response
 
 api_key_is_set = os.getenv("OPENAI_API_KEY", "")
 

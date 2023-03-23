@@ -2,21 +2,20 @@ import re
 import json
 import requests
 import lxml.html
-from typing import Callable
 
 from .errors import PreprocessorError
-from .response import Response, ScrapeResponse
-from .apicall import OpenAiCall
+from .responses import Response, ScrapeResponse
+from .apicall import OpenAiCall, Postprocessor
 from .utils import logger, _tokens, _tostr
-from .preprocessors import CleanHTML
+from .preprocessors import Preprocessor, CleanHTML
 from .postprocessors import JSONPostprocessor, PydanticPostprocessor
 
 
 class SchemaScraper(OpenAiCall):
-    _default_preprocessors: list[Callable] = [
+    _default_preprocessors: list[Preprocessor] = [
         CleanHTML(),
     ]
-    _default_postprocessors: list[Callable] = [
+    _default_postprocessors: list[Postprocessor] = [
         JSONPostprocessor(),
     ]
 

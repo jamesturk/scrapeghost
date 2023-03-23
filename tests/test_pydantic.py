@@ -2,7 +2,7 @@ import pytest
 from pydantic import BaseModel, ValidationError
 from scrapeghost.scrapers import SchemaScraper, _pydantic_to_simple_schema
 from scrapeghost.errors import PostprocessingError
-from scrapeghost.response import Response
+from scrapeghost.responses import Response
 from scrapeghost.postprocessors import PydanticPostprocessor
 
 
