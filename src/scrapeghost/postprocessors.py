@@ -1,6 +1,8 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING
 import json
+from pydantic import ValidationError
+from .utils import logger
 from .errors import InvalidJSON, PostprocessingError
 from .response import Response
 
@@ -64,6 +66,10 @@ class PydanticPostprocessor:
                 "PydanticPostprocessor expecting a dict, "
                 "ensure JSONPostprocessor or equivalent is used first."
             )
-        # will raise pydantic ValidationError if invalid
-        response.data = self.pydantic_model(**response.data)
+        try:
+            response.data = self.pydantic_model(**response.data)
+        except ValidationError as e:
+            logger.error("pydantic validation error", error=e, data=response.data)
+            raise
+
         return response
