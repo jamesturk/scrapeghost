@@ -1,11 +1,11 @@
 import pytest
 import lxml.html
-from scrapeghost.response import Response
+from scrapeghost.response import ScrapeResponse
 from scrapeghost.postprocessors import HallucinationChecker, PostprocessingError
 
 
 def test_hallucination_checker():
-    response = Response(
+    response = ScrapeResponse(
         parsed_html=lxml.html.fromstring(
             """<a href="https://example.com">Moltar</a><p>Director</p>"""
         ),
