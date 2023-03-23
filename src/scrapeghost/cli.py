@@ -35,7 +35,7 @@ def scrape(
     if css:
         scraper.preprocessors.append(CSS(css))
     result = scraper(url)
-    typer.echo(json.dumps(result))
+    typer.echo(json.dumps(result.data))
 
 
 def main() -> None:
