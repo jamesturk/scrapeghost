@@ -3,4 +3,4 @@ from .scrapers import (
     SchemaScraper,
 )
 from .utils import cost_estimate
-from .preprocessors import CleanHTML, CSS, XPath
+from .preprocessors import CSS, XPath

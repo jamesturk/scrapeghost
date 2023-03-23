@@ -5,19 +5,12 @@ import requests
 import lxml.html
 from typing import Callable
 
-from .errors import (
-    PreprocessorError,
-)
+from .errors import PreprocessorError
 from .response import Response, ScrapeResponse
-from .utils import (
-    logger,
-    _tostr,
-    _tokens,
-    _pydantic_to_simple_schema,
-)
+from .apicall import OpenAiCall
+from .utils import logger, _tokens, _tostr
 from .preprocessors import CleanHTML
 from .postprocessors import JSONPostprocessor, PydanticPostprocessor
-from .apicall import OpenAiCall
 
 
 class SchemaScraper(OpenAiCall):
@@ -210,22 +203,25 @@ def _chunk_tags(tags: list, max_tokens: int, model: str) -> list[str]:
     return chunks
 
 
-def _parse_url_or_html(url_or_html: str) -> lxml.html.Element:
+def _pydantic_to_simple_schema(pydantic_model: type) -> dict:
     """
-    Given URL or HTML, return lxml.html.Element
+    Given a Pydantic model, return a simple schema that can be used
+    by SchemaScraper.
+
+    We don't use Pydantic's schema() method because the
+    additional complexity of JSON Schema adds a lot of extra tokens
+    and in testing did not work as well as the simplified versions.
     """
-    # coerce to HTML
-    orig_url = None
-    if url_or_html.startswith("http"):
-        orig_url = url_or_html
-        url_or_html = requests.get(url_or_html).text
-    # collapse whitespace
-    url_or_html = re.sub("[ \t]+", " ", url_or_html)
-    logger.debug("got HTML", length=len(url_or_html), url=orig_url)
-    doc = lxml.html.fromstring(url_or_html)
-    if orig_url:
-        doc.make_links_absolute(orig_url)
-    return doc
+    schema = {}
+    for field in pydantic_model.__fields__.values():  # type: ignore
+        if hasattr(field.outer_type_, "__fields__"):
+            schema[field.name] = _pydantic_to_simple_schema(field.outer_type_)
+        else:
+            type_name = field.outer_type_.__name__
+            if type_name == "list":
+                type_name += f"[{field.type_.__name__}]"
+            schema[field.name] = type_name
+    return schema
 
 
 # class PaginatedSchemaScraper(SchemaScraper):
