@@ -104,7 +104,9 @@ class SchemaScraper:
         if postprocessors is None:
             self.postprocessors = self._default_postprocessors
             if use_pydantic:
-                self.postprocessors.append(PydanticPostprocessor(schema))
+                self.postprocessors.append(
+                    PydanticPostprocessor(schema)  # type: ignore
+                )
         else:
             self.postprocessors = postprocessors
 

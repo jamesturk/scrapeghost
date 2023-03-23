@@ -129,7 +129,7 @@ def _pydantic_to_simple_schema(pydantic_model: type) -> dict:
     and in testing did not work as well as the simplified versions.
     """
     schema = {}
-    for field in pydantic_model.__fields__.values():
+    for field in pydantic_model.__fields__.values():  # type: ignore
         if hasattr(field.outer_type_, "__fields__"):
             schema[field.name] = _pydantic_to_simple_schema(field.outer_type_)
         else:

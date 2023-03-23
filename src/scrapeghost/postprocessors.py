@@ -59,7 +59,7 @@ class JSONPostprocessor:
 
 
 class PydanticPostprocessor:
-    def __init__(self, model):
+    def __init__(self, model: type):
         self.pydantic_model = model
 
     def __call__(self, response: Response, scraper: SchemaScraper) -> Response:
