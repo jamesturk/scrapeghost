@@ -1,8 +1,10 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING
+
 import json
 from pydantic import ValidationError
-from .utils import logger
+
+from .utils import logger, _tostr
 from .errors import InvalidJSON, PostprocessingError
 from .response import Response
 
@@ -72,4 +74,31 @@ class PydanticPostprocessor:
             logger.error("pydantic validation error", error=e, data=response.data)
             raise
 
+        return response
+
+
+class HallucinationChecker:
+    """
+    Check for data that is in the response that was not
+    present on the page.
+
+    Default behavior is to check all top-level strings.
+
+    If you desire more control, subclass this class and
+    register it as a postprocessor.
+    """
+
+    def __call__(self, response: Response, scraper: SchemaScraper) -> Response:
+        if not isinstance(response.data, dict):
+            raise PostprocessingError(
+                "HallucinationChecker expecting a dict, "
+                "ensure JSONPostprocessor or equivalent is used first."
+            )
+        html = _tostr(response.parsed_html)
+        print(html)
+        for key, value in response.data.items():
+            if isinstance(value, str) and value not in html:
+                raise PostprocessingError(
+                    f"{key}={value} is not present in the response text"
+                )
         return response
