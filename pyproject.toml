@@ -18,6 +18,7 @@ structlog = "^22.3.0"
 typer = "^0.7.0"
 rich = "^13.3.2"
 tiktoken = "^0.3.2"
+pydantic = "^1.10.7"
 
 
 [tool.poetry.group.dev.dependencies]
