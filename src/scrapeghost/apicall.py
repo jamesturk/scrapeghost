@@ -179,8 +179,13 @@ class OpenAiCall:
                         time.sleep(60)
                         continue
                     elif model_index < len(self.models) - 1:
+                        logger.warning(
+                            f"Upgrading model from {model} to "
+                            + self.models[model_index + 1]
+                        )
                         # try next model
                         model_index += 1
+                        model = self.models[model_index]
                         time.sleep(5)
                         continue
                 # could not retry for whatever reason
