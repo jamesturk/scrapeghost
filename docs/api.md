@@ -1,5 +1,9 @@
 # API Reference
 
+!!! warning
+
+    Due to the rapidly evolving API, this page may be slightly out of date. 
+
 ## `SchemaScraper`
 
 The `SchemaScraper` class is the main interface to the API.

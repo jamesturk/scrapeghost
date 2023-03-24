@@ -55,10 +55,11 @@ scrape_legislators = SchemaScraper(
 
     There's no pre-defined format for the schema, the GPT models do a good job of figuring out what you want and you can use whatever values you want to provide hints.
 
-**Step 4)** Passing the scraper a URL (or HTML) to the resulting scraper will return a dictionary of the scraped data:
+**Step 4)** Passing the scraper a URL (or HTML) to the resulting scraper will return the scraped data:
 
 ```python
- scrape_legislators("https://www.ilga.gov/house/rep.asp?MemberID=3071")
+resp = scrape_legislators("https://www.ilga.gov/house/rep.asp?MemberID=3071")
+resp.data
 ```
 ```json
 {"name": "Emanuel 'Chris' Welch",
