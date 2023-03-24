@@ -84,10 +84,10 @@ Read the [tutorial](tutorial.md) for a step-by-step guide to building a scraper.
 If you've installed the package (e.g. with `pipx`), you can use the `scrapeghost` command line tool to experiment.
 
 ```bash
---8<-- "docs/tutorial_code/cli.sh"
+--8<-- "docs/tutorial/cli.sh"
 ```
 ```json
---8<-- "docs/tutorial_code/cli.log"
+--8<-- "docs/tutorial/cli.log"
 ```
 
 See [the CLI docs](cli.md) for more details.

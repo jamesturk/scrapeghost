@@ -1,9 +1,15 @@
 # Changelog
 
-## WIP 
+## 0.4.0 - 2023-03-24
 
-* Rudimentary support for retries when OpenAI returns an error.
-* Post-processing pipeline with support for "nudging" errors to a better result.
+* New configurable pre- and post-processing pipelines for customizing behavior.
+* Addition of `ScrapeResult` object to hold results of scraping along with metadata.
+* Support for `pydantic` models as schemas and for validation.
+* "Hallucination" check to ensure that the data in the response truly exists on the page.
+* Use post-processing pipeline to "nudge" JSON errors to a better result.
+* Now fully type-annotated.
+* Another big refactor, separation of API calls and scraping logic.
+* Finally, a ghost logo reminiscent of library's [namesake](https://static.wikia.nocookie.net/superheroes/images/4/49/Space_Ghost.jpg/revision/latest/scale-to-width-down/1000?cb=20140111031255).
 
 ## 0.3.0 - 2023-03-20
 

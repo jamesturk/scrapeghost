@@ -1,0 +1,4 @@
+2023-03-24 16:34:52 [debug    ] got HTML                       length=165069 url=https://comedybangbang.fandom.com/wiki/Operation_Golden_Orb
+2023-03-24 16:34:52 [debug    ] preprocessor                   from_nodes=1 name=CleanHTML nodes=1
+2023-03-24 16:34:52 [debug    ] preprocessor                   from_nodes=1 name=CSS(div.page-content) nodes=1
+2023-03-24 16:34:52 [info     ] API request                    html_tokens=1332 model=gpt-3.5-turbo

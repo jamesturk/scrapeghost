@@ -27,7 +27,7 @@ Let's say we want to build a scraper that finds out each episode's title, episod
 We can do this by creating a `SchemaScraper` object and passing it a schema.
 
 ```python
---8<-- "docs/tutorial_code/v1.py"
+--8<-- "docs/examples/tutorial/v1.py"
 ```
 
 There is no predefined way to define a schema, but a dictionary resembling the data you want to scrape where the keys are the names of the fields you want to scrape and the values are the types of the fields is a good place to start.
@@ -71,13 +71,13 @@ Just as we might if we were writing a real scraper, we'll write a CSS selector t
 
 
 ```python hl_lines="1 13 14"
---8<-- "docs/tutorial_code/v2.py"
+--8<-- "docs/examples/tutorial/v2.py"
 ```
 
 Now, a call to our scraper will only pass the content of the `<div>` to OpenAI. We get the following output:
 
 ```log
---8<-- "docs/tutorial_code/v2.log"
+--8<-- "docs/examples/tutorial/v2.log"
 ```
 
 We can see from the logging output that the content length is much shorter now and we get the data we were hoping for.
@@ -93,13 +93,13 @@ All for less than a penny!
 That was easy! Let's enhance our schema to include the list of guests as well as requesting the dates in a particular format.
 
 ```python hl_lines="8-9"
---8<-- "docs/tutorial_code/v3.py"
+--8<-- "docs/examples/tutorial/v3.py"
 ```
 
 Just two small changes, but now we get the following output:
 
 ```log
---8<-- "docs/tutorial_code/v3.log"
+--8<-- "docs/examples/tutorial/v3.log"
 ```
 
 Let's try this on a different episode, from the beginning of the series.
@@ -127,7 +127,7 @@ Now that we have a scraper that can get the details of each episode, we need a s
 <https://comedybangbang.fandom.com/wiki/Category:Episodes> has a link to each of the episodes, perhaps we can just scrape that page?
 
 ```python
---8<-- "docs/tutorial_code/v4.py"
+--8<-- "docs/examples/tutorial/v4.py"
 ```
 ```log
 scrapeghost.scrapers.TooManyTokens: HTML is 292918 tokens, max for gpt-3.5-turbo is 4096
@@ -144,7 +144,7 @@ But let's imagine that for some reason you don't want to, perhaps this is a one-
 `SchemaScraper` has a few options that will help, we'll change our scraper to use `auto_split_length`.
 
 ```python
---8<-- "docs/tutorial_code/v5.py"
+--8<-- "docs/examples/tutorial/v5.py"
 ```
 
 `auto_split_length=True` alters the prompt and response format so that instead of returning a single JSON object, it returns a list of objects where each should match your provided `schema`.
@@ -158,7 +158,7 @@ It's a good idea to set this to about half the token limit, since the response c
 This winds up needing to make over twenty requests, but gets the list of episode URLs after a few minutes.
 
 ```log
---8<-- "docs/tutorial_code/v5.log"
+--8<-- "docs/examples/tutorial/v5.log"
 ```
 
 As you can see, a couple of requests automatically fell back to GPT-4, raising the cost to about $0.46 for the entire scrape.
@@ -186,5 +186,5 @@ You can also explore the [command line interface](cli.md) to see how you can use
 ## Putting it all Together
 
 ```python
---8<-- "docs/tutorial_code/v6.py"
+--8<-- "docs/examples/tutorial/v6.py"
 ```

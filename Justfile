@@ -8,11 +8,11 @@ lint:
 docs:
 	poetry run mkdocs serve
 
-tutorial_output:
-	poetry run python docs/tutorial_code/v2.py > docs/tutorial_code/v2.log
-	poetry run python docs/tutorial_code/v3.py > docs/tutorial_code/v3.log
-	poetry run python docs/tutorial_code/v5.py > docs/tutorial_code/v5.log
-	poetry run sh docs/tutorial_code/cli.sh > docs/tutorial_code/cli.log
+examples:
+	poetry run python docs/examples/tutorial/v2.py > docs/examples/tutorial/v2.log
+	poetry run python docs/examples/tutorial/v3.py > docs/examples/tutorial/v3.log
+	poetry run python docs/examples/tutorial/v5.py > docs/examples/tutorial/v5.log
+	poetry run sh docs/examples/tutorial/cli.sh > docs/examples/tutorial/cli.log
 
 release type:  # patch, minor, major
 	poetry version {{type}}

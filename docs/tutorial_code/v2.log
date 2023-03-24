@@ -1,8 +1,0 @@
-2023-03-20 05:08:16 [debug    ] got HTML                       length=165605 url=https://comedybangbang.fandom.com/wiki/Operation_Golden_Orb
-2023-03-20 05:08:16 [debug    ] preprocessor                   from_nodes=1 name=CleanHTML nodes=1
-2023-03-20 05:08:16 [debug    ] preprocessor                   from_nodes=1 name=CSS(div.page-content) nodes=1
-2023-03-20 05:08:16 [info     ] API request                    html_tokens=1275 model=gpt-3.5-turbo
-2023-03-20 05:08:21 [info     ] API response                   completion_tokens=34 cost=0.0027960000000000003 duration=4.801216125488281 finish_reason=stop prompt_tokens=1364
-{'episode_number': 800,
- 'release_date': 'March 12, 2023',
- 'title': 'Operation Golden Orb'}
