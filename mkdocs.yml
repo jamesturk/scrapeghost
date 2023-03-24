@@ -13,13 +13,13 @@ theme:
   name: material
   palette:
     - scheme: slate
-      primary: deeppurple
+      primary: purple
       accent: purple
       toggle:
         icon: material/toggle-switch
         name: Switch to light mode
     - scheme: default
-      primary: deeppurple
+      primary: purple
       accent: purple
       toggle:
         icon: material/toggle-switch-off-outline

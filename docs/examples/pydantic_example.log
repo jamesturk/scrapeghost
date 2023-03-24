@@ -1,1 +1,6 @@
-CrewMember(gender='Male', race='Dokarian', alignment='Evil\nProtagonist')
+2023-03-24 17:19:35 [debug    ] got HTML                       length=218107 url=https://spaceghost.fandom.com/wiki/Zorak
+2023-03-24 17:19:35 [debug    ] preprocessor                   from_nodes=1 name=CleanHTML nodes=1
+2023-03-24 17:19:35 [debug    ] preprocessor                   from_nodes=1 name=CSS(.infobox) nodes=1
+2023-03-24 17:19:35 [info     ] API request                    html_tokens=828 model=gpt-3.5-turbo
+2023-03-24 17:19:38 [info     ] API response                   completion_tokens=32 cost=0.0018960000000000001 duration=2.3367760181427 finish_reason=stop prompt_tokens=916
+CrewMember(gender='Male', race='Dokarian', alignment='Evil\\nProtagonist')

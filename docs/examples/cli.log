@@ -4,16 +4,12 @@
     "photo_url": "https://www.ncleg.gov/Members/MemberImage/S/436/Low",
     "offices": [
         {
-            "type": "mailing",
+            "type": "Mailing",
             "address": "16 West Jones Street, Rm. 1104, Raleigh, NC 27601"
         },
         {
-            "type": "phone",
-            "number": "(919) 715-3036"
-        },
-        {
-            "type": "email",
-            "address": "Gale.Adcock@ncleg.gov"
+            "type": "Office Phone",
+            "phone": "(919) 715-3036"
         }
     ]
 }

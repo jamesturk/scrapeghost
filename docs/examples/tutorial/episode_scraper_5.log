@@ -1,0 +1,12 @@
+2023-03-24 17:43:10 [debug    ] got HTML                       length=226164 url=https://www.earwolf.com/episode/operation-golden-orb/
+2023-03-24 17:43:10 [debug    ] preprocessor                   from_nodes=1 name=CleanHTML nodes=1
+2023-03-24 17:43:10 [debug    ] preprocessor                   from_nodes=1 name=CSS(.hero-episode) nodes=1
+2023-03-24 17:43:11 [info     ] API request                    html_tokens=2988 model=gpt-3.5-turbo
+2023-03-24 17:43:15 [info     ] API response                   completion_tokens=83 cost=0.006378 duration=4.382771968841553 finish_reason=stop prompt_tokens=3106
+{'episode_number': 800,
+ 'guests': [{'name': 'Jason Mantzoukas'},
+            {'name': 'Andy Daly'},
+            {'name': 'Paul F. Tompkins'}],
+ 'release_date': '2023-03-12',
+ 'title': 'Operation Golden Orb'}
+Total Cost: $0.006

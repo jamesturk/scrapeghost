@@ -27,7 +27,7 @@ Let's say we want to build a scraper that finds out each episode's title, episod
 We can do this by creating a `SchemaScraper` object and passing it a schema.
 
 ```python
---8<-- "docs/examples/tutorial/v1.py"
+--8<-- "docs/examples/tutorial/episode_scraper_1.py"
 ```
 
 There is no predefined way to define a schema, but a dictionary resembling the data you want to scrape where the keys are the names of the fields you want to scrape and the values are the types of the fields is a good place to start.
@@ -40,7 +40,7 @@ Running our code gives an error though:
 scrapeghost.scrapers.TooManyTokens: HTML is 9710 tokens, max for gpt-3.5-turbo is 4096
 ```
 
-This means that the content length is too long.
+This means that the content length is too long, we'll need to reduce our token count in order to make this work.
 
 ### What Are Tokens?
 
@@ -49,8 +49,6 @@ If you haven't used OpenAI's APIs before, you may not be aware of the token limi
 You are also billed per token, so even if you're under the limit, fewer tokens means cheaper API calls.
 
 --8<-- "docs/snippets/_cost.md"
-
-So for example, a 4,000 token page that returns 1,000 tokens of JSON will cost $0.01 with GPT-3-Turbo, but $0.18 with GPT-4.
 
 Ideally, we'd only pass the relevant parts of the page to OpenAI. It shouldn't need anything outside of the HTML `<body>`, anything in comments, script tags, etc.
 
@@ -67,17 +65,18 @@ To help with all this, `scrapeghost` provides a way to preprocess the HTML befor
 
 If you visit the page <https://comedybangbang.fandom.com/wiki/Operation_Golden_Orb> viewing the source will reveal that all of the interesting content is in an element `<div id="content" class="page-content">`.
 
-Just as we might if we were writing a real scraper, we'll write a CSS selector to grab this element, `div.page-content` will do.  The `CSS` preprocessor will use this selector to extract the content of the element.
+Just as we might if we were writing a real scraper, we'll write a CSS selector to grab this element, `div.page-content` will do.
+The `CSS` preprocessor will use this selector to extract the content of the element.
 
 
 ```python hl_lines="1 13 14"
---8<-- "docs/examples/tutorial/v2.py"
+--8<-- "docs/examples/tutorial/episode_scraper_2.py"
 ```
 
 Now, a call to our scraper will only pass the content of the `<div>` to OpenAI. We get the following output:
 
 ```log
---8<-- "docs/examples/tutorial/v2.log"
+--8<-- "docs/examples/tutorial/episode_scraper_2.log"
 ```
 
 We can see from the logging output that the content length is much shorter now and we get the data we were hoping for.
@@ -88,26 +87,28 @@ All for less than a penny!
 
     Even when the page fits under the token limit, it is still a good idea to pass a selector to limit the amount of content that OpenAI has to process.
 
+    Fewer tokens means faster responses and cheaper API calls. It should also get you better results.
+
 ### Enhancing the Schema
 
 That was easy! Let's enhance our schema to include the list of guests as well as requesting the dates in a particular format.
 
 ```python hl_lines="8-9"
---8<-- "docs/examples/tutorial/v3.py"
+--8<-- "docs/examples/tutorial/episode_scraper_3.py"
 ```
 
 Just two small changes, but now we get the following output:
 
 ```log
---8<-- "docs/examples/tutorial/v3.log"
+--8<-- "docs/examples/tutorial/episode_scraper_3.log"
 ```
 
-Let's try this on a different episode, from the beginning of the series.
+Let's try it on a different episode, from the beginning of the series.
 
 ```python
 episode_scraper(
     "https://comedybangbang.fandom.com/wiki/Welcome_to_Comedy_Bang_Bang",
-)
+).data
 ```
 ```log
 {'episode_number': 1,
@@ -118,16 +119,51 @@ episode_scraper(
  'title': 'Welcome to Comedy Bang Bang'}
 ```
 
-And there we have it!
+Not bad!
 
-### Getting a List of Episodes
+### Dealing With Page Structure Changes
 
-Now that we have a scraper that can get the details of each episode, we need a scraper that can get a list of all of the episode URLs.
+If you've maintained a scraper for any amount of time you know that the biggest burden is dealing with changes to the structure of the pages you're scraping.
+
+To simulate this, let's say we instead wanted to get the same information from a different page: <https://www.earwolf.com/episode/operation-golden-orb/>
+
+This page has a completely different layout. We will need to change our CSS selector:
+
+```python hl_lines="4 14"
+--8<-- "docs/examples/tutorial/episode_scraper_4.py"
+```
+```log hl_lines="11"
+--8<-- "docs/examples/tutorial/episode_scraper_4.log"
+```
+
+Completely different HTML, one CSS selector change.
+
+### Extra Instructions
+
+You may notice that the `title` changed.
+The second source includes the episode number in the title, but the first source does not.
+
+You could deal with this with a bit of clean up, but you have another option at your disposal. You can give the underlying model additional instructions to modify the behavior.
+
+```python hl_lines="16"
+--8<-- "docs/examples/tutorial/episode_scraper_5.py"
+```
+```log hl_lines="11"
+--8<-- "docs/examples/tutorial/episode_scraper_5.log"
+```
+
+At this point, you may be wondering if you'll ever need to write a web scraper again. 
+
+So to temper that, let's take a look at something that is a bit more difficult for `scrapeghost` to handle.
+
+## Getting a List of Episodes
+
+Now that we have a scraper that can get the details of each episode, we want a scraper that can get a list of all of the episode URLs.
 
 <https://comedybangbang.fandom.com/wiki/Category:Episodes> has a link to each of the episodes, perhaps we can just scrape that page?
 
 ```python
---8<-- "docs/examples/tutorial/v4.py"
+--8<-- "docs/examples/tutorial/list_scraper_v1.py"
 ```
 ```log
 scrapeghost.scrapers.TooManyTokens: HTML is 292918 tokens, max for gpt-3.5-turbo is 4096
@@ -144,29 +180,29 @@ But let's imagine that for some reason you don't want to, perhaps this is a one-
 `SchemaScraper` has a few options that will help, we'll change our scraper to use `auto_split_length`.
 
 ```python
---8<-- "docs/examples/tutorial/v5.py"
+--8<-- "docs/examples/tutorial/list_scraper_v2.py"
 ```
 
-`auto_split_length=True` alters the prompt and response format so that instead of returning a single JSON object, it returns a list of objects where each should match your provided `schema`.
+We set the `auto_split_length` to 2000. This is the maximum number of tokens that will be passed to OpenAI in a single request.
 
-We alter the `schema` to just be a single string because we're only interested in the URL.
+Setting `auto_split_length` alters the prompt and response format so that instead of returning a single JSON object, it returns a list of objects where each should match your provided `schema`.
 
-Finally, we set the `auto_split_length` to 2048. This is the maximum number of tokens that will be passed to OpenAI in a single request.
+Because of this, we alter the `schema` to just be a single string because we're only interested in the URL.
+
 
 It's a good idea to set this to about half the token limit, since the response counts against the token limit as well.
 
 This winds up needing to make over twenty requests, but gets the list of episode URLs after a few minutes.
 
 ```log
---8<-- "docs/examples/tutorial/v5.log"
+--8<-- "docs/examples/tutorial/list_scraper_v2.log"
 ```
+
+TODO: is this section still accurate with new results?
 
 As you can see, a couple of requests automatically fell back to GPT-4, raising the cost to about $0.46 for the entire scrape.
 
 If you lower the `split_token` a bit further takes even longer, but if you can stick to GPT-3.5-Turbo it's only $0.13.
-
-It isn't perfect, it is quite slow and you might also notice it
-sometimes adds unnecessary "name" fields to the JSON, but it gets the job done.
 
 If you want to see the pieces put together, jump down to the [Putting it all Together](#putting-it-all-together) section.
 
@@ -175,8 +211,6 @@ If you want to see the pieces put together, jump down to the [Putting it all Tog
 If you're planning to use this library, please know it is very much in flux and I can't commit to API stability yet.
 
 If you are going to try to scrape using GPT, it'd probably be good to read the [OpenAI API](openai.md) page to understand a little more about how the underlying API works.
-
-I'm still exploring ways to improve accuracy and the developer experience.  If you want to follow along, [the issues page](https://github.com/jamesturk/scrapeghost/issues) is a good picture of what I'm considering next.
 
 To see what other features are currently available, check out the [API Reference](api.md).
 

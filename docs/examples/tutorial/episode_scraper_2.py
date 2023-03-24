@@ -14,4 +14,6 @@ episode_scraper = SchemaScraper(
     extra_preprocessors=[CSS("div.page-content")],
 )
 
-pprint(episode_scraper(url))
+response = episode_scraper(url)
+pprint(response.data)
+print(f"Total Cost: ${response.total_cost:.3f}")

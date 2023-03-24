@@ -9,10 +9,10 @@ docs:
 	poetry run mkdocs serve
 
 examples:
+	poetry run sh docs/examples/cli.sh > docs/examples/cli.log
 	poetry run python docs/examples/tutorial/v2.py > docs/examples/tutorial/v2.log
 	poetry run python docs/examples/tutorial/v3.py > docs/examples/tutorial/v3.log
 	poetry run python docs/examples/tutorial/v5.py > docs/examples/tutorial/v5.log
-	poetry run sh docs/examples/tutorial/cli.sh > docs/examples/tutorial/cli.log
 
 release type:  # patch, minor, major
 	poetry version {{type}}

@@ -1,6 +1,6 @@
-# About the OpenAI API
+# OpenAI / GPT
 
-This section assumes you are mostly unfamiliar with the OpenAI API and aims to provide a high-level overview of how they work in relation to this library. 
+This section assumes you are mostly unfamiliar with the OpenAI API and aims to provide a high-level overview of how it works in relation to this library. 
 
 
 ## API Keys
@@ -19,7 +19,7 @@ The cost estimates provided by this library are based on the [OpenAI pricing pag
 
 ## Tokens
 
-OpenAI encodes text using a tokenizer, which converts words to integers.
+OpenAI encodes text using a [tokenizer](https://github.com/openai/tiktoken), which converts words to integers.
 
 You'll see that billing is based on the number of tokens used.  A token is approximately 3 characters, so 3000 characters of HTML will roughly correspond to 1000 tokens.
 
@@ -27,7 +27,7 @@ Additionally, the GPT-3-Turbo model is limited to 4096 tokens.  GPT-4 is limited
 
 Various features in the library will help you avoid running into token limits, but it is still very common to exceed them in practice.
 
-If your pages exceed them, you'll need to focus on improving your [selectors](/api.md#selectors) so that only the required data is sent to the underlying models.
+If your pages exceed these limits, you'll need to focus on improving your [selectors](/api.md#selectors) so that only the required data is sent to the underlying models.
 
 ## Prompts
 
