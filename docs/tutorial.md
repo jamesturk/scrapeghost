@@ -212,7 +212,7 @@ If you're planning to use this library, please know it is very much in flux and 
 
 If you are going to try to scrape using GPT, it'd probably be good to read the [OpenAI API](openai.md) page to understand a little more about how the underlying API works.
 
-To see what other features are currently available, check out the [API Reference](api.md).
+To see what other features are currently available, check out the [Usage](usage.md) guide.
 
 You can also explore the [command line interface](cli.md) to see how you can use this library without writing any Python.
 
@@ -220,5 +220,5 @@ You can also explore the [command line interface](cli.md) to see how you can use
 ## Putting it all Together
 
 ```python
---8<-- "docs/examples/tutorial/v6.py"
+--8<-- "docs/examples/tutorial/tutorial_final.py"
 ```

@@ -1,10 +1,10 @@
 # Usage
 
-## Request Data Flow
+## Data Flow
 
-Since most of the work is done by the API, the primary purpose of `scrapeghost` is to make it easier to pass HTML and get valid output.
+Since most of the work is done by the API, the job of a `SchemaScraper` is to make it easier to pass HTML and get valid output.
 
-To this end, it is useful to understand the data flow:
+If you are going to go beyond the basics, it is important to understand the data flow:
 
 1. The page HTML is passed through any [preprocessors](#preprocessors).
 
@@ -35,13 +35,16 @@ request aims to be no larger than `auto_split_length` tokens.
 
     In **list mode**, a single call can make many requests. Keep an eye on the `max_cost` parameter if you're using this.
 
-    While this seems to work well for long lists of similar items, the question of it is worth the time and money is up to you, writing a bit of code is probably the better option in most cases.
+    While this seems to work well enough for long lists of similar items, the question of it is worth the time and money is up to you.
+    Writing a bit of code is probably the better option in most cases.
 
 Instead of recombining the results of the `XPath` or `CSS` preprocessor, the results are instead chunked into smaller pieces (<= `auto_split_length`) and sent to the API separately.
 
 The instructions are also modified slightly, indicating that your schema is for a list of similar items.
 
 ## Customization
+
+To make it easier to experiment with different approaches, it is possible to customize nearly every part of the process from how the HTML is retrieved to how the results are processed.
 
 ### HTTP Requests
 
@@ -53,7 +56,7 @@ This means you can use any HTTP library you want to retrieve the HTML.
 
 Preprocessors allow you to modify the HTML before it is sent to the API.
 
-Three preprocessors are included by default:
+Three preprocessors are provided:
 
 * `CleanHTML` - Cleans the HTML using `lxml.html.clean.Cleaner`.
 * `XPath` - Applies an XPath selector to the HTML.
@@ -63,7 +66,7 @@ Three preprocessors are included by default:
 
     `CleanHTML` is always applied first, as it is part of the default preprocessors list.
 
-You can add your own preprocessors by passing a list of callables to the `extra_preprocessors` parameter of `SchemaScraper`.
+You can add your own preprocessors by passing a list to the `extra_preprocessors` parameter of `SchemaScraper`.
 
 ```python
 scraper = SchemaScraper(schema, extra_preprocessors=[CSS("table")])
@@ -91,7 +94,7 @@ scraper = SchemaScraper(
     models=["gpt-4"],
     extra_instructions=["Put the legislator's bio in the 'bio' field. Summarize it so that it is no longer than 3 sentences."],
 )
-scraper.scrape("https://norton.house.gov/about/full-biography")
+scraper.scrape("https://norton.house.gov/about/full-biography").data
 ```
 ```json
 {'name': 'Representative Eleanor Holmes Norton',
@@ -109,13 +112,20 @@ These instructions can be useful for refining the results, but they are not requ
 
 See <https://github.com/jamesturk/scrapeghost/issues/18>
 
-### Postprocessors
+## Postprocessors
 
 Postprocessors take the results of the API call and modify them before returning them to the user.
 
-The default is to just use `JSONPostprocessor` which converts the results to JSON.
+Three postprocessors are provided:
 
-Postprocessors can be overridden by passing a list of callables to the `postprocessors` parameter of `SchemaScraper`.
+* `JSONPostprocessor` - Converts the results to JSON.
+* `HallucinationChecker` - Checks the results for hallucinations.
+* `PydanticPostprocessor` - Converts the results to JSON and validates them using a `pydantic` model.
+
+By default, `JSONPostprocessor` and `HallucinationChecker` are enabled.
+
+`HallucinationChecker` verifies that values in the response are present in the source HTML.  This is useful for ensuring that the results are not "hallucinations".
+This is done as a proof of concept, and to help determine how big of an issue hallucinations are for this use case.
 
 ### Using `pydantic` Models
 
@@ -129,5 +139,3 @@ If you want to validate that the returned data isn't just JSON, but data in the 
 ```
 
 This works by converting the `pydantic` model to a schema and registering a `PydanticPostprocessor` to validate the results automatically.
-
-If you prefer to pass your own schema, you can do so, just be sure to pass your own `postprocessors` list to `SchemaScraper`.
