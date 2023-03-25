@@ -45,11 +45,6 @@ scraper("https://example.com")
 scraper.scrape("https://example.com")
 ```
 
-
-## `PaginatedSchemaScraper`
-
-TODO: document this
-
 ## Exceptions
 
 The following exceptions can be raised by the scraper:

@@ -8,14 +8,16 @@ The library provides a means to scrape structured data from HTML without writing
 
 !!! danger "Important"
 
-    This library is **very experimental** with a rapidly evolving interface.
-    No guarantees are made about the stability of the API or the accuracy of the results.
+    Before you proceed, here are at least three reasons why you should not use this library:
+    
+    * It is **very experimental**, no guarantees are made about the stability of the API or the accuracy of the results.
 
-    Additionally, be aware of [the potential costs](openai.md#costs) before using this library.
+    * It relies on the OpenAI API, which is quite slow and can be expensive.  (See [costs](openai.md#costs) before using this library.)
+
+    * Currently licensed under [Hippocratic License 3.0](LICENSE.md).   (See [FAQ](faq.md#whats-with-the-license).)
 
     **Use at your own risk.**
 
-Currently licensed under [Hippocratic License 3.0](LICENSE.md).   (See [FAQ](faq.md#whats-with-the-license).)
 
 ## Quickstart
 

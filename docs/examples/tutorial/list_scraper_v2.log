@@ -1,15 +1,5 @@
-2023-03-24 18:15:49 [debug    ] got HTML                       length=1424892 url=https://comedybangbang.fandom.com/wiki/Category:Episodes
-2023-03-24 18:15:49 [debug    ] preprocessor                   from_nodes=1 name=CleanHTML nodes=1
-2023-03-24 18:15:49 [debug    ] preprocessor                   from_nodes=1 name=CSS(.mw-parser-output a[class!='image link-internal']) nodes=857
-2023-03-24 18:15:49 [debug    ] chunked tags                   num=20 sizes=[1971, 1994, 1986, 1976, 1978, 1990, 1993, 1974, 1995, 1983, 1975, 1979, 1967, 1953, 1971, 1973, 1987, 1960, 1966, 682]
-2023-03-24 18:15:49 [info     ] API request                    html_tokens=1971 model=gpt-3.5-turbo
-2023-03-24 18:17:29 [info     ] API response                   completion_tokens=2053 cost=0.008194 duration=99.57109308242798 finish_reason=length prompt_tokens=2044
-2023-03-24 18:17:29 [warning  ] API request failed             attempts=1 model=gpt-3.5-turbo
-OpenAI did not stop: length (prompt_tokens=2044, completion_tokens=2053)
-> /Users/jamesturk/Desktop/scrapeghost/src/scrapeghost/apicall.py(176)_api_request()
--> if attempts < max_attempts:
-(Pdb) --KeyboardInterrupt--
-(Pdb) (Pdb) --KeyboardInterrupt--
-(Pdb) --KeyboardInterrupt--
-(Pdb) (Pdb) --KeyboardInterrupt--
-(Pdb) (Pdb) (Pdb) 
+2023-03-24 19:25:53 [debug    ] got HTML                       length=1424892 url=https://comedybangbang.fandom.com/wiki/Category:Episodes
+2023-03-24 19:25:53 [debug    ] preprocessor                   from_nodes=1 name=CleanHTML nodes=1
+2023-03-24 19:25:53 [debug    ] preprocessor                   from_nodes=1 name=CSS(.mw-parser-output a[class!='image link-internal']) nodes=857
+2023-03-24 19:25:53 [debug    ] chunked tags                   num=20 sizes=[1971, 1994, 1986, 1976, 1978, 1990, 1993, 1974, 1995, 1983, 1975, 1979, 1967, 1953, 1971, 1973, 1987, 1960, 1966, 682]
+2023-03-24 19:25:53 [info     ] API request                    html_tokens=1971 model=gpt-3.5-turbo

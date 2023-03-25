@@ -10,9 +10,15 @@ docs:
 
 examples:
 	poetry run sh docs/examples/cli.sh > docs/examples/cli.log
-	poetry run python docs/examples/tutorial/v2.py > docs/examples/tutorial/v2.log
-	poetry run python docs/examples/tutorial/v3.py > docs/examples/tutorial/v3.log
-	poetry run python docs/examples/tutorial/v5.py > docs/examples/tutorial/v5.log
+	poetry run python docs/examples/pydantic_example.py > docs/examples/pydantic_example.log
+	# poetry run python docs/examples/episode_scraper_1.py > docs/examples/episode_scraper_1.log
+	poetry run python docs/examples/tutorial/episode_scraper_2.py > docs/examples/tutorial/episode_scraper_2.log
+	poetry run python docs/examples/tutorial/episode_scraper_3.py > docs/examples/tutorial/episode_scraper_3.log
+	poetry run python docs/examples/tutorial/episode_scraper_4.py > docs/examples/tutorial/episode_scraper_4.log
+	poetry run python docs/examples/tutorial/episode_scraper_5.py > docs/examples/tutorial/episode_scraper_5.log
+	# poetry run python docs/examples/tutorial/list_scraper_1.py > docs/examples/tutorial/list_scraper_1.log
+	poetry run python docs/examples/tutorial/list_scraper_v2.py > docs/examples/tutorial/list_scraper_v2.log
+
 
 release type:  # patch, minor, major
 	poetry version {{type}}

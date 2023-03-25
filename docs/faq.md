@@ -22,8 +22,8 @@ It is also quite good at dealing with unstructured text. A list of items in a se
 
 ## What are the disadvantages?
 
-* It is terrible at pages that are large lists (like a directory), they need to be broken into multiple chunks and the API calls can be quite expensive in terms of time and money.
-* It is quite opaque.  When it fails, it can be hard to tell why.
+* It is terrible at pages that are large lists (like a directory), they need to be broken into multiple chunks and the API calls can be expensive in terms of time and money.
+* It is opaque.  When it fails, it can be hard to tell why.
 * If the page is dynamic, this approach won't work at all.  It requires all of the content to be available in the HTML.
 * It is *slow*.  A single request can take over a minute if OpenAI is slow to respond.
 * Right now, it only works with OpenAI, that means you'll be dependent on their pricing and availability. It also means
