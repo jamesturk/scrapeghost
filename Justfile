@@ -25,7 +25,7 @@ release type:  # patch, minor, major
 	poetry build
 	poetry run mkdocs gh-deploy
 	poetry publish
-	git commit -m "release $(poetry version -s)"
+	git commit -am "release $(poetry version -s)"
 	git tag $(poetry version -s)
 	git push --tags
-	# gh release create $(poetry version -s) -F docs/changelog.md
+	gh release create $(poetry version -s) -F docs/changelog.md
