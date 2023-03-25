@@ -1,0 +1,6 @@
+2023-03-24 19:18:57 [info     ] API request                    html_tokens=1332 model=gpt-3.5-turbo
+2023-03-24 19:18:59 [info     ] API response                   completion_tokens=33 cost=0.00291 duration=2.3073980808258057 finish_reason=stop prompt_tokens=1422
+{'episode_number': 800,
+ 'release_date': 'March 12, 2023',
+ 'title': 'Operation Golden Orb'}
+Total Cost: $0.003

@@ -67,7 +67,7 @@
     
     
     
-    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="deeppurple" data-md-color-accent="purple">
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="purple" data-md-color-accent="purple">
   
     
     
@@ -123,7 +123,7 @@
       <form class="md-header__option" data-md-component="palette">
         
           
-          <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="deeppurple" data-md-color-accent="purple"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+          <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="purple" data-md-color-accent="purple"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
           
             <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_2" hidden>
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 7H7a5 5 0 0 0-5 5 5 5 0 0 0 5 5h10a5 5 0 0 0 5-5 5 5 0 0 0-5-5m0 8a3 3 0 0 1-3-3 3 3 0 0 1 3-3 3 3 0 0 1 3 3 3 3 0 0 1-3 3Z"/></svg>
@@ -131,7 +131,7 @@
           
         
           
-          <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="deeppurple" data-md-color-accent="purple"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_2">
+          <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="purple" data-md-color-accent="purple"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_2">
           
             <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 6H7c-3.31 0-6 2.69-6 6s2.69 6 6 6h10c3.31 0 6-2.69 6-6s-2.69-6-6-6zm0 10H7c-2.21 0-4-1.79-4-4s1.79-4 4-4h10c2.21 0 4 1.79 4 4s-1.79 4-4 4zM7 9c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
@@ -273,7 +273,7 @@
   
     <li class="md-nav__item">
       <a href="../openai/" class="md-nav__link">
-        About the OpenAI API
+        OpenAI / GPT
       </a>
     </li>
   
@@ -660,22 +660,21 @@
 <h1 id="faq">FAQ<a class="headerlink" href="#faq" title="Permanent link">&para;</a></h1>
 <p><em>Mostly questions I've been frequently asking myself.</em></p>
 <h2 id="is-this-practical-or-just-a-toy">Is this practical? Or just a toy?<a class="headerlink" href="#is-this-practical-or-just-a-toy" title="Permanent link">&para;</a></h2>
-<p>When I started the project, I think I assumed it was a toy. But I've been surprised by the results.</p>
-<p>After my initial GPT-4 experiments, <a href="https://mastodon.social/@simon@simonwillison.net/110042216119791967">Simon Willison asked</a> how well it'd work on GPT-3.5-turbo. I hadn't realized the enormous price difference, and without switching to 3.5-turbo, I'd probably have decided it was too expensive to be practical.</p>
+<p>When I started the project I mostly assumed it was a toy. But I've been surprised by the results.</p>
+<p>After my initial GPT-4 experiments, <a href="https://mastodon.social/@simon@simonwillison.net/110042216119791967">Simon Willison asked</a> how well it'd work on GPT-3.5-turbo. I hadn't realized the significant price difference, and without switching to 3.5-turbo, I'd probably have decided it was too expensive to be practical.</p>
 <p>Once I realized 3.5-turbo was an option, I was able to spend a lot more time tinkering with the prompt and token reduction.  It also got me thinking more about what kind of tooling you'd want around something like this if you were going to actually use it.</p>
-<p>It's certainly started to feel more practical now, I'm not sure I'd call it a toy anymore.</p>
 <h2 id="why-would-i-use-this-instead-of-a-traditional-scraper">Why would I use this instead of a traditional scraper?<a class="headerlink" href="#why-would-i-use-this-instead-of-a-traditional-scraper" title="Permanent link">&para;</a></h2>
-<p>It is definitely great for quick prototypes. With the CLI tool, you can try a scrape in a <em>single command</em>.
+<p>It is definitely great for quick prototypes. With the CLI tool, you can try a scrape in a <em>single command</em> without writing a line of code.
 This means you don't need to sink a bunch of time into deciding if it's worth it or not.</p>
 <p>Or, imagine a scraper that needs to run infrequently on a page that is likely to break in subtle ways between scrapes.
 A CSS/XPath-based scraper will often be broken in small ways between the first run and another run months later, there's a decent chance that those changes won't break a GPT-based scraper.</p>
 <p>It is also quite good at dealing with unstructured text. A list of items in a sentence can be hard to handle with a traditional scraper, but GPT handles many of these cases without much fuss.</p>
 <h2 id="what-are-the-disadvantages">What are the disadvantages?<a class="headerlink" href="#what-are-the-disadvantages" title="Permanent link">&para;</a></h2>
 <ul>
-<li>It is terrible at pages that are large lists (like a directory), they need to be broken into multiple chunks and the API calls can be quite expensive in terms of time and money.</li>
-<li>It is quite opaque.  When it fails, it can be hard to tell why.</li>
+<li>It is terrible at pages that are large lists (like a directory), they need to be broken into multiple chunks and the API calls can be expensive in terms of time and money.</li>
+<li>It is opaque.  When it fails, it can be hard to tell why.</li>
 <li>If the page is dynamic, this approach won't work at all.  It requires all of the content to be available in the HTML.</li>
-<li>It is <em>slow</em>.  A single request can take up to a minute.</li>
+<li>It is <em>slow</em>.  A single request can take over a minute if OpenAI is slow to respond.</li>
 <li>Right now, it only works with OpenAI, that means you'll be dependent on their pricing and availability. It also means
 you need to be comfortable sending your data to a third party.</li>
 </ul>
@@ -688,7 +687,7 @@ you need to be comfortable sending your data to a third party.</li>
 <p>Provide a CSS or XPath selector to limit the scope of the page.</p>
 </li>
 <li>
-<p>Pre-process the HTML. Trim tags or entire sections you don't need.</p>
+<p>Pre-process the HTML. Trim tags or entire sections you don't need.  (You can use the preprocessing pipeline to help with this.)</p>
 </li>
 <li>
 <p>Finally, you can use the <code>auto_split_length</code> parameter to split the page into smaller chunks.  This only works for list-type pages, and requires a good choice of selector to split the page up.</p>
@@ -705,9 +704,9 @@ you need to be comfortable sending your data to a third party.</li>
 <h2 id="does-the-model-hallucinate-data">Does the model "hallucinate" data?<a class="headerlink" href="#does-the-model-hallucinate-data" title="Permanent link">&para;</a></h2>
 <p>It is possible, but in practice hasn't been observed as a major problem yet.</p>
 <p>Because the <a href="https://platform.openai.com/docs/api-reference/completions"><em>temperature</em></a> is zero, the output is fully deterministic and seems less likely to hallucinate data.</p>
-<p>It is definitely possible however, and future versions of this tool will allow for automated error checking (and possibly correction).</p>
+<p>The <code>HallucinationChecker</code> class can be used to detect data that appears in the response that doesn't appear on the page. This approach could be improved, but I haven't seen hallucination as a major problem yet.  (If you have examples, please open an issue!)</p>
 <h2 id="how-much-did-you-spend-developing-this">How much did you spend developing this?<a class="headerlink" href="#how-much-did-you-spend-developing-this" title="Permanent link">&para;</a></h2>
-<p>So far, about $25 on API calls, switching to GPT-3.5 as the default made a big difference.</p>
+<p>So far, about $40 on API calls, switching to GPT-3.5 as the default made a big difference.</p>
 <p>My most expensive call was a paginated GPT-4 call that cost $2.20.  I decided to add the cost-limiting features after that.</p>
 <h2 id="whats-with-the-license">What's with the license?<a class="headerlink" href="#whats-with-the-license" title="Permanent link">&para;</a></h2>
 <p>I'm still working on figuring this out.</p>

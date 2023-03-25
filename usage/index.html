@@ -67,7 +67,7 @@
     
     
     
-    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="deeppurple" data-md-color-accent="purple">
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="purple" data-md-color-accent="purple">
   
     
     
@@ -123,7 +123,7 @@
       <form class="md-header__option" data-md-component="palette">
         
           
-          <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="deeppurple" data-md-color-accent="purple"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+          <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="purple" data-md-color-accent="purple"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
           
             <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_2" hidden>
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 7H7a5 5 0 0 0-5 5 5 5 0 0 0 5 5h10a5 5 0 0 0 5-5 5 5 0 0 0-5-5m0 8a3 3 0 0 1-3-3 3 3 0 0 1 3-3 3 3 0 0 1 3 3 3 3 0 0 1-3 3Z"/></svg>
@@ -131,7 +131,7 @@
           
         
           
-          <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="deeppurple" data-md-color-accent="purple"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_2">
+          <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="purple" data-md-color-accent="purple"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_2">
           
             <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 6H7c-3.31 0-6 2.69-6 6s2.69 6 6 6h10c3.31 0 6-2.69 6-6s-2.69-6-6-6zm0 10H7c-2.21 0-4-1.79-4-4s1.79-4 4-4h10c2.21 0 4 1.79 4 4s-1.79 4-4 4zM7 9c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
@@ -273,7 +273,7 @@
   
     <li class="md-nav__item">
       <a href="../openai/" class="md-nav__link">
-        About the OpenAI API
+        OpenAI / GPT
       </a>
     </li>
   
@@ -321,11 +321,11 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#request-lifecycle" class="md-nav__link">
-    Request Lifecycle
+  <a href="#data-flow" class="md-nav__link">
+    Data Flow
   </a>
   
-    <nav class="md-nav" aria-label="Request Lifecycle">
+    <nav class="md-nav" aria-label="Data Flow">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -376,9 +376,22 @@
   
 </li>
         
-          <li class="md-nav__item">
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#postprocessors" class="md-nav__link">
     Postprocessors
+  </a>
+  
+    <nav class="md-nav" aria-label="Postprocessors">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#using-pydantic-models" class="md-nav__link">
+    Using pydantic Models
   </a>
   
 </li>
@@ -582,11 +595,11 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#request-lifecycle" class="md-nav__link">
-    Request Lifecycle
+  <a href="#data-flow" class="md-nav__link">
+    Data Flow
   </a>
   
-    <nav class="md-nav" aria-label="Request Lifecycle">
+    <nav class="md-nav" aria-label="Data Flow">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -637,9 +650,22 @@
   
 </li>
         
-          <li class="md-nav__item">
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#postprocessors" class="md-nav__link">
     Postprocessors
+  </a>
+  
+    <nav class="md-nav" aria-label="Postprocessors">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#using-pydantic-models" class="md-nav__link">
+    Using pydantic Models
   </a>
   
 </li>
@@ -668,9 +694,9 @@
 
 
 <h1 id="usage">Usage<a class="headerlink" href="#usage" title="Permanent link">&para;</a></h1>
-<h2 id="request-lifecycle">Request Lifecycle<a class="headerlink" href="#request-lifecycle" title="Permanent link">&para;</a></h2>
-<p>Since most of the work is done by the API, the primary purpose of <code>scrapeghost</code> is to make it easier to pass HTML and get valid output.</p>
-<p>The request lifecycle is as follows:</p>
+<h2 id="data-flow">Data Flow<a class="headerlink" href="#data-flow" title="Permanent link">&para;</a></h2>
+<p>Since most of the work is done by the API, the job of a <code>SchemaScraper</code> is to make it easier to pass HTML and get valid output.</p>
+<p>If you are going to go beyond the basics, it is important to understand the data flow:</p>
 <ol>
 <li>
 <p>The page HTML is passed through any <a href="#preprocessors">preprocessors</a>.</p>
@@ -687,25 +713,27 @@
 <p>b. Custom postprocessors can also execute here.</p>
 </li>
 </ol>
-<p>You can modify nearly any part of the request lifecycle to suit your needs.  (See <a href="#customization">Customization</a> for more details.)</p>
+<p>You can modify nearly any part of the process to suit your needs.  (See <a href="#customization">Customization</a> for more details.)</p>
 <h3 id="auto-splitting">Auto-splitting<a class="headerlink" href="#auto-splitting" title="Permanent link">&para;</a></h3>
-<p>While the request lifecycle above covers most cases, there is one special case that is worth mentioning.</p>
+<p>While the flow above covers most cases, there is one special case that is worth mentioning.</p>
 <p>If you set the <code>auto_split_length</code> parameter to a positive integer, the HTML will be split into multiple requests where each
 request aims to be no larger than <code>auto_split_length</code> tokens.</p>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p>In <strong>list mode</strong>, a single call can make many requests. Keep an eye on the <code>max_cost</code> parameter if you're using this.</p>
-<p>While this seems to work well for long lists of similar items, the question of it is worth the time and money is up to you, writing a bit of code is probably the better option in most cases.</p>
+<p>While this seems to work well enough for long lists of similar items, the question of it is worth the time and money is up to you.
+Writing a bit of code is probably the better option in most cases.</p>
 </div>
 <p>Instead of recombining the results of the <code>XPath</code> or <code>CSS</code> preprocessor, the results are instead chunked into smaller pieces (&lt;= <code>auto_split_length</code>) and sent to the API separately.</p>
 <p>The instructions are also modified slightly, indicating that your schema is for a list of similar items.</p>
 <h2 id="customization">Customization<a class="headerlink" href="#customization" title="Permanent link">&para;</a></h2>
+<p>To make it easier to experiment with different approaches, it is possible to customize nearly every part of the process from how the HTML is retrieved to how the results are processed.</p>
 <h3 id="http-requests">HTTP Requests<a class="headerlink" href="#http-requests" title="Permanent link">&para;</a></h3>
 <p>Instead of providing mechanisms to customize the HTTP request made by the library (e.g. to use caching, or make a <code>POST</code>), you can simply pass already retrieved HTML to the <code>scrape</code> method.</p>
 <p>This means you can use any HTTP library you want to retrieve the HTML.</p>
 <h3 id="preprocessors">Preprocessors<a class="headerlink" href="#preprocessors" title="Permanent link">&para;</a></h3>
 <p>Preprocessors allow you to modify the HTML before it is sent to the API.</p>
-<p>Three preprocessors are included by default:</p>
+<p>Three preprocessors are provided:</p>
 <ul>
 <li><code>CleanHTML</code> - Cleans the HTML using <code>lxml.html.clean.Cleaner</code>.</li>
 <li><code>XPath</code> - Applies an XPath selector to the HTML.</li>
@@ -715,7 +743,7 @@ request aims to be no larger than <code>auto_split_length</code> tokens.</p>
 <p class="admonition-title">Note</p>
 <p><code>CleanHTML</code> is always applied first, as it is part of the default preprocessors list.</p>
 </div>
-<p>You can add your own preprocessors by passing a list of callables to the <code>extra_preprocessors</code> parameter of <code>SchemaScraper</code>.</p>
+<p>You can add your own preprocessors by passing a list to the <code>extra_preprocessors</code> parameter of <code>SchemaScraper</code>.</p>
 <div class="highlight"><pre><span></span><code><span class="n">scraper</span> <span class="o">=</span> <span class="n">SchemaScraper</span><span class="p">(</span><span class="n">schema</span><span class="p">,</span> <span class="n">extra_preprocessors</span><span class="o">=</span><span class="p">[</span><span class="n">CSS</span><span class="p">(</span><span class="s2">&quot;table&quot;</span><span class="p">)])</span>
 </code></pre></div>
 <p>It is also possible to pass preprocessors at scrape time:</p>
@@ -732,7 +760,7 @@ request aims to be no larger than <code>auto_split_length</code> tokens.</p>
     <span class="n">models</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;gpt-4&quot;</span><span class="p">],</span>
     <span class="n">extra_instructions</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Put the legislator&#39;s bio in the &#39;bio&#39; field. Summarize it so that it is no longer than 3 sentences.&quot;</span><span class="p">],</span>
 <span class="p">)</span>
-<span class="n">scraper</span><span class="o">.</span><span class="n">scrape</span><span class="p">(</span><span class="s2">&quot;https://norton.house.gov/about/full-biography&quot;</span><span class="p">)</span>
+<span class="n">scraper</span><span class="o">.</span><span class="n">scrape</span><span class="p">(</span><span class="s2">&quot;https://norton.house.gov/about/full-biography&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">data</span>
 </code></pre></div>
 <div class="highlight"><pre><span></span><code><span class="p">{</span><span class="err">&#39;</span><span class="kc">na</span><span class="err">me&#39;</span><span class="p">:</span><span class="w"> </span><span class="err">&#39;Represe</span><span class="kc">ntat</span><span class="err">ive</span><span class="w"> </span><span class="err">Elea</span><span class="kc">n</span><span class="err">or</span><span class="w"> </span><span class="err">Holmes</span><span class="w"> </span><span class="err">Nor</span><span class="kc">t</span><span class="err">o</span><span class="kc">n</span><span class="err">&#39;</span><span class="p">,</span>
 <span class="w"> </span><span class="err">&#39;commi</span><span class="kc">ttees</span><span class="err">&#39;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
@@ -745,10 +773,41 @@ request aims to be no larger than <code>auto_split_length</code> tokens.</p>
 <p>These instructions can be useful for refining the results, but they are not required.</p>
 <h3 id="altering-the-api-model">Altering the API / Model<a class="headerlink" href="#altering-the-api-model" title="Permanent link">&para;</a></h3>
 <p>See <a href="https://github.com/jamesturk/scrapeghost/issues/18">https://github.com/jamesturk/scrapeghost/issues/18</a></p>
-<h3 id="postprocessors">Postprocessors<a class="headerlink" href="#postprocessors" title="Permanent link">&para;</a></h3>
+<h2 id="postprocessors">Postprocessors<a class="headerlink" href="#postprocessors" title="Permanent link">&para;</a></h2>
 <p>Postprocessors take the results of the API call and modify them before returning them to the user.</p>
-<p>The default is to just use <code>JSONPostprocessor</code> which converts the results to JSON.</p>
-<p>Postprocessors can be overridden by passing a list of callables to the <code>postprocessors</code> parameter of <code>SchemaScraper</code>.</p>
+<p>Three postprocessors are provided:</p>
+<ul>
+<li><code>JSONPostprocessor</code> - Converts the results to JSON.</li>
+<li><code>HallucinationChecker</code> - Checks the results for hallucinations.</li>
+<li><code>PydanticPostprocessor</code> - Converts the results to JSON and validates them using a <code>pydantic</code> model.</li>
+</ul>
+<p>By default, <code>JSONPostprocessor</code> and <code>HallucinationChecker</code> are enabled.</p>
+<p><code>HallucinationChecker</code> verifies that values in the response are present in the source HTML.  This is useful for ensuring that the results are not "hallucinations".
+This is done as a proof of concept, and to help determine how big of an issue hallucinations are for this use case.</p>
+<h3 id="using-pydantic-models">Using <code>pydantic</code> Models<a class="headerlink" href="#using-pydantic-models" title="Permanent link">&para;</a></h3>
+<p>If you want to validate that the returned data isn't just JSON, but data in the format you expect, you can use <code>pydantic</code> models.</p>
+<p><div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">pydantic</span> <span class="kn">import</span> <span class="n">BaseModel</span>
+<span class="kn">from</span> <span class="nn">scrapeghost</span> <span class="kn">import</span> <span class="n">SchemaScraper</span><span class="p">,</span> <span class="n">CSS</span>
+
+
+<span class="k">class</span> <span class="nc">CrewMember</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="n">gender</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">race</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">alignment</span><span class="p">:</span> <span class="nb">str</span>
+
+
+<span class="c1"># passing a pydantic model to the SchemaScraper # will generate a schema from it</span>
+<span class="c1"># and add the PydanticPostprocessor to the postprocessors</span>
+<span class="n">scrape_crewmember</span> <span class="o">=</span> <span class="n">SchemaScraper</span><span class="p">(</span><span class="n">schema</span><span class="o">=</span><span class="n">CrewMember</span><span class="p">)</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">scrape_crewmember</span><span class="o">.</span><span class="n">scrape</span><span class="p">(</span>
+    <span class="s2">&quot;https://spaceghost.fandom.com/wiki/Zorak&quot;</span><span class="p">,</span>
+    <span class="n">extra_preprocessors</span><span class="o">=</span><span class="p">[</span><span class="n">CSS</span><span class="p">(</span><span class="s2">&quot;.infobox&quot;</span><span class="p">)],</span>
+<span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">repr</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">data</span><span class="p">))</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>CrewMember(gender=&#39;Male&#39;, race=&#39;Dokarian&#39;, alignment=&#39;Evil\\nProtagonist&#39;)
+</code></pre></div></p>
+<p>This works by converting the <code>pydantic</code> model to a schema and registering a <code>PydanticPostprocessor</code> to validate the results automatically.</p>
 
 
 

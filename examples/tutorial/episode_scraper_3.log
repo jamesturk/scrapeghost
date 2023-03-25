@@ -1,0 +1,9 @@
+2023-03-24 19:19:00 [info     ] API request                    html_tokens=1332 model=gpt-3.5-turbo
+2023-03-24 19:19:05 [info     ] API response                   completion_tokens=83 cost=0.003036 duration=4.687386989593506 finish_reason=stop prompt_tokens=1435
+{'episode_number': 800,
+ 'guests': [{'name': 'Jason Mantzoukas'},
+            {'name': 'Andy Daly'},
+            {'name': 'Paul F. Tompkins'}],
+ 'release_date': '2023-03-12',
+ 'title': 'Operation Golden Orb'}
+Total Cost: $0.003

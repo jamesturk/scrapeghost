@@ -1,7 +1,7 @@
 from scrapeghost import SchemaScraper, CSS
 from pprint import pprint
 
-url = "https://comedybangbang.fandom.com/wiki/Operation_Golden_Orb"
+url = "https://www.earwolf.com/episode/operation-golden-orb/"
 schema = {
     "title": "str",
     "episode_number": "int",
@@ -11,7 +11,9 @@ schema = {
 
 episode_scraper = SchemaScraper(
     schema,
-    extra_preprocessors=[CSS("div.page-content")],
+    extra_preprocessors=[CSS(".hero-episode")],
 )
 
-pprint(episode_scraper(url))
+response = episode_scraper(url)
+pprint(response.data)
+print(f"Total Cost: ${response.total_cost:.3f}")

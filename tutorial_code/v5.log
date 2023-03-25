@@ -1,8 +1,0 @@
-2023-03-20 06:57:02 [warning  ] API request failed             model=gpt-3.5-turbo
-OpenAI did not stop: length (prompt_tokens=2082, completion_tokens=2015)
-2023-03-20 07:19:36 [warning  ] API request failed             model=gpt-3.5-turbo
-OpenAI did not stop: length (prompt_tokens=2110, completion_tokens=1987)
-[{'url': 'https://comedybangbang.fandom.com/wiki/Operation_Golden_Orb'}, {'url': 'https://comedybangbang.fandom.com/wiki/Bruba_Go_Do'}, {'url': 'https://comedybangbang.fandom.com/wiki/Hostage_Forecast'}]
-[{'url': 'https://comedybangbang.fandom.com/wiki/Never_Date_a_%22Brown%22', 'title': 'Never Date a "Brown"'}, {'url': 'https://comedybangbang.fandom.com/wiki/Reggaeton_Soundboard', 'title': 'Reggaeton Soundboard'}, {'url': 'https://comedybangbang.fandom.com/wiki/Welcome_to_Comedy_Bang_Bang', 'title': 'Welcome to Comedy Bang Bang'}]
-total: 851
-cost: 0.457462

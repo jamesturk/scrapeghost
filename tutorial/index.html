@@ -67,7 +67,7 @@
     
     
     
-    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="deeppurple" data-md-color-accent="purple">
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="purple" data-md-color-accent="purple">
   
     
     
@@ -123,7 +123,7 @@
       <form class="md-header__option" data-md-component="palette">
         
           
-          <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="deeppurple" data-md-color-accent="purple"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+          <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="purple" data-md-color-accent="purple"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
           
             <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_2" hidden>
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 7H7a5 5 0 0 0-5 5 5 5 0 0 0 5 5h10a5 5 0 0 0 5-5 5 5 0 0 0-5-5m0 8a3 3 0 0 1-3-3 3 3 0 0 1 3-3 3 3 0 0 1 3 3 3 3 0 0 1-3 3Z"/></svg>
@@ -131,7 +131,7 @@
           
         
           
-          <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="deeppurple" data-md-color-accent="purple"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_2">
+          <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="purple" data-md-color-accent="purple"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_2">
           
             <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 6H7c-3.31 0-6 2.69-6 6s2.69 6 6 6h10c3.31 0 6-2.69 6-6s-2.69-6-6-6zm0 10H7c-2.21 0-4-1.79-4-4s1.79-4 4-4h10c2.21 0 4 1.79 4 4s-1.79 4-4 4zM7 9c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
@@ -361,14 +361,28 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#getting-a-list-of-episodes" class="md-nav__link">
-    Getting a List of Episodes
+  <a href="#dealing-with-page-structure-changes" class="md-nav__link">
+    Dealing With Page Structure Changes
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#extra-instructions" class="md-nav__link">
+    Extra Instructions
   </a>
   
 </li>
         
       </ul>
     </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#getting-a-list-of-episodes" class="md-nav__link">
+    Getting a List of Episodes
+  </a>
   
 </li>
       
@@ -403,7 +417,7 @@
   
     <li class="md-nav__item">
       <a href="../openai/" class="md-nav__link">
-        About the OpenAI API
+        OpenAI / GPT
       </a>
     </li>
   
@@ -680,14 +694,28 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#getting-a-list-of-episodes" class="md-nav__link">
-    Getting a List of Episodes
+  <a href="#dealing-with-page-structure-changes" class="md-nav__link">
+    Dealing With Page Structure Changes
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#extra-instructions" class="md-nav__link">
+    Extra Instructions
   </a>
   
 </li>
         
       </ul>
     </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#getting-a-list-of-episodes" class="md-nav__link">
+    Getting a List of Episodes
+  </a>
   
 </li>
       
@@ -753,7 +781,7 @@
 <p>Let's say we want to build a scraper that finds out each episode's title, episode number, and release date.</p>
 <p>We can do this by creating a <code>SchemaScraper</code> object and passing it a schema.</p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">scrapeghost</span> <span class="kn">import</span> <span class="n">SchemaScraper</span>
-<span class="kn">from</span> <span class="nn">pprint</span> <span class="kn">import</span> <span class="n">pprint</span>  <span class="c1"># pretty print results</span>
+<span class="kn">from</span> <span class="nn">pprint</span> <span class="kn">import</span> <span class="n">pprint</span>
 
 <span class="n">url</span> <span class="o">=</span> <span class="s2">&quot;https://comedybangbang.fandom.com/wiki/Operation_Golden_Orb&quot;</span>
 <span class="n">schema</span> <span class="o">=</span> <span class="p">{</span>
@@ -764,14 +792,16 @@
 
 <span class="n">episode_scraper</span> <span class="o">=</span> <span class="n">SchemaScraper</span><span class="p">(</span><span class="n">schema</span><span class="p">)</span>
 
-<span class="n">pprint</span><span class="p">(</span><span class="n">episode_scraper</span><span class="p">(</span><span class="n">url</span><span class="p">))</span>
+<span class="n">response</span> <span class="o">=</span> <span class="n">episode_scraper</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+<span class="n">pprint</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Total Cost: $</span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">total_cost</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </code></pre></div>
 <p>There is no predefined way to define a schema, but a dictionary resembling the data you want to scrape where the keys are the names of the fields you want to scrape and the values are the types of the fields is a good place to start.</p>
 <p>Once you have an instance of <code>SchemaScraper</code> you can use it to scrape a specific page by passing it a URL (or HTML if you prefer/need to fetch the data another way).</p>
 <p>Running our code gives an error though:</p>
 <div class="highlight"><pre><span></span><code>scrapeghost.scrapers.TooManyTokens: HTML is 9710 tokens, max for gpt-3.5-turbo is 4096
 </code></pre></div>
-<p>This means that the content length is too long.</p>
+<p>This means that the content length is too long, we'll need to reduce our token count in order to make this work.</p>
 <h3 id="what-are-tokens">What Are Tokens?<a class="headerlink" href="#what-are-tokens" title="Permanent link">&para;</a></h3>
 <p>If you haven't used OpenAI's APIs before, you may not be aware of the token limits.  Every request has a limit on the number of tokens it can use. For GPT-4 this is 8,192 tokens. For GPT-3.5-Turbo it is 4,096.  (A token is about three characters.)</p>
 <p>You are also billed per token, so even if you're under the limit, fewer tokens means cheaper API calls.</p>
@@ -802,8 +832,8 @@
 </tr>
 </tbody>
 </table>
+<p>Example: A 3,000 token page that returns 1,000 tokens of JSON will cost $0.008 with GPT-3-Turbo, but $0.15 with GPT-4.</p>
 <p>(See <a href="https://platform.openai.com/pricing">OpenAI pricing page</a> for latest info.)</p>
-<p>So for example, a 4,000 token page that returns 1,000 tokens of JSON will cost $0.01 with GPT-3-Turbo, but $0.18 with GPT-4.</p>
 <p>Ideally, we'd only pass the relevant parts of the page to OpenAI. It shouldn't need anything outside of the HTML <code>&lt;body&gt;</code>, anything in comments, script tags, etc.</p>
 <p>(For more details on how this library interacts with OpenAI's API, see the <a href="../openai/">OpenAI API</a> page.)</p>
 <h3 id="preprocessors">Preprocessors<a class="headerlink" href="#preprocessors" title="Permanent link">&para;</a></h3>
@@ -813,7 +843,8 @@
 <p>A <code>CleanHTML</code> preprocessor is included by default. This removes HTML comments, script tags, and style tags.</p>
 </div>
 <p>If you visit the page <a href="https://comedybangbang.fandom.com/wiki/Operation_Golden_Orb">https://comedybangbang.fandom.com/wiki/Operation_Golden_Orb</a> viewing the source will reveal that all of the interesting content is in an element <code>&lt;div id="content" class="page-content"&gt;</code>.</p>
-<p>Just as we might if we were writing a real scraper, we'll write a CSS selector to grab this element, <code>div.page-content</code> will do.  The <code>CSS</code> preprocessor will use this selector to extract the content of the element.</p>
+<p>Just as we might if we were writing a real scraper, we'll write a CSS selector to grab this element, <code>div.page-content</code> will do.
+The <code>CSS</code> preprocessor will use this selector to extract the content of the element.</p>
 <div class="highlight"><pre><span></span><code><span class="hll"><span class="kn">from</span> <span class="nn">scrapeghost</span> <span class="kn">import</span> <span class="n">SchemaScraper</span><span class="p">,</span> <span class="n">CSS</span>
 </span><span class="kn">from</span> <span class="nn">pprint</span> <span class="kn">import</span> <span class="n">pprint</span>
 
@@ -830,23 +861,24 @@
 </span><span class="hll">    <span class="n">extra_preprocessors</span><span class="o">=</span><span class="p">[</span><span class="n">CSS</span><span class="p">(</span><span class="s2">&quot;div.page-content&quot;</span><span class="p">)],</span>
 </span><span class="p">)</span>
 
-<span class="n">pprint</span><span class="p">(</span><span class="n">episode_scraper</span><span class="p">(</span><span class="n">url</span><span class="p">))</span>
+<span class="n">response</span> <span class="o">=</span> <span class="n">episode_scraper</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+<span class="n">pprint</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Total Cost: $</span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">total_cost</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </code></pre></div>
 <p>Now, a call to our scraper will only pass the content of the <code>&lt;div&gt;</code> to OpenAI. We get the following output:</p>
-<div class="highlight"><pre><span></span><code>2023-03-20 05:08:16 [debug    ] got HTML                       length=165605 url=https://comedybangbang.fandom.com/wiki/Operation_Golden_Orb
-2023-03-20 05:08:16 [debug    ] preprocessor                   from_nodes=1 name=CleanHTML nodes=1
-2023-03-20 05:08:16 [debug    ] preprocessor                   from_nodes=1 name=CSS(div.page-content) nodes=1
-2023-03-20 05:08:16 [info     ] API request                    html_tokens=1275 model=gpt-3.5-turbo
-2023-03-20 05:08:21 [info     ] API response                   completion_tokens=34 cost=0.0027960000000000003 duration=4.801216125488281 finish_reason=stop prompt_tokens=1364
+<div class="highlight"><pre><span></span><code>2023-03-24 19:18:57 [info     ] API request                    html_tokens=1332 model=gpt-3.5-turbo
+2023-03-24 19:18:59 [info     ] API response                   completion_tokens=33 cost=0.00291 duration=2.3073980808258057 finish_reason=stop prompt_tokens=1422
 {&#39;episode_number&#39;: 800,
  &#39;release_date&#39;: &#39;March 12, 2023&#39;,
  &#39;title&#39;: &#39;Operation Golden Orb&#39;}
+Total Cost: $0.003
 </code></pre></div>
 <p>We can see from the logging output that the content length is much shorter now and we get the data we were hoping for.</p>
 <p>All for less than a penny!</p>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
 <p>Even when the page fits under the token limit, it is still a good idea to pass a selector to limit the amount of content that OpenAI has to process.</p>
+<p>Fewer tokens means faster responses and cheaper API calls. It should also get you better results.</p>
 </div>
 <h3 id="enhancing-the-schema">Enhancing the Schema<a class="headerlink" href="#enhancing-the-schema" title="Permanent link">&para;</a></h3>
 <p>That was easy! Let's enhance our schema to include the list of guests as well as requesting the dates in a particular format.</p>
@@ -863,28 +895,29 @@
 
 <span class="n">episode_scraper</span> <span class="o">=</span> <span class="n">SchemaScraper</span><span class="p">(</span>
     <span class="n">schema</span><span class="p">,</span>
+    <span class="c1"># can pass preprocessor to constructor or at scrape time</span>
     <span class="n">extra_preprocessors</span><span class="o">=</span><span class="p">[</span><span class="n">CSS</span><span class="p">(</span><span class="s2">&quot;div.page-content&quot;</span><span class="p">)],</span>
 <span class="p">)</span>
 
-<span class="n">pprint</span><span class="p">(</span><span class="n">episode_scraper</span><span class="p">(</span><span class="n">url</span><span class="p">))</span>
+<span class="n">response</span> <span class="o">=</span> <span class="n">episode_scraper</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+<span class="n">pprint</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Total Cost: $</span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">total_cost</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </code></pre></div>
 <p>Just two small changes, but now we get the following output:</p>
-<div class="highlight"><pre><span></span><code>2023-03-20 05:08:21 [debug    ] got HTML                       length=165605 url=https://comedybangbang.fandom.com/wiki/Operation_Golden_Orb
-2023-03-20 05:08:21 [debug    ] preprocessor                   from_nodes=1 name=CleanHTML nodes=1
-2023-03-20 05:08:21 [debug    ] preprocessor                   from_nodes=1 name=CSS(div.page-content) nodes=1
-2023-03-20 05:08:21 [info     ] API request                    html_tokens=1275 model=gpt-3.5-turbo
-2023-03-20 05:08:27 [info     ] API response                   completion_tokens=84 cost=0.002922 duration=5.86192774772644 finish_reason=stop prompt_tokens=1377
+<div class="highlight"><pre><span></span><code>2023-03-24 19:19:00 [info     ] API request                    html_tokens=1332 model=gpt-3.5-turbo
+2023-03-24 19:19:05 [info     ] API response                   completion_tokens=83 cost=0.003036 duration=4.687386989593506 finish_reason=stop prompt_tokens=1435
 {&#39;episode_number&#39;: 800,
  &#39;guests&#39;: [{&#39;name&#39;: &#39;Jason Mantzoukas&#39;},
             {&#39;name&#39;: &#39;Andy Daly&#39;},
             {&#39;name&#39;: &#39;Paul F. Tompkins&#39;}],
  &#39;release_date&#39;: &#39;2023-03-12&#39;,
  &#39;title&#39;: &#39;Operation Golden Orb&#39;}
+Total Cost: $0.003
 </code></pre></div>
-<p>Let's try this on a different episode, from the beginning of the series.</p>
+<p>Let's try it on a different episode, from the beginning of the series.</p>
 <p><div class="highlight"><pre><span></span><code><span class="n">episode_scraper</span><span class="p">(</span>
     <span class="s2">&quot;https://comedybangbang.fandom.com/wiki/Welcome_to_Comedy_Bang_Bang&quot;</span><span class="p">,</span>
-<span class="p">)</span>
+<span class="p">)</span><span class="o">.</span><span class="n">data</span>
 </code></pre></div>
 <div class="highlight"><pre><span></span><code>{&#39;episode_number&#39;: 1,
  &#39;guests&#39;: [{&#39;name&#39;: &#39;Rob Huebel&#39;},
@@ -893,9 +926,83 @@
  &#39;release_date&#39;: &#39;2009-05-01&#39;,
  &#39;title&#39;: &#39;Welcome to Comedy Bang Bang&#39;}
 </code></pre></div></p>
-<p>And there we have it!</p>
-<h3 id="getting-a-list-of-episodes">Getting a List of Episodes<a class="headerlink" href="#getting-a-list-of-episodes" title="Permanent link">&para;</a></h3>
-<p>Now that we have a scraper that can get the details of each episode, we need a scraper that can get a list of all of the episode URLs.</p>
+<p>Not bad!</p>
+<h3 id="dealing-with-page-structure-changes">Dealing With Page Structure Changes<a class="headerlink" href="#dealing-with-page-structure-changes" title="Permanent link">&para;</a></h3>
+<p>If you've maintained a scraper for any amount of time you know that the biggest burden is dealing with changes to the structure of the pages you're scraping.</p>
+<p>To simulate this, let's say we instead wanted to get the same information from a different page: <a href="https://www.earwolf.com/episode/operation-golden-orb/">https://www.earwolf.com/episode/operation-golden-orb/</a></p>
+<p>This page has a completely different layout. We will need to change our CSS selector:</p>
+<p><div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">scrapeghost</span> <span class="kn">import</span> <span class="n">SchemaScraper</span><span class="p">,</span> <span class="n">CSS</span>
+<span class="kn">from</span> <span class="nn">pprint</span> <span class="kn">import</span> <span class="n">pprint</span>
+
+<span class="hll"><span class="n">url</span> <span class="o">=</span> <span class="s2">&quot;https://www.earwolf.com/episode/operation-golden-orb/&quot;</span>
+</span><span class="n">schema</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;str&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;episode_number&quot;</span><span class="p">:</span> <span class="s2">&quot;int&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;release_date&quot;</span><span class="p">:</span> <span class="s2">&quot;YYYY-MM-DD&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;guests&quot;</span><span class="p">:</span> <span class="p">[{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;str&quot;</span><span class="p">}],</span>
+<span class="p">}</span>
+
+<span class="n">episode_scraper</span> <span class="o">=</span> <span class="n">SchemaScraper</span><span class="p">(</span>
+    <span class="n">schema</span><span class="p">,</span>
+<span class="hll">    <span class="n">extra_preprocessors</span><span class="o">=</span><span class="p">[</span><span class="n">CSS</span><span class="p">(</span><span class="s2">&quot;.hero-episode&quot;</span><span class="p">)],</span>
+</span><span class="p">)</span>
+
+<span class="n">response</span> <span class="o">=</span> <span class="n">episode_scraper</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+<span class="n">pprint</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Total Cost: $</span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">total_cost</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>2023-03-24 19:19:08 [info     ] API request                    html_tokens=2988 model=gpt-3.5-turbo
+2023-03-24 19:19:13 [info     ] API response                   completion_tokens=88 cost=0.006358000000000001 duration=5.002557992935181 finish_reason=stop prompt_tokens=3091
+{&#39;episode_number&#39;: 800,
+ &#39;guests&#39;: [{&#39;name&#39;: &#39;Jason Mantzoukas&#39;},
+            {&#39;name&#39;: &#39;Andy Daly&#39;},
+            {&#39;name&#39;: &#39;Paul F. Tompkins&#39;}],
+ &#39;release_date&#39;: &#39;2023-03-12&#39;,
+ &#39;title&#39;: &#39;EP. 800 — Operation Golden Orb&#39;}
+Total Cost: $0.006
+</code></pre></div></p>
+<p>Completely different HTML, one CSS selector change.</p>
+<h3 id="extra-instructions">Extra Instructions<a class="headerlink" href="#extra-instructions" title="Permanent link">&para;</a></h3>
+<p>You may notice that the <code>title</code> changed.
+The second source includes the episode number in the title, but the first source does not.</p>
+<p>You could deal with this with a bit of clean up, but you have another option at your disposal. You can give the underlying model additional instructions to modify the behavior.</p>
+<p><div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">scrapeghost</span> <span class="kn">import</span> <span class="n">SchemaScraper</span><span class="p">,</span> <span class="n">CSS</span>
+<span class="kn">from</span> <span class="nn">pprint</span> <span class="kn">import</span> <span class="n">pprint</span>
+
+<span class="n">url</span> <span class="o">=</span> <span class="s2">&quot;https://www.earwolf.com/episode/operation-golden-orb/&quot;</span>
+<span class="n">schema</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;str&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;episode_number&quot;</span><span class="p">:</span> <span class="s2">&quot;int&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;release_date&quot;</span><span class="p">:</span> <span class="s2">&quot;YYYY-MM-DD&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;guests&quot;</span><span class="p">:</span> <span class="p">[{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;str&quot;</span><span class="p">}],</span>
+<span class="p">}</span>
+
+<span class="n">episode_scraper</span> <span class="o">=</span> <span class="n">SchemaScraper</span><span class="p">(</span>
+    <span class="n">schema</span><span class="p">,</span>
+    <span class="n">extra_preprocessors</span><span class="o">=</span><span class="p">[</span><span class="n">CSS</span><span class="p">(</span><span class="s2">&quot;.hero-episode&quot;</span><span class="p">)],</span>
+    <span class="n">extra_instructions</span><span class="o">=</span><span class="p">[</span>
+<span class="hll">        <span class="s2">&quot;Do not include the episode number in the title.&quot;</span><span class="p">,</span>
+</span>    <span class="p">],</span>
+<span class="p">)</span>
+
+<span class="n">response</span> <span class="o">=</span> <span class="n">episode_scraper</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+<span class="n">pprint</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Total Cost: $</span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">total_cost</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>2023-03-24 19:19:14 [info     ] API request                    html_tokens=2988 model=gpt-3.5-turbo
+2023-03-24 19:19:18 [info     ] API response                   completion_tokens=83 cost=0.006378 duration=4.542723894119263 finish_reason=stop prompt_tokens=3106
+{&#39;episode_number&#39;: 800,
+ &#39;guests&#39;: [{&#39;name&#39;: &#39;Jason Mantzoukas&#39;},
+            {&#39;name&#39;: &#39;Andy Daly&#39;},
+            {&#39;name&#39;: &#39;Paul F. Tompkins&#39;}],
+ &#39;release_date&#39;: &#39;2023-03-12&#39;,
+ &#39;title&#39;: &#39;Operation Golden Orb&#39;}
+Total Cost: $0.006
+</code></pre></div></p>
+<p>At this point, you may be wondering if you'll ever need to write a web scraper again. </p>
+<p>So to temper that, let's take a look at something that is a bit more difficult for <code>scrapeghost</code> to handle.</p>
+<h2 id="getting-a-list-of-episodes">Getting a List of Episodes<a class="headerlink" href="#getting-a-list-of-episodes" title="Permanent link">&para;</a></h2>
+<p>Now that we have a scraper that can get the details of each episode, we want a scraper that can get a list of all of the episode URLs.</p>
 <p><a href="https://comedybangbang.fandom.com/wiki/Category:Episodes">https://comedybangbang.fandom.com/wiki/Category:Episodes</a> has a link to each of the episodes, perhaps we can just scrape that page?</p>
 <p><div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">scrapeghost</span> <span class="kn">import</span> <span class="n">SchemaScraper</span>
 
@@ -913,42 +1020,67 @@
 
 <span class="n">episode_list_scraper</span> <span class="o">=</span> <span class="n">SchemaScraper</span><span class="p">(</span>
     <span class="s2">&quot;url&quot;</span><span class="p">,</span>
-    <span class="n">auto_split_length</span><span class="o">=</span><span class="mi">2048</span><span class="p">,</span>
+    <span class="n">auto_split_length</span><span class="o">=</span><span class="mi">2000</span><span class="p">,</span>
     <span class="n">extra_preprocessors</span><span class="o">=</span><span class="p">[</span><span class="n">CSS</span><span class="p">(</span><span class="s2">&quot;.mw-parser-output a[class!=&#39;image link-internal&#39;]&quot;</span><span class="p">)],</span>
 <span class="p">)</span>
-<span class="n">episode_urls</span> <span class="o">=</span> <span class="n">episode_list_scraper</span><span class="p">(</span>
+<span class="n">response</span> <span class="o">=</span> <span class="n">episode_list_scraper</span><span class="p">(</span>
     <span class="s2">&quot;https://comedybangbang.fandom.com/wiki/Category:Episodes&quot;</span>
 <span class="p">)</span>
 
+<span class="n">episode_urls</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">data</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">episode_urls</span><span class="p">[:</span><span class="mi">3</span><span class="p">])</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">episode_urls</span><span class="p">[</span><span class="o">-</span><span class="mi">3</span><span class="p">:])</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;total:&quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">episode_urls</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;cost:&quot;</span><span class="p">,</span> <span class="n">episode_list_scraper</span><span class="o">.</span><span class="n">total_cost</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Total Cost: $</span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">total_cost</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </code></pre></div>
-<p><code>auto_split_length=True</code> alters the prompt and response format so that instead of returning a single JSON object, it returns a list of objects where each should match your provided <code>schema</code>.</p>
-<p>We alter the <code>schema</code> to just be a single string because we're only interested in the URL.</p>
-<p>Finally, we set the <code>auto_split_length</code> to 2048. This is the maximum number of tokens that will be passed to OpenAI in a single request.</p>
+<p>We set the <code>auto_split_length</code> to 2000. This is the maximum number of tokens that will be passed to OpenAI in a single request.</p>
+<p>Setting <code>auto_split_length</code> alters the prompt and response format so that instead of returning a single JSON object, it returns a list of objects where each should match your provided <code>schema</code>.</p>
+<p>Because of this, we alter the <code>schema</code> to just be a single string because we're only interested in the URL.</p>
 <p>It's a good idea to set this to about half the token limit, since the response counts against the token limit as well.</p>
 <p>This winds up needing to make over twenty requests, but gets the list of episode URLs after a few minutes.</p>
-<div class="highlight"><pre><span></span><code>2023-03-20 06:57:02 [warning  ] API request failed             model=gpt-3.5-turbo
-OpenAI did not stop: length (prompt_tokens=2082, completion_tokens=2015)
-2023-03-20 07:19:36 [warning  ] API request failed             model=gpt-3.5-turbo
-OpenAI did not stop: length (prompt_tokens=2110, completion_tokens=1987)
-[{&#39;url&#39;: &#39;https://comedybangbang.fandom.com/wiki/Operation_Golden_Orb&#39;}, {&#39;url&#39;: &#39;https://comedybangbang.fandom.com/wiki/Bruba_Go_Do&#39;}, {&#39;url&#39;: &#39;https://comedybangbang.fandom.com/wiki/Hostage_Forecast&#39;}]
-[{&#39;url&#39;: &#39;https://comedybangbang.fandom.com/wiki/Never_Date_a_%22Brown%22&#39;, &#39;title&#39;: &#39;Never Date a &quot;Brown&quot;&#39;}, {&#39;url&#39;: &#39;https://comedybangbang.fandom.com/wiki/Reggaeton_Soundboard&#39;, &#39;title&#39;: &#39;Reggaeton Soundboard&#39;}, {&#39;url&#39;: &#39;https://comedybangbang.fandom.com/wiki/Welcome_to_Comedy_Bang_Bang&#39;, &#39;title&#39;: &#39;Welcome to Comedy Bang Bang&#39;}]
-total: 851
-cost: 0.457462
+<div class="highlight"><pre><span></span><code>2023-03-24 19:25:53 [debug    ] got HTML                       length=1424892 url=https://comedybangbang.fandom.com/wiki/Category:Episodes
+2023-03-24 19:25:53 [debug    ] preprocessor                   from_nodes=1 name=CleanHTML nodes=1
+2023-03-24 19:25:53 [debug    ] preprocessor                   from_nodes=1 name=CSS(.mw-parser-output a[class!=&#39;image link-internal&#39;]) nodes=857
+2023-03-24 19:25:53 [debug    ] chunked tags                   num=20 sizes=[1971, 1994, 1986, 1976, 1978, 1990, 1993, 1974, 1995, 1983, 1975, 1979, 1967, 1953, 1971, 1973, 1987, 1960, 1966, 682]
+2023-03-24 19:25:53 [info     ] API request                    html_tokens=1971 model=gpt-3.5-turbo
+2023-03-24 19:27:38 [info     ] API response                   completion_tokens=2053 cost=0.008194 duration=104.66404676437378 finish_reason=length prompt_tokens=2044
+2023-03-24 19:27:38 [warning  ] API request failed             attempts=1 model=gpt-3.5-turbo
+OpenAI did not stop: length (prompt_tokens=2044, completion_tokens=2053)
+2023-03-24 19:27:38 [warning  ] retry                          model=gpt-4 wait=30
+2023-03-24 19:28:08 [info     ] API request                    html_tokens=1971 model=gpt-4
+2023-03-24 19:29:45 [info     ] API response                   completion_tokens=1298 cost=0.1614 duration=96.80066990852356 finish_reason=stop prompt_tokens=2041
+2023-03-24 19:29:45 [info     ] API request                    html_tokens=1994 model=gpt-3.5-turbo
+2023-03-24 19:31:28 [info     ] API response                   completion_tokens=2030 cost=0.008194 duration=103.33699011802673 finish_reason=length prompt_tokens=2067
+2023-03-24 19:31:28 [warning  ] API request failed             attempts=1 model=gpt-3.5-turbo
+OpenAI did not stop: length (prompt_tokens=2067, completion_tokens=2030)
+2023-03-24 19:31:28 [warning  ] retry                          model=gpt-4 wait=30
+2023-03-24 19:31:58 [info     ] API request                    html_tokens=1994 model=gpt-4
+2023-03-24 19:33:36 [info     ] API response                   completion_tokens=1272 cost=0.162 duration=98.51345086097717 finish_reason=stop prompt_tokens=2064
+2023-03-24 19:33:36 [info     ] API request                    html_tokens=1986 model=gpt-3.5-turbo
+2023-03-24 19:34:47 [info     ] API response                   completion_tokens=1432 cost=0.006982 duration=70.14662671089172 finish_reason=stop prompt_tokens=2059
+2023-03-24 19:34:47 [info     ] API request                    html_tokens=1976 model=gpt-3.5-turbo
+2023-03-24 19:36:34 [info     ] API response                   completion_tokens=2048 cost=0.008194 duration=107.59430480003357 finish_reason=length prompt_tokens=2049
+2023-03-24 19:36:34 [warning  ] API request failed             attempts=1 model=gpt-3.5-turbo
+OpenAI did not stop: length (prompt_tokens=2049, completion_tokens=2048)
+2023-03-24 19:36:34 [warning  ] retry                          model=gpt-4 wait=30
+2023-03-24 19:37:04 [info     ] API request                    html_tokens=1976 model=gpt-4
+2023-03-24 19:38:35 [info     ] API response                   completion_tokens=1268 cost=0.16079999999999997 duration=91.19674801826477 finish_reason=stop prompt_tokens=2046
+2023-03-24 19:38:35 [info     ] API request                    html_tokens=1978 model=gpt-3.5-turbo
+2023-03-24 19:40:09 [info     ] API response                   completion_tokens=1778 cost=0.007658000000000001 duration=93.64541912078857 finish_reason=stop prompt_tokens=2051
+2023-03-24 19:40:09 [info     ] API request                    html_tokens=1990 model=gpt-3.5-turbo
+2023-03-24 19:41:53 [info     ] API response                   completion_tokens=2034 cost=0.008194 duration=104.09985399246216 finish_reason=length prompt_tokens=2063
+2023-03-24 19:41:53 [warning  ] API request failed             attempts=1 model=gpt-3.5-turbo
+OpenAI did not stop: length (prompt_tokens=2063, completion_tokens=2034)
+2023-03-24 19:41:53 [warning  ] retry                          model=gpt-4 wait=30
+2023-03-24 19:42:23 [info     ] API request                    html_tokens=1990 model=gpt-4
 </code></pre></div>
 <p>As you can see, a couple of requests automatically fell back to GPT-4, raising the cost to about $0.46 for the entire scrape.</p>
-<p>If you lower the <code>split_token</code> a bit further takes even longer, but if you can stick to GPT-3.5-Turbo it's only $0.13.</p>
-<p>It isn't perfect, it is quite slow and you might also notice it
-sometimes adds unnecessary "name" fields to the JSON, but it gets the job done.</p>
+<p>If you lower the <code>split_token</code> a bit further more requests means it takes even longer, but if you can stick to GPT-3.5-Turbo it's only $0.13.</p>
 <p>If you want to see the pieces put together, jump down to the <a href="#putting-it-all-together">Putting it all Together</a> section.</p>
 <h2 id="next-steps">Next Steps<a class="headerlink" href="#next-steps" title="Permanent link">&para;</a></h2>
 <p>If you're planning to use this library, please know it is very much in flux and I can't commit to API stability yet.</p>
 <p>If you are going to try to scrape using GPT, it'd probably be good to read the <a href="../openai/">OpenAI API</a> page to understand a little more about how the underlying API works.</p>
-<p>I'm still exploring ways to improve accuracy and the developer experience.  If you want to follow along, <a href="https://github.com/jamesturk/scrapeghost/issues">the issues page</a> is a good picture of what I'm considering next.</p>
-<p>To see what other features are currently available, check out the <a href="../api/">API Reference</a>.</p>
+<p>To see what other features are currently available, check out the <a href="../usage/">Usage</a> guide.</p>
 <p>You can also explore the <a href="../cli/">command line interface</a> to see how you can use this library without writing any Python.</p>
 <h2 id="putting-it-all-together">Putting it all Together<a class="headerlink" href="#putting-it-all-together" title="Permanent link">&para;</a></h2>
 <div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">json</span>
@@ -956,7 +1088,7 @@ sometimes adds unnecessary "name" fields to the JSON, but it gets the job done.<
 
 <span class="n">episode_list_scraper</span> <span class="o">=</span> <span class="n">SchemaScraper</span><span class="p">(</span>
     <span class="s1">&#39;{&quot;url&quot;: &quot;url&quot;}&#39;</span><span class="p">,</span>
-    <span class="n">auto_split_length</span><span class="o">=</span><span class="mi">2048</span><span class="p">,</span>
+    <span class="n">auto_split_length</span><span class="o">=</span><span class="mi">1500</span><span class="p">,</span>
     <span class="c1"># restrict this to GPT-3.5-Turbo to keep the cost down</span>
     <span class="n">models</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;gpt-3.5-turbo&quot;</span><span class="p">],</span>
     <span class="n">extra_preprocessors</span><span class="o">=</span><span class="n">CSS</span><span class="p">(</span><span class="s2">&quot;.mw-parser-output a[class!=&#39;image link-internal&#39;]&quot;</span><span class="p">),</span>
@@ -973,12 +1105,11 @@ sometimes adds unnecessary "name" fields to the JSON, but it gets the job done.<
     <span class="n">extra_preprocessors</span><span class="o">=</span><span class="n">CSS</span><span class="p">(</span><span class="s2">&quot;div.page-content&quot;</span><span class="p">),</span>
 <span class="p">)</span>
 
-<span class="n">episode_urls</span> <span class="o">=</span> <span class="n">episode_list_scraper</span><span class="p">(</span>
+<span class="n">resp</span> <span class="o">=</span> <span class="n">episode_list_scraper</span><span class="p">(</span>
     <span class="s2">&quot;https://comedybangbang.fandom.com/wiki/Category:Episodes&quot;</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span>
-    <span class="sa">f</span><span class="s2">&quot;Scraped </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">episode_urls</span><span class="p">)</span><span class="si">}</span><span class="s2"> episode URLs, cost </span><span class="si">{</span><span class="n">episode_list_scraper</span><span class="o">.</span><span class="n">total_cost</span><span class="si">}</span><span class="s2">&quot;</span>
-<span class="p">)</span>
+<span class="n">episode_urls</span> <span class="o">=</span> <span class="n">resp</span><span class="o">.</span><span class="n">data</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Scraped </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">episode_urls</span><span class="p">)</span><span class="si">}</span><span class="s2"> episode URLs, cost </span><span class="si">{</span><span class="n">resp</span><span class="o">.</span><span class="n">total_cost</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
 <span class="n">episode_data</span> <span class="o">=</span> <span class="p">[]</span>
 <span class="k">for</span> <span class="n">episode_url</span> <span class="ow">in</span> <span class="n">episode_urls</span><span class="p">:</span>
@@ -986,10 +1117,11 @@ sometimes adds unnecessary "name" fields to the JSON, but it gets the job done.<
     <span class="n">episode_data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
         <span class="n">episode_scraper</span><span class="p">(</span>
             <span class="n">episode_url</span><span class="p">[</span><span class="s2">&quot;url&quot;</span><span class="p">],</span>
-        <span class="p">)</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">data</span>
     <span class="p">)</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Scraped </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">episode_data</span><span class="p">)</span><span class="si">}</span><span class="s2"> episodes, cost </span><span class="si">{</span><span class="n">episode_scraper</span><span class="o">.</span><span class="n">total_cost</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="c1"># scrapers have a stats() method that returns a dict of statistics across all calls</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Scraped </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">episode_data</span><span class="p">)</span><span class="si">}</span><span class="s2"> episodes, $</span><span class="si">{</span><span class="n">episode_scraper</span><span class="o">.</span><span class="n">stats</span><span class="p">()[</span><span class="s1">&#39;total_cost&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
 <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;episode_data.json&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
     <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">episode_data</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
