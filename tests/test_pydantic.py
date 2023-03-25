@@ -54,8 +54,8 @@ def test_pydantic_schema_scrape():
         "home_planet": "str",
         "age": "int",
     }
-    assert isinstance(scraper.postprocessors[1], PydanticPostprocessor)
-    assert scraper.postprocessors[1].pydantic_model == CrewMember
+    assert isinstance(scraper.postprocessors[-1], PydanticPostprocessor)
+    assert scraper.postprocessors[-1].pydantic_model == CrewMember
 
 
 def test_pydantic_postprocessor_good():
