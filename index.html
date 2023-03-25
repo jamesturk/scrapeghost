@@ -651,9 +651,27 @@ or
 <p>Read the <a href="tutorial/">tutorial</a> for a step-by-step guide to building a scraper.</p>
 <h3 id="command-line-usage-example">Command Line Usage Example<a class="headerlink" href="#command-line-usage-example" title="Permanent link">&para;</a></h3>
 <p>If you've installed the package (e.g. with <code>pipx</code>), you can use the <code>scrapeghost</code> command line tool to experiment.</p>
-<p><div class="highlight"><pre><span></span><code>
+<p><div class="highlight"><pre><span></span><code><span class="ch">#!/bin/sh </span>
+scrapeghost<span class="w"> </span>https://www.ncleg.gov/Members/Biography/S/436<span class="w">  </span><span class="se">\</span>
+<span class="w">        </span>--schema<span class="w"> </span><span class="s2">&quot;{&#39;first_name&#39;: &#39;str&#39;, &#39;last_name&#39;: &#39;str&#39;,</span>
+<span class="s2">        &#39;photo_url&#39;: &#39;url&#39;, &#39;offices&#39;: [] }&#39;&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">        </span>--css<span class="w"> </span>div.card<span class="w"> </span><span class="p">|</span><span class="w"> </span>python<span class="w"> </span>-m<span class="w"> </span>json.tool
 </code></pre></div>
-<div class="highlight"><pre><span></span><code>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;first_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Gale&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;last_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Adcock&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;photo_url&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://www.ncleg.gov/Members/MemberImage/S/436/Low&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;offices&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Mailing&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;address&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;16 West Jones Street, Rm. 1104, Raleigh, NC 27601&quot;</span>
+<span class="w">        </span><span class="p">},</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Office Phone&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;phone&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;(919) 715-3036&quot;</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">]</span>
+<span class="p">}</span>
 </code></pre></div></p>
 <p>See <a href="cli/">the CLI docs</a> for more details.</p>
 <h2 id="features">Features<a class="headerlink" href="#features" title="Permanent link">&para;</a></h2>
