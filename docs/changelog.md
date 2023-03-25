@@ -1,5 +1,9 @@
 # Changelog
 
+## Next
+
+* Fix bug with JSON nudging.
+
 ## 0.4.1 - 2023-03-24
 
 * Fix bug with HallucinationCheck.

@@ -24,9 +24,9 @@ class JSONPostprocessor:
         try:
             response.data = json.loads(response.data)
         except json.JSONDecodeError:
-            if isinstance(scraper, SchemaScraper) and self.nudge:
+            if hasattr(scraper, "scrape") and self.nudge:
                 # call nudge and try again
-                response = self.nudge_json(scraper, response)
+                response = self.nudge_json(scraper, response)  # type: ignore
                 if not isinstance(response.data, str):
                     raise PostprocessingError(
                         f"Response data is not a string: {response.data}"
