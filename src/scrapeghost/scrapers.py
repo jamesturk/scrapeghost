@@ -8,15 +8,16 @@ from .responses import Response, ScrapeResponse
 from .apicall import OpenAiCall, Postprocessor
 from .utils import logger, _tokens, _tostr
 from .preprocessors import Preprocessor, CleanHTML
-from .postprocessors import JSONPostprocessor, PydanticPostprocessor
+from .postprocessors import (
+    JSONPostprocessor,
+    PydanticPostprocessor,
+    HallucinationChecker,
+)
 
 
 class SchemaScraper(OpenAiCall):
     _default_preprocessors: list[Preprocessor] = [
         CleanHTML(),
-    ]
-    _default_postprocessors: list[Postprocessor] = [
-        JSONPostprocessor(),
     ]
 
     def __init__(  # type: ignore
@@ -26,6 +27,7 @@ class SchemaScraper(OpenAiCall):
         *,
         auto_split_length: int = 0,
         extra_instructions: list[str] | None = None,
+        postprocessors: list[Postprocessor] | None = None,
         **kwargs,
     ):
         super().__init__(**kwargs)
@@ -42,8 +44,20 @@ class SchemaScraper(OpenAiCall):
 
         if auto_split_length:
             json_type = "list of JSON objects"
+            _default_postprocessors = [
+                JSONPostprocessor(nudge=False),
+            ]
         else:
             json_type = "JSON object"
+            _default_postprocessors = [
+                JSONPostprocessor(nudge=True),
+                HallucinationChecker(),
+            ]
+
+        if postprocessors is None:
+            self.postprocessors = _default_postprocessors
+        else:
+            self.postprocessors = _default_postprocessors + postprocessors
 
         self.system_messages = [
             f"For the given HTML, convert to a {json_type} matching this schema: "

@@ -93,14 +93,15 @@ class HallucinationChecker:
     """
 
     def __call__(self, response: Response, scraper: OpenAiCall) -> Response:
+        if isinstance(response, Response):
+            raise PostprocessingError(
+                "HallucinationChecker expects ScrapeResponse, "
+                "Incompatible with auto_split_length"
+            )
         if not isinstance(response.data, dict):
             raise PostprocessingError(
                 "HallucinationChecker expecting a dict, "
                 "ensure JSONPostprocessor or equivalent is used first."
-            )
-        if not hasattr(response, "parsed_html"):
-            raise PostprocessingError(
-                "HallucinationChecker does not work with auto_split_length"
             )
         html = _tostr(response.parsed_html)
         print(html)
