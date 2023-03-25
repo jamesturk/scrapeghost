@@ -2,6 +2,7 @@
 Module for making OpenAI API calls.
 """
 import time
+from dataclasses import dataclass
 import openai
 import openai.error
 from typing import Callable
@@ -29,6 +30,13 @@ RETRY_ERRORS = (
 )
 
 
+@dataclass
+class RetryRule:
+    max_retries: int = 0
+    retry_wait: int = 30  # seconds
+    retry_errors: tuple = RETRY_ERRORS
+
+
 class OpenAiCall:
     _default_postprocessors: list[Postprocessor] = []
 
@@ -42,12 +50,15 @@ class OpenAiCall:
         # instructions
         extra_instructions: list[str] | None = None,
         postprocessors: list | None = None,
+        # retry rules
+        retry: RetryRule = RetryRule(1, 30),
     ):
         self.total_prompt_tokens = 0
         self.total_completion_tokens = 0
         self.total_cost: float = 0
         self.max_cost = max_cost
         self.models = models
+        self.retry = retry
         if model_params is None:
             model_params = {}
         self.model_params = model_params
@@ -130,7 +141,6 @@ class OpenAiCall:
         attempts = 0
         model_index = 0
         model = self.models[model_index]
-        max_attempts = 2
 
         response = Response()
 
@@ -162,7 +172,7 @@ class OpenAiCall:
                     response=response,
                 )
                 return response
-            except RETRY_ERRORS + (
+            except self.retry.retry_errors + (
                 TooManyTokens,
                 BadStop,
             ) as e:
@@ -172,21 +182,22 @@ class OpenAiCall:
                     model=model,
                     attempts=attempts,
                 )
-                if attempts < max_attempts:
-                    if isinstance(e, RETRY_ERRORS):
+                if attempts < self.retry.max_retries + 1:
+                    if isinstance(e, self.retry.retry_errors):
+                        logger.warning("retry", wait=self.retry.retry_wait, model=model)
                         # try again with same model
-                        # TODO: adjust sleep
-                        time.sleep(60)
+                        time.sleep(self.retry.retry_wait)
                         continue
                     elif model_index < len(self.models) - 1:
-                        logger.warning(
-                            f"Upgrading model from {model} to "
-                            + self.models[model_index + 1]
-                        )
                         # try next model
                         model_index += 1
                         model = self.models[model_index]
-                        time.sleep(5)
+                        logger.warning(
+                            "retry",
+                            wait=self.retry.retry_wait,
+                            model=model,
+                        )
+                        time.sleep(self.retry.retry_wait)
                         continue
                 # could not retry for whatever reason
                 raise
