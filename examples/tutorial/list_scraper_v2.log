@@ -4,32 +4,9 @@
 2023-03-24 19:25:53 [debug    ] chunked tags                   num=20 sizes=[1971, 1994, 1986, 1976, 1978, 1990, 1993, 1974, 1995, 1983, 1975, 1979, 1967, 1953, 1971, 1973, 1987, 1960, 1966, 682]
 2023-03-24 19:25:53 [info     ] API request                    html_tokens=1971 model=gpt-3.5-turbo
 2023-03-24 19:27:38 [info     ] API response                   completion_tokens=2053 cost=0.008194 duration=104.66404676437378 finish_reason=length prompt_tokens=2044
-2023-03-24 19:27:38 [warning  ] API request failed             attempts=1 model=gpt-3.5-turbo
-OpenAI did not stop: length (prompt_tokens=2044, completion_tokens=2053)
-2023-03-24 19:27:38 [warning  ] retry                          model=gpt-4 wait=30
-2023-03-24 19:28:08 [info     ] API request                    html_tokens=1971 model=gpt-4
-2023-03-24 19:29:45 [info     ] API response                   completion_tokens=1298 cost=0.1614 duration=96.80066990852356 finish_reason=stop prompt_tokens=2041
-2023-03-24 19:29:45 [info     ] API request                    html_tokens=1994 model=gpt-3.5-turbo
-2023-03-24 19:31:28 [info     ] API response                   completion_tokens=2030 cost=0.008194 duration=103.33699011802673 finish_reason=length prompt_tokens=2067
-2023-03-24 19:31:28 [warning  ] API request failed             attempts=1 model=gpt-3.5-turbo
-OpenAI did not stop: length (prompt_tokens=2067, completion_tokens=2030)
 2023-03-24 19:31:28 [warning  ] retry                          model=gpt-4 wait=30
-2023-03-24 19:31:58 [info     ] API request                    html_tokens=1994 model=gpt-4
-2023-03-24 19:33:36 [info     ] API response                   completion_tokens=1272 cost=0.162 duration=98.51345086097717 finish_reason=stop prompt_tokens=2064
-2023-03-24 19:33:36 [info     ] API request                    html_tokens=1986 model=gpt-3.5-turbo
-2023-03-24 19:34:47 [info     ] API response                   completion_tokens=1432 cost=0.006982 duration=70.14662671089172 finish_reason=stop prompt_tokens=2059
-2023-03-24 19:34:47 [info     ] API request                    html_tokens=1976 model=gpt-3.5-turbo
-2023-03-24 19:36:34 [info     ] API response                   completion_tokens=2048 cost=0.008194 duration=107.59430480003357 finish_reason=length prompt_tokens=2049
 2023-03-24 19:36:34 [warning  ] API request failed             attempts=1 model=gpt-3.5-turbo
-OpenAI did not stop: length (prompt_tokens=2049, completion_tokens=2048)
 2023-03-24 19:36:34 [warning  ] retry                          model=gpt-4 wait=30
-2023-03-24 19:37:04 [info     ] API request                    html_tokens=1976 model=gpt-4
-2023-03-24 19:38:35 [info     ] API response                   completion_tokens=1268 cost=0.16079999999999997 duration=91.19674801826477 finish_reason=stop prompt_tokens=2046
-2023-03-24 19:38:35 [info     ] API request                    html_tokens=1978 model=gpt-3.5-turbo
-2023-03-24 19:40:09 [info     ] API response                   completion_tokens=1778 cost=0.007658000000000001 duration=93.64541912078857 finish_reason=stop prompt_tokens=2051
-2023-03-24 19:40:09 [info     ] API request                    html_tokens=1990 model=gpt-3.5-turbo
-2023-03-24 19:41:53 [info     ] API response                   completion_tokens=2034 cost=0.008194 duration=104.09985399246216 finish_reason=length prompt_tokens=2063
 2023-03-24 19:41:53 [warning  ] API request failed             attempts=1 model=gpt-3.5-turbo
-OpenAI did not stop: length (prompt_tokens=2063, completion_tokens=2034)
 2023-03-24 19:41:53 [warning  ] retry                          model=gpt-4 wait=30
-2023-03-24 19:42:23 [info     ] API request                    html_tokens=1990 model=gpt-4
+scrapeghost.errors.MaxCostExceeded: Total cost 1.04 exceeds max cost 1.00
