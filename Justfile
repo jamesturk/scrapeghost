@@ -27,5 +27,6 @@ release type:  # patch, minor, major
 	poetry publish
 	git commit -am "release $(poetry version -s)"
 	git tag $(poetry version -s)
+	git push
 	git push --tags
 	gh release create $(poetry version -s) -F docs/changelog.md
