@@ -42,6 +42,7 @@ class SchemaScraper(OpenAiCall):
         else:
             raise ValueError(f"Invalid schema: {schema}")
 
+        _default_postprocessors: list[Postprocessor]
         if auto_split_length:
             json_type = "list of JSON objects"
             _default_postprocessors = [
