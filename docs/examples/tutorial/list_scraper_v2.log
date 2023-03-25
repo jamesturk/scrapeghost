@@ -3,3 +3,10 @@
 2023-03-24 19:25:53 [debug    ] preprocessor                   from_nodes=1 name=CSS(.mw-parser-output a[class!='image link-internal']) nodes=857
 2023-03-24 19:25:53 [debug    ] chunked tags                   num=20 sizes=[1971, 1994, 1986, 1976, 1978, 1990, 1993, 1974, 1995, 1983, 1975, 1979, 1967, 1953, 1971, 1973, 1987, 1960, 1966, 682]
 2023-03-24 19:25:53 [info     ] API request                    html_tokens=1971 model=gpt-3.5-turbo
+2023-03-24 19:27:38 [info     ] API response                   completion_tokens=2053 cost=0.008194 duration=104.66404676437378 finish_reason=length prompt_tokens=2044
+2023-03-24 19:31:28 [warning  ] retry                          model=gpt-4 wait=30
+2023-03-24 19:36:34 [warning  ] API request failed             attempts=1 model=gpt-3.5-turbo
+2023-03-24 19:36:34 [warning  ] retry                          model=gpt-4 wait=30
+2023-03-24 19:41:53 [warning  ] API request failed             attempts=1 model=gpt-3.5-turbo
+2023-03-24 19:41:53 [warning  ] retry                          model=gpt-4 wait=30
+scrapeghost.errors.MaxCostExceeded: Total cost 1.04 exceeds max cost 1.00

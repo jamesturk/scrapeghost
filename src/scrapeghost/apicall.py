@@ -90,7 +90,7 @@ class OpenAiCall:
         """
         if self.total_cost > self.max_cost:
             raise MaxCostExceeded(
-                f"Total cost {self.total_cost} exceeds max cost {self.max_cost}"
+                f"Total cost {self.total_cost:.2f} exceeds max cost {self.max_cost:.2f}"
             )
         start_t = time.time()
         completion = openai.ChatCompletion.create(

@@ -189,22 +189,24 @@ Setting `auto_split_length` alters the prompt and response format so that instea
 
 Because of this, we alter the `schema` to just be a single string because we're only interested in the URL.
 
-
 It's a good idea to set this to about half the token limit, since the response counts against the token limit as well.
 
-This winds up needing to make over twenty requests, but gets the list of episode URLs after a few minutes.
+This winds up needing to make over twenty requests, but can get there.
 
 ```log
+        *relevant log lines shown for clarity*
 --8<-- "docs/examples/tutorial/list_scraper_v2.log"
 ```
 
-TODO: is this section still accurate with new results?
+As you can see, a couple of requests had to fall back to GPT-4, which raised the cost.
 
-As you can see, a couple of requests automatically fell back to GPT-4, raising the cost to about $0.46 for the entire scrape.
+As a safeguard, the maximum cost for a single scrape is configured to $1 by default. If you want to change this, you can set the `max_cost` parameter.
 
-If you lower the `split_token` a bit further takes even longer, but if you can stick to GPT-3.5-Turbo it's only $0.13.
+One option is to lower the `split_token` a bit further. Many more requests means it takes even longer, but if you can stick to GPT-3.5-Turbo it was possible to get a scrape to complete for $0.13.
 
-If you want to see the pieces put together, jump down to the [Putting it all Together](#putting-it-all-together) section.
+But as promised, this is something that `scrapeghost` isn't currently very good at.
+
+If you do want to see the pieces put together, jump down to the [Putting it all Together](#putting-it-all-together) section.
 
 ## Next Steps
 

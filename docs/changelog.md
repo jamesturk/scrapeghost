@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.4.1 - 2023-03-24
+
+* Fix bug with HallucinationCheck.
+
 ## 0.4.0 - 2023-03-24
 
 * New configurable pre- and post-processing pipelines for customizing behavior.
