@@ -6,7 +6,7 @@ from pydantic import ValidationError
 
 from .utils import logger, _tostr
 from .errors import InvalidJSON, PostprocessingError
-from .responses import Response
+from .responses import Response, ScrapeResponse
 
 if TYPE_CHECKING:
     from .apicall import OpenAiCall
@@ -93,7 +93,7 @@ class HallucinationChecker:
     """
 
     def __call__(self, response: Response, scraper: OpenAiCall) -> Response:
-        if isinstance(response, Response):
+        if not isinstance(response, ScrapeResponse):
             raise PostprocessingError(
                 "HallucinationChecker expects ScrapeResponse, "
                 "Incompatible with auto_split_length"
