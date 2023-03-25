@@ -136,7 +136,7 @@ This page has a completely different layout. We will need to change our CSS sele
 --8<-- "docs/examples/tutorial/episode_scraper_4.log"
 ```
 
-Completely different HTML, one CSS selector change.
+*Completely different HTML, one CSS selector change.*
 
 ### Extra Instructions
 
@@ -202,7 +202,7 @@ As you can see, a couple of requests had to fall back to GPT-4, which raised the
 
 As a safeguard, the maximum cost for a single scrape is configured to $1 by default. If you want to change this, you can set the `max_cost` parameter.
 
-One option is to lower the `split_token` a bit further. Many more requests means it takes even longer, but if you can stick to GPT-3.5-Turbo it was possible to get a scrape to complete for $0.13.
+One option is to lower the `auto_split_length` a bit further. Many more requests means it takes even longer, but if you can stick to GPT-3.5-Turbo it was possible to get a scrape to complete for $0.13.
 
 But as promised, this is something that `scrapeghost` isn't currently very good at.
 
@@ -210,7 +210,7 @@ If you do want to see the pieces put together, jump down to the [Putting it all 
 
 ## Next Steps
 
-If you're planning to use this library, please know it is very much in flux and I can't commit to API stability yet.
+If you're planning to use this library, please keep in mind it is very much in flux and I can't commit to API stability yet.
 
 If you are going to try to scrape using GPT, it'd probably be good to read the [OpenAI API](openai.md) page to understand a little more about how the underlying API works.
 
