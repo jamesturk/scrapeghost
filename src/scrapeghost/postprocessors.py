@@ -17,6 +17,9 @@ class JSONPostprocessor:
     def __init__(self, nudge: bool = True):
         self.nudge = nudge
 
+    def __str__(self) -> str:
+        return f"JSONPostprocessor(nudge={self.nudge}))"
+
     def __call__(self, response: Response, scraper: OpenAiCall) -> Response:
         if not isinstance(response.data, str):
             raise PostprocessingError(f"Response data is not a string: {response.data}")
@@ -66,6 +69,9 @@ class PydanticPostprocessor:
     def __init__(self, model: type):
         self.pydantic_model = model
 
+    def __str__(self) -> str:
+        return f"PydanticPostprocessor({self.pydantic_model})"
+
     def __call__(self, response: Response, scraper: OpenAiCall) -> Response:
         if not isinstance(response.data, dict):
             raise PostprocessingError(
@@ -91,6 +97,9 @@ class HallucinationChecker:
     If you desire more control, subclass this class and
     register it as a postprocessor.
     """
+
+    def __str__(self) -> str:
+        return "HallucinationChecker"
 
     def __call__(self, response: Response, scraper: OpenAiCall) -> Response:
         if not isinstance(response, ScrapeResponse):

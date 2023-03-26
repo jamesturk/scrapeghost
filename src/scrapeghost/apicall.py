@@ -204,6 +204,12 @@ class OpenAiCall:
 
     def _apply_postprocessors(self, response: Response) -> Response:
         for pp in self.postprocessors:
+            logger.debug(
+                "postprocessor",
+                postprocessor=str(pp),
+                data=response.data,
+                data_type=type(response.data),
+            )
             response = pp(response, self)
         return response
 
