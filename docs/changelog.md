@@ -1,9 +1,10 @@
 # Changelog
 
-## Next
+## 0.4.2 - 2023-03-26
 
-* Fix bug with JSON nudging.
+* Fix type bug with JSON nudging.
 * Improve `HallucinationCheck` to handle more cases.
+* More tests!
 
 ## 0.4.1 - 2023-03-24
 
