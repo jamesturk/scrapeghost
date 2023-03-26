@@ -3,6 +3,7 @@
 ## Next
 
 * Fix bug with JSON nudging.
+* Improve `HallucinationCheck` to handle more cases.
 
 ## 0.4.1 - 2023-03-24
 
