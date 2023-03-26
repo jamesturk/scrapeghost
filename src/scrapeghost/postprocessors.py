@@ -107,16 +107,23 @@ class HallucinationChecker:
                 "HallucinationChecker expects ScrapeResponse, "
                 "Incompatible with auto_split_length"
             )
-        if not isinstance(response.data, dict):
-            raise PostprocessingError(
-                "HallucinationChecker expecting a dict, "
-                "ensure JSONPostprocessor or equivalent is used first."
-            )
         html = _tostr(response.parsed_html)
-        print(html)
-        for key, value in response.data.items():
-            if isinstance(value, str) and value not in html:
-                raise PostprocessingError(
-                    f"{key}={value} is not present in the response text"
-                )
+
+        _check_data_in_html(html, response.data)
+
         return response
+
+
+def _check_data_in_html(html: str, d: dict | list | str, parent: str = "") -> None:
+    """
+    Recursively check response for data that is not in the html.
+    """
+    if isinstance(d, dict):
+        for k, v in d.items():
+            _check_data_in_html(html, v, parent + f".{k}")
+    elif isinstance(d, list):
+        for i, v in enumerate(d):
+            _check_data_in_html(html, v, parent + f"[{i}]")
+    elif isinstance(d, str):
+        if d not in html:
+            raise PostprocessingError(f"Data not found in html: {d} (parent: {parent})")
