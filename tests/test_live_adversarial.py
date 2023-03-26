@@ -1,5 +1,5 @@
 """
-Tests for adversarial examples
+Tests for basic adversarial examples.
 
 Note: There's basically no way for this library to be secure
 against adversarial examples. Be careful with what you do with
@@ -8,9 +8,14 @@ results, you're at the whims of the underlying model.
 This file is just to see how the library handles potential
 adversarial examples.
 """
+import os
+import pytest
 from scrapeghost import SchemaScraper
 
+api_key_is_set = os.getenv("OPENAI_API_KEY", "")
 
+
+@pytest.mark.skipif(not api_key_is_set, reason="requires API key")
 def test_anti_scrape_language():
     # note: haven't found language that works yet
     html = """
@@ -46,6 +51,7 @@ def test_anti_scrape_language():
     }
 
 
+@pytest.mark.skipif(not api_key_is_set, reason="requires API key")
 def test_forced_hallucination():
     html = """
     <html>
