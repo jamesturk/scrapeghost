@@ -58,7 +58,7 @@ class SchemaScraper(OpenAiCall):
         if postprocessors is None:
             self.postprocessors = _default_postprocessors
         else:
-            self.postprocessors = _default_postprocessors + postprocessors
+            self.postprocessors = postprocessors
 
         self.system_messages = [
             f"For the given HTML, convert to a {json_type} matching this schema: "
