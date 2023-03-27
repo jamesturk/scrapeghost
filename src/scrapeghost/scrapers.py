@@ -11,7 +11,6 @@ from .preprocessors import Preprocessor, CleanHTML
 from .postprocessors import (
     JSONPostprocessor,
     PydanticPostprocessor,
-    HallucinationChecker,
 )
 
 
@@ -52,7 +51,6 @@ class SchemaScraper(OpenAiCall):
             json_type = "JSON object"
             _default_postprocessors = [
                 JSONPostprocessor(nudge=True),
-                HallucinationChecker(),
             ]
 
         if postprocessors is None:
