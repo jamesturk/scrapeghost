@@ -126,4 +126,4 @@ def _check_data_in_html(html: str, d: dict | list | str, parent: str = "") -> No
             _check_data_in_html(html, v, parent + f"[{i}]")
     elif isinstance(d, str):
         if d not in html:
-            raise PostprocessingError(f"Data not found in html: {d} (parent: {parent})")
+            raise PostprocessingError(f"Data not found in html: {d} ({parent})")
