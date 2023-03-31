@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.4.3 - 2023-03-32
+## 0.4.4 - 2023-03-31
 
 * Deactivate `HallucinationCheck` by default, it is overly aggressive and needs more work to be useful without raising false positives.
 * Bugfix for postprocessors parameter behavior not overriding defaults.
