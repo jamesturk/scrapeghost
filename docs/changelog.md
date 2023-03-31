@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.4.3 - 2023-03-32
+
+* Deactivate `HallucinationCheck` by default, it is overly aggressive and needs more work to be useful without raising false positives.
+* Bugfix for postprocessors parameter behavior not overriding defaults.
+
 ## 0.4.2 - 2023-03-26
 
 * Fix type bug with JSON nudging.
