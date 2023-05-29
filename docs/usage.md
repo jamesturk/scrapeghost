@@ -50,6 +50,8 @@ To make it easier to experiment with different approaches, it is possible to cus
 
 Instead of providing mechanisms to customize the HTTP request made by the library (e.g. to use caching, or make a `POST`), you can simply pass already retrieved HTML to the `scrape` method.
 
+You can also specify a dict that contains a HTTP request header as a parameter for the scrape method, i.e. scraper.scrape(url, header="User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)") for those pages that require a specific user agent to access.
+
 This means you can use any HTTP library you want to retrieve the HTML.
 
 ### Preprocessors

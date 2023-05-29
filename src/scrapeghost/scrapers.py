@@ -104,6 +104,7 @@ class SchemaScraper(OpenAiCall):
         self,
         url_or_html: str,
         extra_preprocessors: list | None = None,
+        header: dict | None = None,  # this is the new header parameter
     ) -> ScrapeResponse:
         """
         Scrape a URL and return a list or dict.
@@ -111,6 +112,7 @@ class SchemaScraper(OpenAiCall):
         Args:
             url: The URL to scrape.
             extra_preprocessors: A list of additional preprocessors to apply.
+            header: A dictionary of headers to pass to the request.
 
         Returns:
             dict | list: The scraped data in the specified schema.
@@ -119,7 +121,7 @@ class SchemaScraper(OpenAiCall):
 
         sr.url = url_or_html if url_or_html.startswith("http") else None
         # obtain an HTML document from the URL or HTML string
-        sr.parsed_html = _parse_url_or_html(url_or_html)
+        sr.parsed_html = _parse_url_or_html(url_or_html, header)
 
         # apply preprocessors, returning a list of tags
         tags = self._apply_preprocessors(sr.parsed_html, extra_preprocessors or [])
@@ -165,7 +167,9 @@ def _combine_responses(sr: ScrapeResponse, responses: list[Response]) -> ScrapeR
     return sr
 
 
-def _parse_url_or_html(url_or_html: str) -> lxml.html.Element:
+def _parse_url_or_html(
+    url_or_html: str, header: dict | None = None
+) -> lxml.html.Element:
     """
     Given URL or HTML, return lxml.html.Element
     """
@@ -173,7 +177,7 @@ def _parse_url_or_html(url_or_html: str) -> lxml.html.Element:
     orig_url = None
     if url_or_html.startswith("http"):
         orig_url = url_or_html
-        url_or_html = requests.get(url_or_html).text
+        url_or_html = requests.get(url_or_html, headers=header or {}).text
     # collapse whitespace
     url_or_html = re.sub("[ \t]+", " ", url_or_html)
     logger.debug("got HTML", length=len(url_or_html), url=orig_url)
