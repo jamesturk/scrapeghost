@@ -1,3 +1,4 @@
+import logconfig  # noqa: F401
 from scrapeghost import SchemaScraper, CSS
 from pprint import pprint
 
