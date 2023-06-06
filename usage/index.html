@@ -401,6 +401,13 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#pagination" class="md-nav__link">
+    Pagination
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -675,6 +682,13 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#pagination" class="md-nav__link">
+    Pagination
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -808,6 +822,43 @@ This is done as a proof of concept, and to help determine how big of an issue ha
 <div class="highlight"><pre><span></span><code>CrewMember(gender=&#39;Male&#39;, race=&#39;Dokarian&#39;, alignment=&#39;Evil\\nProtagonist&#39;)
 </code></pre></div></p>
 <p>This works by converting the <code>pydantic</code> model to a schema and registering a <code>PydanticPostprocessor</code> to validate the results automatically.</p>
+<h2 id="pagination">Pagination<a class="headerlink" href="#pagination" title="Permanent link">&para;</a></h2>
+<p>One technique to handle pagination is provided by the <code>PaginatedSchemaScraper</code> class.</p>
+<p>This class takes a schema that describes a single result, and wraps it in a schema that describes a list of results as well as an additional page.</p>
+<p>For example:</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span><span class="s2">&quot;first_name&quot;</span><span class="p">:</span> <span class="s2">&quot;str&quot;</span><span class="p">,</span> <span class="s2">&quot;last_name&quot;</span><span class="p">:</span> <span class="s2">&quot;str&quot;</span><span class="p">}</span>
+</code></pre></div>
+<p>Automatically becomes:</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span><span class="s2">&quot;next_page&quot;</span><span class="p">:</span> <span class="s2">&quot;url&quot;</span><span class="p">,</span> <span class="s2">&quot;results&quot;</span><span class="p">:</span> <span class="p">[{</span><span class="s2">&quot;first_name&quot;</span><span class="p">:</span> <span class="s2">&quot;str&quot;</span><span class="p">,</span> <span class="s2">&quot;last_name&quot;</span><span class="p">:</span> <span class="s2">&quot;str&quot;</span><span class="p">}]}</span>
+</code></pre></div>
+<p>The <code>PaginatedSchemaScraper</code> class then takes care of following the <code>next_page</code> link until there are no more pages.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Right now, given the library's stance on customizing requests being "just use your own HTTP library", the <code>PaginatedSchemaScraper</code> class does not provide a means to customize the HTTP request used to retrieve the next page.</p>
+<p>If you need a more complicated approach it is recommended you implement your own pagination logic for now,
+<a href="https://github.com/jamesturk/scrapeghost/blob/main/src/scrapeghost/scrapers.py#L238">https://github.com/jamesturk/scrapeghost/blob/main/src/scrapeghost/scrapers.py#L238</a> may be a good starting point.</p>
+<p>If you have strong opinions here, please open an issue to discuss.</p>
+</div>
+<p>It then takes the combined "results" and returns them to the user.</p>
+<p>Here's a functional example that scrapes several pages of employees:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">from</span> <span class="nn">scrapeghost.scrapers</span> <span class="kn">import</span> <span class="n">PaginatedSchemaScraper</span>
+
+
+<span class="n">schema</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;first_name&quot;</span><span class="p">:</span> <span class="s2">&quot;str&quot;</span><span class="p">,</span> <span class="s2">&quot;last_name&quot;</span><span class="p">:</span> <span class="s2">&quot;str&quot;</span><span class="p">,</span> <span class="s2">&quot;position&quot;</span><span class="p">:</span> <span class="s2">&quot;str&quot;</span><span class="p">,</span> <span class="s2">&quot;url&quot;</span><span class="p">:</span> <span class="s2">&quot;url&quot;</span><span class="p">}</span>
+<span class="n">url</span> <span class="o">=</span> <span class="s2">&quot;https://scrapple.fly.dev/staff&quot;</span>
+
+<span class="n">scraper</span> <span class="o">=</span> <span class="n">PaginatedSchemaScraper</span><span class="p">(</span><span class="n">schema</span><span class="p">)</span>
+<span class="n">resp</span> <span class="o">=</span> <span class="n">scraper</span><span class="o">.</span><span class="n">scrape</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+
+<span class="c1"># the resulting response is a ScrapeResponse object just like any other</span>
+<span class="c1"># all the results are gathered in resp.data</span>
+<span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">resp</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;yoyodyne.json&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">),</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+</code></pre></div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>One caveat of the current approach: The <code>url</code> attribute on a <code>ScraperResult</code> from a <code>PaginatedSchemaScraper</code> is a semicolon-delimited list of all the URLs that were scraped to produce that result.</p>
+</div>
 
 
 
