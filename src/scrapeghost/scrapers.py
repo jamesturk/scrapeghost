@@ -39,7 +39,7 @@ class SchemaScraper(OpenAiCall):
         elif hasattr(schema, "schema"):
             self.json_schema = _pydantic_to_simple_schema(schema)
             use_pydantic = True
-        else:
+        else:  # pragma: no cover
             raise ValueError(f"Invalid schema: {schema}")
 
         _default_postprocessors: list[Postprocessor]
@@ -261,7 +261,7 @@ class PaginatedSchemaScraper(SchemaScraper):
             if isinstance(resp.data, dict):
                 url = resp.data["next_page"]
                 resp.data = resp.data["results"]
-            else:
+            else:  # pragma: no cover
                 raise ValueError("PaginatedSchemaScraper requires object response")
             responses.append(resp)
             logger.debug(

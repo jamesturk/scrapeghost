@@ -8,7 +8,7 @@ from .utils import logger, _tostr
 from .errors import InvalidJSON, PostprocessingError
 from .responses import Response, ScrapeResponse
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from .apicall import OpenAiCall
     from .scrapers import SchemaScraper
 
@@ -30,7 +30,7 @@ class JSONPostprocessor:
             if hasattr(scraper, "scrape") and self.nudge:
                 # call nudge and try again
                 response = self.nudge_json(scraper, response)  # type: ignore
-                if not isinstance(response.data, str):
+                if not isinstance(response.data, str):  # pragma: no cover
                     raise PostprocessingError(
                         f"Response data is not a string: {response.data}"
                     )
@@ -69,7 +69,7 @@ class PydanticPostprocessor:
     def __init__(self, model: type):
         self.pydantic_model = model
 
-    def __str__(self) -> str:
+    def __str__(self) -> str:  # pragma: no cover
         return f"PydanticPostprocessor({self.pydantic_model})"
 
     def __call__(self, response: Response, scraper: OpenAiCall) -> Response:
@@ -98,11 +98,11 @@ class HallucinationChecker:
     register it as a postprocessor.
     """
 
-    def __str__(self) -> str:
+    def __str__(self) -> str:  # pragma: no cover
         return "HallucinationChecker"
 
     def __call__(self, response: Response, scraper: OpenAiCall) -> Response:
-        if not isinstance(response, ScrapeResponse):
+        if not isinstance(response, ScrapeResponse):  # pragma: no cover
             raise PostprocessingError(
                 "HallucinationChecker expects ScrapeResponse, "
                 "Incompatible with auto_split_length"
