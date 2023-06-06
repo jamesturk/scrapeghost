@@ -1071,7 +1071,7 @@ scrapeghost.errors.MaxCostExceeded: Total cost 1.04 exceeds max cost 1.00
     <span class="n">auto_split_length</span><span class="o">=</span><span class="mi">1500</span><span class="p">,</span>
     <span class="c1"># restrict this to GPT-3.5-Turbo to keep the cost down</span>
     <span class="n">models</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;gpt-3.5-turbo&quot;</span><span class="p">],</span>
-    <span class="n">extra_preprocessors</span><span class="o">=</span><span class="n">CSS</span><span class="p">(</span><span class="s2">&quot;.mw-parser-output a[class!=&#39;image link-internal&#39;]&quot;</span><span class="p">),</span>
+    <span class="n">extra_preprocessors</span><span class="o">=</span><span class="p">[</span><span class="n">CSS</span><span class="p">(</span><span class="s2">&quot;.mw-parser-output a[class!=&#39;image link-internal&#39;]&quot;</span><span class="p">)],</span>
 <span class="p">)</span>
 
 <span class="n">episode_scraper</span> <span class="o">=</span> <span class="n">SchemaScraper</span><span class="p">(</span>
@@ -1082,7 +1082,7 @@ scrapeghost.errors.MaxCostExceeded: Total cost 1.04 exceeds max cost 1.00
         <span class="s2">&quot;guests&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;str&quot;</span><span class="p">],</span>
         <span class="s2">&quot;characters&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;str&quot;</span><span class="p">],</span>
     <span class="p">},</span>
-    <span class="n">extra_preprocessors</span><span class="o">=</span><span class="n">CSS</span><span class="p">(</span><span class="s2">&quot;div.page-content&quot;</span><span class="p">),</span>
+    <span class="n">extra_preprocessors</span><span class="o">=</span><span class="p">[</span><span class="n">CSS</span><span class="p">(</span><span class="s2">&quot;div.page-content&quot;</span><span class="p">)],</span>
 <span class="p">)</span>
 
 <span class="n">resp</span> <span class="o">=</span> <span class="n">episode_list_scraper</span><span class="p">(</span>
