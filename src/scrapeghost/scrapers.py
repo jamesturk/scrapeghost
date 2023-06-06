@@ -249,7 +249,7 @@ class PaginatedSchemaScraper(SchemaScraper):
     def scrape(self, url: str, **kwargs: Any):
         sr = ScrapeResponse()
         responses = []
-        seen_urls = set()
+        seen_urls = set([url])
         while url:
             logger.debug("page", url=url)
             resp = super().scrape(url, **kwargs)
@@ -264,6 +264,8 @@ class PaginatedSchemaScraper(SchemaScraper):
             )
             if url in seen_urls:
                 break
-            seen_urls.add(url)
+            if url:
+                seen_urls.add(url)
 
+        sr.url = "; ".join(sorted(seen_urls))
         return _combine_responses(sr, responses)
