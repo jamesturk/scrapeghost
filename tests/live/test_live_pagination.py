@@ -62,15 +62,15 @@ def test_pagination():
     orig = _parse_url_or_html
     with patch("scrapeghost.scrapers._parse_url_or_html") as parse:
         parse.side_effect = [orig(p) for p in (page1, page2, page3)]
-        data = scraper.scrape("https://example.com/page1")
+        resp = scraper.scrape("https://example.com/page1")
 
     assert parse.call_args_list == [
         (("https://example.com/page1",),),
         (("/page2",),),
         (("/page3",),),
     ]
-    assert len(data) == 14
-    assert data[0]["name"] == "Aardvark"
-    assert data[0]["url"] == "/aardvark"
-    assert data[-1]["name"] == "Yak"
-    assert data[-1]["url"] == "/yak"
+    assert len(resp.data) == 14
+    assert resp.data[0]["name"] == "Aardvark"
+    assert resp.data[0]["url"] == "/aardvark"
+    assert resp.data[-1]["name"] == "Yak"
+    assert resp.data[-1]["url"] == "/yak"
