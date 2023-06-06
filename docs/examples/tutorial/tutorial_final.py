@@ -6,7 +6,7 @@ episode_list_scraper = SchemaScraper(
     auto_split_length=1500,
     # restrict this to GPT-3.5-Turbo to keep the cost down
     models=["gpt-3.5-turbo"],
-    extra_preprocessors=CSS(".mw-parser-output a[class!='image link-internal']"),
+    extra_preprocessors=[CSS(".mw-parser-output a[class!='image link-internal']")],
 )
 
 episode_scraper = SchemaScraper(
@@ -17,7 +17,7 @@ episode_scraper = SchemaScraper(
         "guests": ["str"],
         "characters": ["str"],
     },
-    extra_preprocessors=CSS("div.page-content"),
+    extra_preprocessors=[CSS("div.page-content")],
 )
 
 resp = episode_list_scraper(
