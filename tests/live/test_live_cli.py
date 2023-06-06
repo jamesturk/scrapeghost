@@ -1,6 +1,10 @@
+import os
 import typer
+import pytest
 from typer.testing import CliRunner
 from scrapeghost.cli import scrape
+
+api_key_is_set = os.getenv("OPENAI_API_KEY", "")
 
 runner = CliRunner()
 app = typer.Typer()
@@ -18,6 +22,7 @@ def test_cli_no_schema():
     assert "must provide" in result.stdout
 
 
+@pytest.mark.skipif(not api_key_is_set, reason="requires API key")
 def test_cli_schema_file():
     result = runner.invoke(
         app,
@@ -33,6 +38,7 @@ def test_cli_schema_file():
     assert "Daikon" in result.stdout
 
 
+@pytest.mark.skipif(not api_key_is_set, reason="requires API key")
 def test_cli_basics():
     result = runner.invoke(
         app,
