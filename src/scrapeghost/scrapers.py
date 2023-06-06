@@ -3,7 +3,7 @@ import json
 import requests
 import lxml.html
 
-from typing import Any
+from typing import Any, Sequence
 from .errors import PreprocessorError
 from .responses import Response, ScrapeResponse
 from .apicall import OpenAiCall, Postprocessor
@@ -146,7 +146,9 @@ class SchemaScraper(OpenAiCall):
     __call__ = scrape
 
 
-def _combine_responses(sr: ScrapeResponse, responses: list[Response]) -> ScrapeResponse:
+def _combine_responses(
+    sr: ScrapeResponse, responses: Sequence[Response]
+) -> ScrapeResponse:
     """
     Combine (possibly paginated) API responses into a single ScrapeResponse.
     """
@@ -246,16 +248,21 @@ class PaginatedSchemaScraper(SchemaScraper):
         super().__init__(schema, **kwargs)
         self.system_messages.append("If there is no next page, set next_page to null.")
 
-    def scrape(self, url: str, **kwargs: Any):
+    def scrape(
+        self, url: str, extra_preprocessors: list | None = None
+    ) -> ScrapeResponse:
         sr = ScrapeResponse()
         responses = []
         seen_urls = set([url])
         while url:
             logger.debug("page", url=url)
-            resp = super().scrape(url, **kwargs)
+            resp = super().scrape(url, extra_preprocessors=extra_preprocessors)
             # modify response to remove next_page wrapper
-            url = resp.data["next_page"]
-            resp.data = resp.data["results"]
+            if isinstance(resp.data, dict):
+                url = resp.data["next_page"]
+                resp.data = resp.data["results"]
+            else:
+                raise ValueError("PaginatedSchemaScraper requires object response")
             responses.append(resp)
             logger.debug(
                 "page results",
