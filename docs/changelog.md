@@ -1,9 +1,11 @@
 # Changelog
 
-## 0.5.0 - WIP
+## 0.5.0 - 2023-06-06
 
 * Restore `PaginatedSchemaScraper` and add documentation for pagination.
 * Documentation improvements.
+* Small quality-of-life improvements such as better `pydantic` schema support and
+  more useful error messages.
 
 ## 0.4.4 - 2023-03-31
 
