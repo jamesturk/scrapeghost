@@ -3,6 +3,7 @@ import json
 import requests
 import lxml.html
 
+from typing import Any, Sequence
 from .errors import PreprocessorError
 from .responses import Response, ScrapeResponse
 from .apicall import OpenAiCall, Postprocessor
@@ -61,7 +62,7 @@ class SchemaScraper(OpenAiCall):
         self.system_messages = [
             f"For the given HTML, convert to a {json_type} matching this schema: "
             f"{self.json_schema}",
-            "Responses should be valid JSON, with no other text. "
+            "Limit responses to valid JSON, with no explanatory text. "
             "Never truncate the JSON with an ellipsis. "
             "Always use double quotes for strings and escape quotes with \\. "
             "Always omit trailing commas. ",
@@ -145,7 +146,9 @@ class SchemaScraper(OpenAiCall):
     __call__ = scrape
 
 
-def _combine_responses(sr: ScrapeResponse, responses: list[Response]) -> ScrapeResponse:
+def _combine_responses(
+    sr: ScrapeResponse, responses: Sequence[Response]
+) -> ScrapeResponse:
     """
     Combine (possibly paginated) API responses into a single ScrapeResponse.
     """
@@ -235,29 +238,41 @@ def _pydantic_to_simple_schema(pydantic_model: type) -> dict:
     return schema
 
 
-# class PaginatedSchemaScraper(SchemaScraper):
-#     def __init__(self, schema: list | str | dict, **kwargs: Any):
-#         schema = {
-#             "results": schema,
-#             "next_link": "url",
-#         }
-#         super().__init__(schema, **kwargs)
-#       self.system_messages.append("If there is no next page, set next_link to null.")
+class PaginatedSchemaScraper(SchemaScraper):
+    def __init__(self, schema: list | str | dict, **kwargs: Any):
+        # modify schema to include next_page_link
+        schema = {
+            "results": schema,
+            "next_page": "url",
+        }
+        super().__init__(schema, **kwargs)
+        self.system_messages.append("If there is no next page, set next_page to null.")
 
-#     def scrape(self, url: str, **kwargs: Any):
-#         results = []
-#         seen_urls = set()
-#         while url:
-#             logger.debug("page", url=url)
-#             page = super().scrape(url, **kwargs)
-#             logger.debug(
-#                 "results",
-#                 next_link=page["next_link"],
-#                 added_results=len(page["results"]),
-#             )
-#             results.extend(page["results"])
-#             seen_urls.add(url)
-#             url = page["next_link"]
-#             if url in seen_urls:
-#                 break
-#         return results
+    def scrape(
+        self, url: str, extra_preprocessors: list | None = None
+    ) -> ScrapeResponse:
+        sr = ScrapeResponse()
+        responses = []
+        seen_urls = set([url])
+        while url:
+            logger.debug("page", url=url)
+            resp = super().scrape(url, extra_preprocessors=extra_preprocessors)
+            # modify response to remove next_page wrapper
+            if isinstance(resp.data, dict):
+                url = resp.data["next_page"]
+                resp.data = resp.data["results"]
+            else:
+                raise ValueError("PaginatedSchemaScraper requires object response")
+            responses.append(resp)
+            logger.debug(
+                "page results",
+                next_page=url,
+                added_results=len(resp.data),
+            )
+            if url in seen_urls:
+                break
+            if url:
+                seen_urls.add(url)
+
+        sr.url = "; ".join(sorted(seen_urls))
+        return _combine_responses(sr, responses)

@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.5.0 - WIP
+
+* Restore `PaginatedSchemaScraper` and add documentation for pagination.
+* Documentation improvements.
+
 ## 0.4.4 - 2023-03-31
 
 * Deactivate `HallucinationCheck` by default, it is overly aggressive and needs more work to be useful without raising false positives.

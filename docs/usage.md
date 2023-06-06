@@ -139,3 +139,44 @@ If you want to validate that the returned data isn't just JSON, but data in the 
 ```
 
 This works by converting the `pydantic` model to a schema and registering a `PydanticPostprocessor` to validate the results automatically.
+
+## Pagination
+
+One technique to handle pagination is provided by the `PaginatedSchemaScraper` class.
+
+This class takes a schema that describes a single result, and wraps it in a schema that describes a list of results as well as an additional page.
+
+For example:
+
+```python
+{"first_name": "str", "last_name": "str"}
+```
+
+Automatically becomes:
+
+```python
+{"next_page": "url", "results": [{"first_name": "str", "last_name": "str"}]}
+```
+
+The `PaginatedSchemaScraper` class then takes care of following the `next_page` link until there are no more pages.
+
+!!! note
+
+    Right now, given the library's stance on customizing requests being "just use your own HTTP library", the `PaginatedSchemaScraper` class does not provide a means to customize the HTTP request used to retrieve the next page.
+
+    If you need a more complicated approach it is recommended you implement your own pagination logic for now,
+    <https://github.com/jamesturk/scrapeghost/blob/main/src/scrapeghost/scrapers.py#L238> may be a good starting point.
+    
+    If you have strong opinions here, please open an issue to discuss.
+
+It then takes the combined "results" and returns them to the user.
+
+Here's a functional example that scrapes several pages of employees:
+
+```python
+--8<-- "docs/examples/yoyodyne.py"
+```
+
+!!! warning
+
+    One caveat of the current approach: The `url` attribute on a `ScraperResult` from a `PaginatedSchemaScraper` is a semicolon-delimited list of all the URLs that were scraped to produce that result.
