@@ -18,6 +18,16 @@ class CrewMemberExtended(CrewMember):
     captain: CrewMember
 
 
+class ModelWithManyTypes(BaseModel):
+    string: str
+    number: int
+    decimal: float
+    boolean: bool
+    string_list: list[str]
+    # list_list: list[list[str]]
+    mapping: dict[str, int]
+
+
 def test_pydantic_to_simple_schema_basics():
     assert _pydantic_to_simple_schema(CrewMember) == {
         "name": "str",
@@ -27,19 +37,31 @@ def test_pydantic_to_simple_schema_basics():
     }
 
 
-def test_pydantic_to_simple_schema_complex():
+def test_pydantic_to_simple_schema_nested_model():
     assert _pydantic_to_simple_schema(CrewMemberExtended) == {
         "name": "str",
         "role": "str",
         "home_planet": "str",
         "age": "int",
-        "friends": "list[str]",
+        "friends": ["str"],
         "captain": {
             "name": "str",
             "role": "str",
             "home_planet": "str",
             "age": "int",
         },
+    }
+
+
+def test_pydantic_to_simple_schema_many_types():
+    assert _pydantic_to_simple_schema(ModelWithManyTypes) == {
+        "string": "str",
+        "number": "int",
+        "decimal": "float",
+        "boolean": "bool",
+        "string_list": ["str"],
+        #        "list_list": [["str"]],
+        "mapping": {"str": "int"},
     }
 
 

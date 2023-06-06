@@ -1,5 +1,6 @@
 import re
 import json
+import typing
 import requests
 import lxml.html
 
@@ -228,13 +229,19 @@ def _pydantic_to_simple_schema(pydantic_model: type) -> dict:
     """
     schema = {}
     for field in pydantic_model.__fields__.values():  # type: ignore
+        # __fields__ is present on Pydantic models, so can process recursively
         if hasattr(field.outer_type_, "__fields__"):
             schema[field.name] = _pydantic_to_simple_schema(field.outer_type_)
         else:
             type_name = field.outer_type_.__name__
             if type_name == "list":
-                type_name += f"[{field.type_.__name__}]"
-            schema[field.name] = type_name
+                (inner,) = typing.get_args(field.outer_type_)
+                schema[field.name] = [inner.__name__]
+            elif type_name == "dict":
+                k, v = typing.get_args(field.outer_type_)
+                schema[field.name] = {k.__name__: v.__name__}
+            else:
+                schema[field.name] = type_name
     return schema
 
 
