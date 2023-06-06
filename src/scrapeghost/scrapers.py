@@ -247,19 +247,23 @@ class PaginatedSchemaScraper(SchemaScraper):
         self.system_messages.append("If there is no next page, set next_page to null.")
 
     def scrape(self, url: str, **kwargs: Any):
-        results = []
+        sr = ScrapeResponse()
+        responses = []
         seen_urls = set()
         while url:
             logger.debug("page", url=url)
-            page = super().scrape(url, **kwargs)
+            resp = super().scrape(url, **kwargs)
+            # modify response to remove next_page wrapper
+            url = resp.data["next_page"]
+            resp.data = resp.data["results"]
+            responses.append(resp)
             logger.debug(
-                "results",
-                next_link=page.data["next_page"],
-                added_results=len(page.data["results"]),
+                "page results",
+                next_page=url,
+                added_results=len(resp.data),
             )
-            results.extend(page.data["results"])
-            seen_urls.add(url)
-            url = page.data["next_page"]
             if url in seen_urls:
                 break
-        return results
+            seen_urls.add(url)
+
+        return _combine_responses(sr, responses)
