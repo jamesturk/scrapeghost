@@ -38,9 +38,9 @@ def scrape(
     typer.echo(json.dumps(result.data))
 
 
-def main() -> None:
+def main() -> None:  # pragma: no cover
     typer.run(scrape)
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
     main()
