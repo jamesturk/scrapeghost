@@ -7,7 +7,7 @@ import lxml.html
 from typing import Any, Sequence
 from .errors import PreprocessorError
 from .responses import Response, ScrapeResponse
-from .apicall import OpenAiCall, Postprocessor
+from .apicall import OpenAiCall, Postprocessor, RetryRule
 from .utils import logger, _tokens, _tostr
 from .preprocessors import Preprocessor, CleanHTML
 from .postprocessors import (
@@ -21,17 +21,25 @@ class SchemaScraper(OpenAiCall):
         CleanHTML(),
     ]
 
-    def __init__(  # type: ignore
+    def __init__(
         self,
         schema: dict | str | list,
         extra_preprocessors: list | None = None,
         *,
         auto_split_length: int = 0,
+        # inherited from OpenAiCall
+        models: list[str] = ["gpt-3.5-turbo", "gpt-4"],
+        model_params: dict | None = None,
+        max_cost: float = 1,
+        retry: RetryRule = RetryRule(1, 30),
         extra_instructions: list[str] | None = None,
-        postprocessors: list[Postprocessor] | None = None,
-        **kwargs,
+        postprocessors: list | None = None,
     ):
-        super().__init__(**kwargs)
+        # extra_instructions & postprocessors handled
+        # differently in SchemaScraper so not passed to super()
+        super().__init__(
+            models=models, model_params=model_params, max_cost=max_cost, retry=retry
+        )
         use_pydantic = False
         if isinstance(schema, (list, dict)):
             self.json_schema = json.dumps(schema)
