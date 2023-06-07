@@ -227,7 +227,7 @@ def _pydantic_to_simple_schema(pydantic_model: type) -> dict:
     additional complexity of JSON Schema adds a lot of extra tokens
     and in testing did not work as well as the simplified versions.
     """
-    schema = {}
+    schema: dict = {}
     for field in pydantic_model.__fields__.values():  # type: ignore
         # __fields__ is present on Pydantic models, so can process recursively
         if hasattr(field.outer_type_, "__fields__"):
