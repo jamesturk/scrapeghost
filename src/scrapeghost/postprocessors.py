@@ -44,6 +44,8 @@ class JSONPostprocessor:
         return response
 
     def nudge_json(self, scraper: SchemaScraper, response: Response) -> Response:
+        if not isinstance(response.data, str):
+            raise PostprocessingError(f"Response data is not a string: {response.data}")
         return scraper._raw_api_request(
             scraper.models[0],
             [
@@ -59,7 +61,7 @@ class JSONPostprocessor:
                 {"role": "user", "content": "{'bad': 'json', }"},
                 {"role": "assistant", "content": '{"bad": "json"}'},
                 # response.data is always a string here
-                {"role": "user", "content": response.data},  # type: ignore
+                {"role": "user", "content": response.data},
             ],
             response,
         )
