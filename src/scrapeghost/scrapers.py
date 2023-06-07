@@ -4,7 +4,8 @@ import typing
 import requests
 import lxml.html
 
-from typing import Any, Sequence
+from typing import Any, Sequence, Type
+from pydantic import BaseModel
 from .errors import PreprocessorError
 from .responses import Response, ScrapeResponse
 from .apicall import OpenAiCall, Postprocessor, RetryRule
@@ -85,7 +86,10 @@ class SchemaScraper(OpenAiCall):
             self.preprocessors = self._default_preprocessors + extra_preprocessors
 
         if use_pydantic:
-            self.postprocessors.append(PydanticPostprocessor(schema))  # type: ignore
+            # check if schema is a pydantic model
+            if not isinstance(schema, type):
+                raise ValueError("Schema must be a Pydantic model.")
+            self.postprocessors.append(PydanticPostprocessor(schema))
 
         self.auto_split_length = auto_split_length
 
@@ -226,7 +230,7 @@ def _chunk_tags(tags: list, max_tokens: int, model: str) -> list[str]:
     return chunks
 
 
-def _pydantic_to_simple_schema(pydantic_model: type) -> dict:
+def _pydantic_to_simple_schema(pydantic_model: Type[BaseModel]) -> dict:
     """
     Given a Pydantic model, return a simple schema that can be used
     by SchemaScraper.
@@ -236,7 +240,7 @@ def _pydantic_to_simple_schema(pydantic_model: type) -> dict:
     and in testing did not work as well as the simplified versions.
     """
     schema: dict = {}
-    for field in pydantic_model.__fields__.values():  # type: ignore
+    for field in pydantic_model.__fields__.values():
         # __fields__ is present on Pydantic models, so can process recursively
         if hasattr(field.outer_type_, "__fields__"):
             schema[field.name] = _pydantic_to_simple_schema(field.outer_type_)
