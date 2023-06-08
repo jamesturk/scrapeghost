@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.5.1
+
+* Improve type annotations and remove some ignored errors.
+
 ## 0.5.0 - 2023-06-06
 
 * Restore `PaginatedSchemaScraper` and add documentation for pagination.
