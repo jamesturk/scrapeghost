@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "scrapeghost"
-version = "0.5.0"
+version = "0.5.1"
 description = "An experimental library for scraping websites using GPT."
 authors = ["James Turk <dev@jamesturk.net>"]
 license = "Hippocratic License HL3-EXTR-FFD-LAW-MIL-SV"
