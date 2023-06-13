@@ -650,7 +650,7 @@
 <p>The OpenAI API is considerably expensive.</p>
 <p>The cost of a call varies based on the model used and the size of the input.</p>
 <p>The cost estimates provided by this library are based on the <a href="https://platform.openai.com/pricing">OpenAI pricing page</a> and not guaranteed to be accurate.</p>
-<p><strong>Cost per 1,000 tokens (March 19th, 2023)</strong></p>
+<p><strong>Cost per 1,000 tokens (updated June 13, 2023)</strong></p>
 <table>
 <thead>
 <tr>
@@ -661,9 +661,14 @@
 </thead>
 <tbody>
 <tr>
-<td>GPT-3-Turbo</td>
+<td>GPT-3-Turbo (4k)</td>
+<td>0.0015</td>
 <td>0.002</td>
-<td>0.002</td>
+</tr>
+<tr>
+<td>GPT-3-Turbo (16k)</td>
+<td>0.003</td>
+<td>0.004</td>
 </tr>
 <tr>
 <td>GPT-4 (8k)</td>
@@ -677,12 +682,17 @@
 </tr>
 </tbody>
 </table>
-<p>Example: A 3,000 token page that returns 1,000 tokens of JSON will cost $0.008 with GPT-3-Turbo, but $0.15 with GPT-4.</p>
+<p>Example: A 3,000 token page that returns 1,000 tokens of JSON will cost $0.0065 with GPT-3-Turbo, but $0.15 with GPT-4.</p>
 <p>(See <a href="https://platform.openai.com/pricing">OpenAI pricing page</a> for latest info.)</p>
 <h2 id="tokens">Tokens<a class="headerlink" href="#tokens" title="Permanent link">&para;</a></h2>
 <p>OpenAI encodes text using a <a href="https://github.com/openai/tiktoken">tokenizer</a>, which converts words to integers.</p>
 <p>You'll see that billing is based on the number of tokens used.  A token is approximately 3 characters, so 3000 characters of HTML will roughly correspond to 1000 tokens.</p>
-<p>Additionally, the GPT-3-Turbo model is limited to 4096 tokens.  GPT-4 is limited to 8192 tokens.  (A 32k model has been announced, but is not yet widely available.)</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>In practice, the above estimate turns out to be a bit low.  Part of the issue is that HTML does not tokenize particularly efficiently.  "Hello world!" is three tokens, but "<b>Hello world!</b>" is nine!</p>
+<p>You can experiment via https://platform.openai.com/tokenizer</p>
+</div>
+<p>Models are limited to a maximum number of tokens.  For example, the default GPT-3.5-turbo model is limited to 4096 tokens.  GPT-4's default limit is 8192.  Both models have larger versions available, but they are more expensive.</p>
 <p>Various features in the library will help you avoid running into token limits, but it is still very common to exceed them in practice.</p>
 <p>If your pages exceed these limits, you'll need to focus on improving your <a href="/api.md#selectors">selectors</a> so that only the required data is sent to the underlying models.</p>
 <h2 id="prompts">Prompts<a class="headerlink" href="#prompts" title="Permanent link">&para;</a></h2>

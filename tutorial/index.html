@@ -805,7 +805,7 @@
 <h3 id="what-are-tokens">What Are Tokens?<a class="headerlink" href="#what-are-tokens" title="Permanent link">&para;</a></h3>
 <p>If you haven't used OpenAI's APIs before, you may not be aware of the token limits.  Every request has a limit on the number of tokens it can use. For GPT-4 this is 8,192 tokens. For GPT-3.5-Turbo it is 4,096.  (A token is about three characters.)</p>
 <p>You are also billed per token, so even if you're under the limit, fewer tokens means cheaper API calls.</p>
-<p><strong>Cost per 1,000 tokens (March 19th, 2023)</strong></p>
+<p><strong>Cost per 1,000 tokens (updated June 13, 2023)</strong></p>
 <table>
 <thead>
 <tr>
@@ -816,9 +816,14 @@
 </thead>
 <tbody>
 <tr>
-<td>GPT-3-Turbo</td>
+<td>GPT-3-Turbo (4k)</td>
+<td>0.0015</td>
 <td>0.002</td>
-<td>0.002</td>
+</tr>
+<tr>
+<td>GPT-3-Turbo (16k)</td>
+<td>0.003</td>
+<td>0.004</td>
 </tr>
 <tr>
 <td>GPT-4 (8k)</td>
@@ -832,7 +837,7 @@
 </tr>
 </tbody>
 </table>
-<p>Example: A 3,000 token page that returns 1,000 tokens of JSON will cost $0.008 with GPT-3-Turbo, but $0.15 with GPT-4.</p>
+<p>Example: A 3,000 token page that returns 1,000 tokens of JSON will cost $0.0065 with GPT-3-Turbo, but $0.15 with GPT-4.</p>
 <p>(See <a href="https://platform.openai.com/pricing">OpenAI pricing page</a> for latest info.)</p>
 <p>Ideally, we'd only pass the relevant parts of the page to OpenAI. It shouldn't need anything outside of the HTML <code>&lt;body&gt;</code>, anything in comments, script tags, etc.</p>
 <p>(For more details on how this library interacts with OpenAI's API, see the <a href="../openai/">OpenAI API</a> page.)</p>
