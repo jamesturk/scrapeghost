@@ -15,10 +15,9 @@ from .errors import (
 from .responses import Response
 from .utils import (
     logger,
-    _cost,
-    _max_tokens,
     _tokens,
 )
+from .models import _model_dict
 
 Postprocessor = Callable[[Response, "OpenAiCall"], Response]
 
@@ -101,7 +100,7 @@ class OpenAiCall:
         elapsed = time.time() - start_t
         p_tokens = completion.usage.prompt_tokens
         c_tokens = completion.usage.completion_tokens
-        cost = _cost(model, c_tokens, p_tokens)
+        cost = _model_dict[model].cost(c_tokens, p_tokens)
         logger.info(
             "API response",
             duration=elapsed,
@@ -141,15 +140,16 @@ class OpenAiCall:
         attempts = 0
         model_index = 0
         model = self.models[model_index]
+        model_data = _model_dict[model]
 
         response = Response()
 
         if not html:
             raise ValueError("html parameter cannot be empty")
         tokens = _tokens(model, html)
-        if tokens > _max_tokens(model):
+        if tokens > model_data.max_tokens:
             raise TooManyTokens(
-                f"HTML is {tokens} tokens, max for {model} is {_max_tokens(model)}"
+                f"HTML is {tokens} tokens, max for {model} is {model_data.max_tokens}"
             )
 
         while True:
