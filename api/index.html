@@ -666,7 +666,7 @@
 </ul>
 <p>And the following optional parameters:</p>
 <ul>
-<li><code>models</code> - <em>list[str]</em> - A list of models to use, in order of preference.  Defaults to <code>["gpt-3.5-turbo", "gpt-4"]</code>.  </li>
+<li><code>models</code> - <em>list[str]</em> - A list of models to use, in order of preference.  Defaults to <code>["gpt-3.5-turbo", "gpt-4"]</code>.  (See <a href="../openai/#costs">supported models</a> for details.</li>
 <li><code>model_params</code> - <em>dict</em> - A dictionary of parameters to pass to the underlying GPT model.  (See <a href="https://platform.openai.com/docs/api-reference/create-completion">OpenAI docs</a> for details.)</li>
 <li><code>max_cost</code> -  <em>float</em> (dollars) - The maximum total cost of calls made using this scraper. This is set to 1 ($1.00) by default to avoid large unexpected charges.</li>
 <li><code>extra_instructions</code> - <em>list[str]</em> - Additional instructions to pass to the GPT model as a system prompt.</li>
