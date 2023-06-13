@@ -1,9 +1,10 @@
 # Changelog
 
-## 0.5.1
+## 0.5.1 - 2023-06-13
 
 * Improve type annotations and remove some ignored errors.
-* Support for new OpenAI models announced June 13th 2023. new-model-support
+* Support for new OpenAI models announced June 13th 2023.
+* Improved support for model fallbacks.  Now if a request has 6k tokens and the model list looks like `['gpt-3.5-turbo', 'gpt-3.5-turbo-16k']`, the 16k model will be used automatically since the default 4k model will not be able to handle the request.
 
 ## 0.5.0 - 2023-06-06
 

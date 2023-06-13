@@ -10,7 +10,7 @@ It has one required parameter:
 
 And the following optional parameters:
 
-* `models` - *list\[str\]* - A list of models to use, in order of preference.  Defaults to `["gpt-3.5-turbo", "gpt-4"]`.  
+* `models` - *list\[str\]* - A list of models to use, in order of preference.  Defaults to `["gpt-3.5-turbo", "gpt-4"]`.  (See [supported models](../openai/#costs) for details.
 * `model_params` - *dict* - A dictionary of parameters to pass to the underlying GPT model.  (See [OpenAI docs](https://platform.openai.com/docs/api-reference/create-completion) for details.)
 * `max_cost` -  *float* (dollars) - The maximum total cost of calls made using this scraper. This is set to 1 ($1.00) by default to avoid large unexpected charges.
 * `extra_instructions` - *list\[str\]* - Additional instructions to pass to the GPT model as a system prompt.
