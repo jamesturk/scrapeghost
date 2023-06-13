@@ -23,7 +23,7 @@ OpenAI encodes text using a [tokenizer](https://github.com/openai/tiktoken), whi
 
 You'll see that billing is based on the number of tokens used.  A token is approximately 3 characters, so 3000 characters of HTML will roughly correspond to 1000 tokens.
 
-Additionally, the GPT-3-Turbo model is limited to 4096 tokens.  GPT-4 is limited to 8192 tokens.  (A 32k model has been announced, but is not yet widely available.)
+Models are limited to a maximum number of tokens.  For example, the default GPT-3.5-turbo model is limited to 4096 tokens.  GPT-4's default limit is 8192.  Both models have larger versions available, but they are more expensive.
 
 Various features in the library will help you avoid running into token limits, but it is still very common to exceed them in practice.
 
