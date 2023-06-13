@@ -3,7 +3,7 @@
 ## 0.5.1
 
 * Improve type annotations and remove some ignored errors.
-* Support for new OpenAI models announced June 13th 2023.
+* Support for new OpenAI models announced June 13th 2023. new-model-support
 
 ## 0.5.0 - 2023-06-06
 

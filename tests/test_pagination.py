@@ -91,7 +91,7 @@ def test_pagination():
     assert resp.data[-1]["url"] == "/yak"
 
     assert resp.api_responses == [resp1, resp2, resp3]
-    assert resp.total_cost == 0.000012
+    assert resp.total_cost == 0.0000105
     assert resp.total_prompt_tokens == 3
     assert resp.total_completion_tokens == 3
     assert resp.url == "/page2; /page3; https://example.com/page1"
