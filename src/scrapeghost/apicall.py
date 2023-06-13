@@ -139,21 +139,28 @@ class OpenAiCall:
         """
         attempts = 0
         model_index = 0
-        model = self.models[model_index]
-        model_data = _model_dict[model]
 
         response = Response()
 
         if not html:
             raise ValueError("html parameter cannot be empty")
-        tokens = _tokens(model, html)
-        if tokens > model_data.max_tokens:
-            raise TooManyTokens(
-                f"HTML is {tokens} tokens, max for {model} is {model_data.max_tokens}"
-            )
 
         while True:
             try:
+                # check this within retries, but before API call
+                # so that we don't waste an API call but can still
+                # upgrade models
+                model = self.models[model_index]
+                model_data = _model_dict[model]
+                # this call is redundant for now since all models have the same
+                # tokenizer, but it's here for future-proofing
+                tokens = _tokens(model, html)
+                if tokens > model_data.max_tokens:
+                    raise TooManyTokens(
+                        f"HTML is {tokens} tokens, max for {model} is "
+                        f"{model_data.max_tokens}"
+                    )
+
                 attempts += 1
                 logger.info(
                     "API request",
