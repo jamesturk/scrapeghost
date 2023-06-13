@@ -15,7 +15,7 @@ def test_basic_call():
         api_call.request("<html>")
     assert create.call_count == 1
     assert create.call_args.kwargs["model"] == "gpt-3.5-turbo"
-    assert api_call.total_cost == 0.000004
+    assert api_call.total_cost == 0.0000035
 
 
 def test_model_fallback():
@@ -92,7 +92,7 @@ def test_stats():
             api_call.request("<html>")
 
     assert api_call.stats() == {
-        "total_cost": pytest.approx(0.044),
+        "total_cost": pytest.approx(0.043),
         "total_prompt_tokens": 20000,
         "total_completion_tokens": 2000,
     }
