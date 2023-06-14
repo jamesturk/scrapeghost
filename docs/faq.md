@@ -32,7 +32,13 @@ you need to be comfortable sending your data to a third party.
 
 ## Why not use a different model?
 
-I'm open to trying other models if you have suggestions.  (See <https://github.com/jamesturk/scrapeghost/issues/18>)
+See <https://github.com/jamesturk/scrapeghost/issues/18>.
+
+## Can I use `httpx`? Or `selenium`/`playwright`? Can I customize the headers, etc.?
+
+This library is focused on handling the HTML that's already been retrieved.  There's no reason you can't use any of these libraries to retrieve the HTML.  The `scrape` method accepts either a URL or a string of already fetched HTML.
+
+If you'd like to use another library, do it as you usually would, but instead of passing the HTML to `lxml.html` or `BeautifulSoup`, pass it to `scrapeghost`.
 
 ## What can I do if a page is too big?
 
