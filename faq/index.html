@@ -364,6 +364,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#can-i-use-httpx-or-seleniumplaywright-can-i-customize-the-headers-etc" class="md-nav__link">
+    Can I use httpx? Or selenium/playwright? Can I customize the headers, etc.?
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#what-can-i-do-if-a-page-is-too-big" class="md-nav__link">
     What can I do if a page is too big?
   </a>
@@ -605,6 +612,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#can-i-use-httpx-or-seleniumplaywright-can-i-customize-the-headers-etc" class="md-nav__link">
+    Can I use httpx? Or selenium/playwright? Can I customize the headers, etc.?
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#what-can-i-do-if-a-page-is-too-big" class="md-nav__link">
     What can I do if a page is too big?
   </a>
@@ -679,7 +693,10 @@ A CSS/XPath-based scraper will often be broken in small ways between the first r
 you need to be comfortable sending your data to a third party.</li>
 </ul>
 <h2 id="why-not-use-a-different-model">Why not use a different model?<a class="headerlink" href="#why-not-use-a-different-model" title="Permanent link">&para;</a></h2>
-<p>I'm open to trying other models if you have suggestions.  (See <a href="https://github.com/jamesturk/scrapeghost/issues/18">https://github.com/jamesturk/scrapeghost/issues/18</a>)</p>
+<p>See <a href="https://github.com/jamesturk/scrapeghost/issues/18">https://github.com/jamesturk/scrapeghost/issues/18</a>.</p>
+<h2 id="can-i-use-httpx-or-seleniumplaywright-can-i-customize-the-headers-etc">Can I use <code>httpx</code>? Or <code>selenium</code>/<code>playwright</code>? Can I customize the headers, etc.?<a class="headerlink" href="#can-i-use-httpx-or-seleniumplaywright-can-i-customize-the-headers-etc" title="Permanent link">&para;</a></h2>
+<p>This library is focused on handling the HTML that's already been retrieved.  There's no reason you can't use any of these libraries to retrieve the HTML.  The <code>scrape</code> method accepts either a URL or a string of already fetched HTML.</p>
+<p>If you'd like to use another library, do it as you usually would, but instead of passing the HTML to <code>lxml.html</code> or <code>BeautifulSoup</code>, pass it to <code>scrapeghost</code>.</p>
 <h2 id="what-can-i-do-if-a-page-is-too-big">What can I do if a page is too big?<a class="headerlink" href="#what-can-i-do-if-a-page-is-too-big" title="Permanent link">&para;</a></h2>
 <p>Try the following:</p>
 <ol>
