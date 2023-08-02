@@ -4,6 +4,7 @@ Module for making OpenAI API calls.
 import time
 from dataclasses import dataclass
 import openai
+from litellm import completion
 import openai.error
 from typing import Callable
 
@@ -80,7 +81,7 @@ class OpenAiCall:
         """
         Make an OpenAPI request and return the raw response.
 
-        * model - the OpenAI model to use
+        * model - the OpenAI/Azure/Anthropic/Cohere/Replicate model to use. See list of supported models here: https://litellm.readthedocs.io/en/latest/supported/
         * messages - the messages to send to the API
         * response - the Response object to augment
 
@@ -92,7 +93,7 @@ class OpenAiCall:
                 f"Total cost {self.total_cost:.2f} exceeds max cost {self.max_cost:.2f}"
             )
         start_t = time.time()
-        completion = openai.ChatCompletion.create(
+        completion = completion(
             model=model,
             messages=messages,
             **self.model_params,
