@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.6.0
+
+* bump `pydantic` to version 2.0 and loosen some other dependencies.
+
 ## 0.5.1 - 2023-06-13
 
 * Improve type annotations and remove some ignored errors.
