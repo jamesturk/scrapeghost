@@ -87,7 +87,7 @@ class SchemaScraper(OpenAiCall):
 
         if use_pydantic:
             # check if schema is a pydantic model
-            if not isinstance(schema, type):
+            if not issubclass(schema, BaseModel):
                 raise ValueError("Schema must be a Pydantic model.")
             self.postprocessors.append(PydanticPostprocessor(schema))
 
@@ -240,20 +240,20 @@ def _pydantic_to_simple_schema(pydantic_model: Type[BaseModel]) -> dict:
     and in testing did not work as well as the simplified versions.
     """
     schema: dict = {}
-    for field in pydantic_model.__fields__.values():
-        # __fields__ is present on Pydantic models, so can process recursively
-        if hasattr(field.outer_type_, "__fields__"):
-            schema[field.name] = _pydantic_to_simple_schema(field.outer_type_)
+    for field_name, field in pydantic_model.model_fields.items():
+        # model_fields is present on Pydantic models, so can process recursively
+        if hasattr(field.annotation, "model_fields"):
+            schema[field_name] = _pydantic_to_simple_schema(field.annotation)
         else:
-            type_name = field.outer_type_.__name__
+            type_name = field.annotation.__name__
             if type_name == "list":
-                (inner,) = typing.get_args(field.outer_type_)
-                schema[field.name] = [inner.__name__]
+                (inner,) = typing.get_args(field.annotation)
+                schema[field_name] = [inner.__name__]
             elif type_name == "dict":
-                k, v = typing.get_args(field.outer_type_)
-                schema[field.name] = {k.__name__: v.__name__}
+                k, v = typing.get_args(field.annotation)
+                schema[field_name] = {k.__name__: v.__name__}
             else:
-                schema[field.name] = type_name
+                schema[field_name] = type_name
     return schema
 
 
