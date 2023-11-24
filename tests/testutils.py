@@ -30,7 +30,7 @@ def _mock_response(**kwargs):
 
 
 def _timeout(**kwargs):
-    raise openai.error.Timeout()
+    raise openai.Timeout()
 
 
 def patch_create():

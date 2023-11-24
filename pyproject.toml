@@ -11,7 +11,7 @@ scrapeghost = 'scrapeghost.cli:main'
 
 [tool.poetry.dependencies]
 python = "^3.11"
-openai = "^0.27.1"
+openai = "^1.3"
 cssselect = "^1.2.0"
 lxml = "^4.9.2"
 structlog = ">22.3,<24.0"

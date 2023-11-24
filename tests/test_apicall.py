@@ -75,7 +75,7 @@ def test_normal_retry():
         if _timeout_once.called:
             return _mock_response()
         _timeout_once.called = True
-        raise openai.error.Timeout()
+        raise openai.Timeout()
 
     _timeout_once.called = False
 
@@ -93,7 +93,7 @@ def test_retry_failure():
         retry=RetryRule(2, 0),  # disable wait
     )
 
-    with pytest.raises(openai.error.Timeout):
+    with pytest.raises(openai.Timeout):
         with patch_create() as create:
             # fail first request
             create.side_effect = _timeout

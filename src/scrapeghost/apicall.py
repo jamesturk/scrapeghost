@@ -4,6 +4,9 @@ Module for making OpenAI API calls.
 import time
 from dataclasses import dataclass
 import openai
+from openai import OpenAI
+
+client = OpenAI()
 import openai.error
 from typing import Callable
 
@@ -23,7 +26,7 @@ Postprocessor = Callable[[Response, "OpenAiCall"], Response]
 
 
 RETRY_ERRORS = (
-    openai.error.RateLimitError,
+    openai.RateLimitError,
     openai.error.Timeout,
     openai.error.APIConnectionError,
 )
@@ -92,11 +95,9 @@ class OpenAiCall:
                 f"Total cost {self.total_cost:.2f} exceeds max cost {self.max_cost:.2f}"
             )
         start_t = time.time()
-        completion = openai.ChatCompletion.create(
-            model=model,
-            messages=messages,
-            **self.model_params,
-        )
+        completion = client.chat.completions.create(model=model,
+        messages=messages,
+        **self.model_params)
         elapsed = time.time() - start_t
         p_tokens = completion.usage.prompt_tokens
         c_tokens = completion.usage.completion_tokens
