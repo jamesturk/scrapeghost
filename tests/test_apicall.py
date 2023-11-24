@@ -15,7 +15,7 @@ def test_basic_call():
         api_call.request("<html>")
     assert create.call_count == 1
     assert create.call_args.kwargs["model"] == "gpt-3.5-turbo"
-    assert api_call.total_cost == 0.0000035
+    assert api_call.total_cost == 0.000003
 
 
 def test_model_fallback():
@@ -41,7 +41,7 @@ def _make_n_tokens(n):
 
 def test_model_fallback_token_limit():
     api_call = OpenAiCall(
-        models=["gpt-3.5-turbo", "gpt-4", "gpt-3.5-turbo-16k"],
+        models=["gpt-4", "gpt-3.5-turbo"],
         retry=RetryRule(1, 0),  # disable wait
     )
     with patch_create() as create:
@@ -52,12 +52,12 @@ def test_model_fallback_token_limit():
 
     # make sure we used the 16k model and only made one request
     assert create.call_count == 1
-    assert create.call_args.kwargs["model"] == "gpt-3.5-turbo-16k"
+    assert create.call_args.kwargs["model"] == "gpt-3.5-turbo"
 
 
 def test_model_fallback_token_limit_still_too_big():
     api_call = OpenAiCall(
-        models=["gpt-3.5-turbo-16k", "gpt-4"],
+        models=["gpt-4", "gpt-3.5-turbo"],
         retry=RetryRule(1, 0),  # disable wait
     )
 
@@ -109,7 +109,7 @@ def test_max_cost_exceeded():
             prompt_tokens=1000, completion_tokens=1000
         )
         with pytest.raises(MaxCostExceeded):
-            for _ in range(300):
+            for _ in range(350):
                 api_call.request("<html>" * 1000)
 
 
@@ -123,7 +123,7 @@ def test_stats():
             api_call.request("<html>")
 
     assert api_call.stats() == {
-        "total_cost": pytest.approx(0.043),
+        "total_cost": pytest.approx(0.042),
         "total_prompt_tokens": 20000,
         "total_completion_tokens": 2000,
     }
