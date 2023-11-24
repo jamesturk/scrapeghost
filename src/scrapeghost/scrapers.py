@@ -244,7 +244,7 @@ def _pydantic_to_simple_schema(pydantic_model: Type[BaseModel]) -> dict:
         # model_fields is present on Pydantic models, so can process recursively
         if field.annotation is None:
             raise TypeError("missing annotation")
-        elif issubclass(field.annotation, BaseModel):
+        elif isinstance(field.annotation, type) and issubclass(field.annotation, BaseModel):
             schema[field_name] = _pydantic_to_simple_schema(field.annotation)
         else:
             type_name = field.annotation.__name__
