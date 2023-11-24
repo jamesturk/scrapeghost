@@ -167,6 +167,7 @@ class OpenAiCall:
                     model=model,
                     html_tokens=tokens,
                 )
+                json_mode = {"response_format": "json_object"} if model_data.json_mode else {}
                 self._raw_api_request(
                     model=model,
                     messages=[
@@ -177,6 +178,7 @@ class OpenAiCall:
                         {"role": "user", "content": html},
                     ],
                     response=response,
+                    **json_mode,
                 )
                 return response
             except self.retry.retry_errors + (
