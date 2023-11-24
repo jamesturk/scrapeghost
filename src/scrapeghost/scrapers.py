@@ -87,7 +87,7 @@ class SchemaScraper(OpenAiCall):
 
         if use_pydantic:
             # check if schema is a pydantic model
-            if not issubclass(schema, BaseModel):
+            if not isinstance(schema, type) or not issubclass(schema, BaseModel):
                 raise ValueError("Schema must be a Pydantic model.")
             self.postprocessors.append(PydanticPostprocessor(schema))
 
@@ -242,7 +242,9 @@ def _pydantic_to_simple_schema(pydantic_model: Type[BaseModel]) -> dict:
     schema: dict = {}
     for field_name, field in pydantic_model.model_fields.items():
         # model_fields is present on Pydantic models, so can process recursively
-        if hasattr(field.annotation, "model_fields"):
+        if field.annotation is None:
+            raise TypeError("missing annotation")
+        elif issubclass(field.annotation, BaseModel):
             schema[field_name] = _pydantic_to_simple_schema(field.annotation)
         else:
             type_name = field.annotation.__name__
