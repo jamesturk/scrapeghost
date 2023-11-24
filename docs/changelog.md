@@ -3,6 +3,7 @@
 ## 0.6.0
 
 * bump `pydantic` to version 2.0 and loosen some other dependencies.
+* add support for November 2023 model upgrades
 
 ## 0.5.1 - 2023-06-13
 
