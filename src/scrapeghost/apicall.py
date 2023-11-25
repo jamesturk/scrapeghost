@@ -9,6 +9,7 @@ from openai import OpenAI
 from typing import Callable
 
 from .errors import (
+    ScrapeghostError,
     TooManyTokens,
     MaxCostExceeded,
     BadStop,
@@ -95,17 +96,19 @@ class OpenAiCall:
             raise MaxCostExceeded(
                 f"Total cost {self.total_cost:.2f} exceeds max cost {self.max_cost:.2f}"
             )
-        # json_mode = (
-        #     {"response_format": "json_object"} if _model_dict[model].json_mode else {}
-        # )
-        json_mode = {}
+        json_mode = (
+            {"response_format": "json_object"} if _model_dict[model].json_mode else {}
+        )
         start_t = time.time()
         completion = client.chat.completions.create(
-            model=model, messages=messages, **self.model_params, **json_mode,
+            model=model, messages=messages, **self.model_params, **json_mode, # type: ignore
         )
         elapsed = time.time() - start_t
-        p_tokens = completion.usage.prompt_tokens
-        c_tokens = completion.usage.completion_tokens
+        if completion.usage:
+            p_tokens = completion.usage.prompt_tokens
+            c_tokens = completion.usage.completion_tokens
+        else:
+            raise ScrapeghostError("no usage data returned")
         cost = _model_dict[model].cost(c_tokens, p_tokens)
         logger.info(
             "API response",
@@ -133,7 +136,7 @@ class OpenAiCall:
                 f"(prompt_tokens={p_tokens}, "
                 f"completion_tokens={c_tokens})"
             )
-        response.data = choice.message.content
+        response.data = choice.message.content # type: ignore
         return response
 
     def _api_request(self, html: str) -> Response:
