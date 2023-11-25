@@ -26,7 +26,7 @@ def test_model_fallback():
     with patch_create() as create:
         # fail first request
         create.side_effect = [
-            _mock_response(finish_reason="timeout"),
+            _mock_response(finish_reason="length"),
             _mock_response(),
         ]
         api_call.request("<html>")
@@ -75,7 +75,7 @@ def test_normal_retry():
         if _timeout_once.called:
             return _mock_response()
         _timeout_once.called = True
-        raise openai.Timeout()
+        raise openai.APITimeoutError(request=None)
 
     _timeout_once.called = False
 
@@ -93,7 +93,7 @@ def test_retry_failure():
         retry=RetryRule(2, 0),  # disable wait
     )
 
-    with pytest.raises(openai.Timeout):
+    with pytest.raises(openai.APITimeoutError):
         with patch_create() as create:
             # fail first request
             create.side_effect = _timeout

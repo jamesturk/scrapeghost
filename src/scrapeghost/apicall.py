@@ -1,13 +1,11 @@
 """
 Module for making OpenAI API calls.
 """
+import os
 import time
-from dataclasses import dataclass
 import openai
+from dataclasses import dataclass
 from openai import OpenAI
-
-client = OpenAI()
-import openai.error
 from typing import Callable
 
 from .errors import (
@@ -27,9 +25,12 @@ Postprocessor = Callable[[Response, "OpenAiCall"], Response]
 
 RETRY_ERRORS = (
     openai.RateLimitError,
-    openai.error.Timeout,
-    openai.error.APIConnectionError,
+    openai.APITimeoutError,
+    openai.APIConnectionError,
 )
+
+
+client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY", ""))
 
 
 @dataclass
@@ -78,7 +79,7 @@ class OpenAiCall:
             self.postprocessors = postprocessors
 
     def _raw_api_request(
-        self, model: str, messages: list[dict[str, str]], response: Response
+        self, model: str, messages: list[dict[str, str]], response: Response,
     ) -> Response:
         """
         Make an OpenAPI request and return the raw response.
@@ -94,10 +95,13 @@ class OpenAiCall:
             raise MaxCostExceeded(
                 f"Total cost {self.total_cost:.2f} exceeds max cost {self.max_cost:.2f}"
             )
+        json_mode = (
+            {"response_format": "json_object"} if _model_dict[model].json_mode else {}
+        )
         start_t = time.time()
-        completion = client.chat.completions.create(model=model,
-        messages=messages,
-        **self.model_params)
+        completion = client.chat.completions.create(
+            model=model, messages=messages, **self.model_params, **json_mode,
+        )
         elapsed = time.time() - start_t
         p_tokens = completion.usage.prompt_tokens
         c_tokens = completion.usage.completion_tokens
@@ -128,7 +132,7 @@ class OpenAiCall:
                 f"(prompt_tokens={p_tokens}, "
                 f"completion_tokens={c_tokens})"
             )
-        response.data = choice.message.content
+        response.data = choice.text
         return response
 
     def _api_request(self, html: str) -> Response:
@@ -168,7 +172,6 @@ class OpenAiCall:
                     model=model,
                     html_tokens=tokens,
                 )
-                json_mode = {"response_format": "json_object"} if model_data.json_mode else {}
                 self._raw_api_request(
                     model=model,
                     messages=[
@@ -179,7 +182,6 @@ class OpenAiCall:
                         {"role": "user", "content": html},
                     ],
                     response=response,
-                    **json_mode,
                 )
                 return response
             except self.retry.retry_errors + (
