@@ -95,9 +95,10 @@ class OpenAiCall:
             raise MaxCostExceeded(
                 f"Total cost {self.total_cost:.2f} exceeds max cost {self.max_cost:.2f}"
             )
-        json_mode = (
-            {"response_format": "json_object"} if _model_dict[model].json_mode else {}
-        )
+        # json_mode = (
+        #     {"response_format": "json_object"} if _model_dict[model].json_mode else {}
+        # )
+        json_mode = {}
         start_t = time.time()
         completion = client.chat.completions.create(
             model=model, messages=messages, **self.model_params, **json_mode,
@@ -132,7 +133,7 @@ class OpenAiCall:
                 f"(prompt_tokens={p_tokens}, "
                 f"completion_tokens={c_tokens})"
             )
-        response.data = choice.text
+        response.data = choice.message.content
         return response
 
     def _api_request(self, html: str) -> Response:

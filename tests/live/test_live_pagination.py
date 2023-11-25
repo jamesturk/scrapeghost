@@ -69,6 +69,7 @@ def test_pagination():
         (("/page2",),),
         (("/page3",),),
     ]
+    print(resp.data)
     assert len(resp.data) == 14
     assert resp.data[0]["name"] == "Aardvark"
     assert resp.data[0]["url"] == "/aardvark"

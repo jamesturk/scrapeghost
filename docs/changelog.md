@@ -2,9 +2,10 @@
 
 ## 0.6.0
 
-* bump `pydantic` to version 2.0 and loosen some other dependencies.
-* add support for November 2023 model upgrades
 * move to supporting Python 3.11 and 3.12
+* move to `openai` 1.0
+* move to `pydantic` 2.0
+* add support for November 2023 model upgrades
 
 ## 0.5.1 - 2023-06-13
 

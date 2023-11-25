@@ -87,7 +87,7 @@ def test_forced_hallucination():
             },
             {
                 "name": "Moltar",
-                "image": None,
+                "image": "",
                 "description": "Moltar is a producer and director.",
             },
             {
