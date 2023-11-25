@@ -80,7 +80,10 @@ class OpenAiCall:
             self.postprocessors = postprocessors
 
     def _raw_api_request(
-        self, model: str, messages: list[dict[str, str]], response: Response,
+        self,
+        model: str,
+        messages: list[dict[str, str]],
+        response: Response,
     ) -> Response:
         """
         Make an OpenAPI request and return the raw response.
@@ -101,7 +104,10 @@ class OpenAiCall:
         )
         start_t = time.time()
         completion = client.chat.completions.create(
-            model=model, messages=messages, **self.model_params, **json_mode, # type: ignore
+            model=model,
+            messages=messages,
+            **self.model_params,
+            **json_mode,  # type: ignore
         )
         elapsed = time.time() - start_t
         if completion.usage:
@@ -136,7 +142,7 @@ class OpenAiCall:
                 f"(prompt_tokens={p_tokens}, "
                 f"completion_tokens={c_tokens})"
             )
-        response.data = choice.message.content # type: ignore
+        response.data = choice.message.content  # type: ignore
         return response
 
     def _api_request(self, html: str) -> Response:
