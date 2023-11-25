@@ -10,15 +10,18 @@ def _mock_response(**kwargs):
             openai.types.completion.CompletionChoice(
                 index=0,
                 text="",
-                message=openai.types.chat.ChatCompletionMessage(content=kwargs.get("content", "hello world"), role="assistant"),
-                finish_reason= kwargs.get("finish_reason", "stop"),
+                message=openai.types.chat.ChatCompletionMessage(
+                    content=kwargs.get("content", "hello world"), role="assistant"
+                ),
+                finish_reason=kwargs.get("finish_reason", "stop"),
                 logprobs={},
             )
         ],
         usage={
             "prompt_tokens": kwargs.get("prompt_tokens", 1),
             "completion_tokens": kwargs.get("completion_tokens", 1),
-            "total_tokens": kwargs.get("prompt_tokens", 1) + kwargs.get("completion_tokens", 1),
+            "total_tokens": kwargs.get("prompt_tokens", 1)
+            + kwargs.get("completion_tokens", 1),
         },
         created=1629200000,
         id="cmpl-xxxxxxxxxxxxxxxxxxxx",
