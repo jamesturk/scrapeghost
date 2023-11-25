@@ -9,7 +9,8 @@ def _mock_response(**kwargs):
         choices=[
             openai.types.completion.CompletionChoice(
                 index=0,
-                text=kwargs.get("content", "hello world"),
+                text="",
+                message=openai.types.chat.ChatCompletionMessage(content=kwargs.get("content", "hello world"), role="assistant"),
                 finish_reason= kwargs.get("finish_reason", "stop"),
                 logprobs={},
             )
