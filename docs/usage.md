@@ -110,7 +110,7 @@ These instructions can be useful for refining the results, but they are not requ
 
 ### Altering the API / Model 
 
-See <https://github.com/jamesturk/scrapeghost/issues/18>
+See <https://codeberg.org/jpt/scrapeghost/issues/18>
 
 ## Postprocessors
 
@@ -165,7 +165,7 @@ The `PaginatedSchemaScraper` class then takes care of following the `next_page` 
     Right now, given the library's stance on customizing requests being "just use your own HTTP library", the `PaginatedSchemaScraper` class does not provide a means to customize the HTTP request used to retrieve the next page.
 
     If you need a more complicated approach it is recommended you implement your own pagination logic for now,
-    <https://github.com/jamesturk/scrapeghost/blob/main/src/scrapeghost/scrapers.py#L238> may be a good starting point.
+    <https://codeberg.org/jpt/scrapeghost/blob/main/src/scrapeghost/scrapers.py#L238> may be a good starting point.
     
     If you have strong opinions here, please open an issue to discuss.
 

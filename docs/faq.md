@@ -32,7 +32,7 @@ you need to be comfortable sending your data to a third party.
 
 ## Why not use a different model?
 
-See <https://github.com/jamesturk/scrapeghost/issues/18>.
+See <https://codeberg.org/jpt/scrapeghost/issues/18>.
 
 ## Can I use `httpx`? Or `selenium`/`playwright`? Can I customize the headers, etc.?
 

@@ -4,14 +4,13 @@
 
 `scrapeghost` is an experimental library for scraping websites using OpenAI's GPT.
 
-Source: [https://github.com/jamesturk/scrapeghost](https://github.com/jamesturk/scrapeghost)
+Source: [https://codeberg.org/jpt/scrapeghost](https://codeberg.org/jpt/scrapeghost)
 
 Documentation: [https://jamesturk.github.io/scrapeghost/](https://jamesturk.github.io/scrapeghost/)
 
-Issues: [https://github.com/jamesturk/scrapeghost/issues](https://github.com/jamesturk/scrapeghost/issues)
+Issues: [https://codeberg.org/jpt/scrapeghost/issues](https://codeberg.org/jpt/scrapeghost/issues)
 
 [![PyPI badge](https://badge.fury.io/py/scrapeghost.svg)](https://badge.fury.io/py/scrapeghost)
-[![Test badge](https://github.com/jamesturk/scrapeghost/workflows/Test%20&%20Lint/badge.svg)](https://github.com/jamesturk/scrapeghost/actions?query=workflow%3A%22Test+%26+Lint%22)
 
 **Use at your own risk. This library makes considerably expensive calls ($0.36 for a GPT-4 call on a moderately sized page.) Cost estimates are based on the [OpenAI pricing page](https://beta.openai.com/pricing) and not guaranteed to be accurate.**
 

@@ -3,7 +3,7 @@ site_url: https://jamesturk.github.io/scrapeghost/
 site_author: James Turk
 site_description: An experimental library for automated web scraping with GPT.
 copyright: Copyright &copy; 2023 James Turk
-repo_url: https://github.com/jamesturk/scrapeghost/
+repo_url: https://codeberg.org/jpt/scrapeghost/
 repo_name: jamesturk/scrapeghost
 edit_uri: edit/main/docs/
 
