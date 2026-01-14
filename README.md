@@ -1,8 +1,9 @@
 # scrapeghost
 
-![scrapeghost logo](docs/assets/scrapeghost.png)
+**This project from 2023 is no longer maintained or recommended, the author has no interest in working with commercial LLMs.**
 
-`scrapeghost` is an experimental library for scraping websites using OpenAI's GPT.
+
+`scrapeghost` **was** an experimental library for scraping websites using OpenAI's GPT.
 
 Source: [https://codeberg.org/jpt/scrapeghost](https://codeberg.org/jpt/scrapeghost)
 
